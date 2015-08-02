@@ -2,25 +2,73 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.tobiaserthal.akgbensheim" >
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <application
+        android:name=".AKGBensheim"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="de.tobiaserthal.akgbensheim.MainActivity"
-            android:label="@string/app_name" >
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="de.tobiaserthal.akgbensheim.preferences.SettingsActivity"
-            android:label="@string/action_settings" >
+            android:name=".subst.SubstDetailActivity"
+            android:label="@string/title_activity_subst_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tobiaserthal.akgbensheim.MainActivity" />
+        </activity>
+        <activity
+            android:name=".news.NewsDetailActivity"
+            android:label="@string/title_activity_news_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tobiaserthal.akgbensheim.MainActivity" />
+        </activity>
+        <activity
+            android:name=".teacher.TeacherDetailActivity"
+            android:label="@string/title_activity_teacher_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tobiaserthal.akgbensheim.MainActivity" />
+        </activity>
+        <activity
+            android:name=".homework.HomeworkEditActivity"
+            android:label="@string/title_activity_homework"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tobiaserthal.akgbensheim.MainActivity" />
+        </activity>
+        <activity
+            android:name=".event.EventDetailActivity"
+            android:label="@string/title_activity_event_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Translucent" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tobiaserthal.akgbensheim.MainActivity" />
+        </activity>
+        <activity
+            android:name=".preferences.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tobiaserthal.akgbensheim.MainActivity" />
         </activity>
     </application>
 

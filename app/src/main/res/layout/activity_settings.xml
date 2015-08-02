@@ -1,20 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    <!-- include the settings fragment in this activity -->
-    <fragment
-        android:id="@+id/fragment_settings"
-        android:name="de.tobiaserthal.akgbensheim.preferences.SettingsFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.tobiaserthal.akgbensheim.preferences.SettingsActivity">
+
+    <FrameLayout
+        android:id="@+id/fragment_container_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginLeft="@dimen/preference_fragment_margin"
-        android:layout_marginRight="@dimen/preference_fragment_margin"/>
+        android:layout_marginTop="?attr/actionBarSize" />
 
-    <!-- lay the toolbar on top -->
-    <include layout="@layout/toolbar"
+    <!-- Toolbar placed on top of the container so it overlays all
+             fragments and therefore mimics the look of an action bar -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</RelativeLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Widget.AppTheme.Toolbar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+</FrameLayout>

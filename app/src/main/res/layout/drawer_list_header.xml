@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/navigation_drawer_header_height"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical"
+    android:weightSum="1" >
+
+    <ImageView
+        android:id="@+id/drawer_header_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/akg"
+        android:contentDescription="@string/des_drawer_header_image" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:background="@drawable/header_scrim">
+
+        <TextView
+            android:id="@+id/drawer_header_item_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:textColor="@color/primaryTextInverse"
+            android:text="@string/app_name"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="bottom" />
+
+        <TextView
+            android:id="@+id/drawer_header_item_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondaryTextInverse"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/address"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            android:gravity="top" />
+    </LinearLayout>
+</FrameLayout>

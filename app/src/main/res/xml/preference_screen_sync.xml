@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_category_sync_events">
+        <SwitchPreference
+            android:key="@string/pref_key_event_sync_enabled"
+            android:title="@string/pref_title_event_sync_enabled" />
+        <EditTextPreference
+            android:key="@string/pref_key_event_sync_period"
+            android:dependency="@string/pref_key_event_sync_enabled"
+            android:title="@string/pref_title_event_sync_period"
+            android:inputType="time" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_category_sync_news">
+        <SwitchPreference
+            android:key="@string/pref_key_news_sync_enabled"
+            android:title="@string/pref_title_news_sync_enabled" />
+        <EditTextPreference
+            android:key="@string/pref_key_news_sync_period"
+            android:dependency="@string/pref_key_news_sync_enabled"
+            android:title="@string/pref_title_news_sync_period"
+            android:inputType="time" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_category_sync_subst">
+        <SwitchPreference
+            android:key="@string/pref_key_subst_sync_enabled"
+            android:title="@string/pref_title_subst_sync_enabled" />
+        <EditTextPreference
+            android:key="@string/pref_key_subst_sync_period"
+            android:dependency="@string/pref_key_subst_sync_enabled"
+            android:title="@string/pref_title_subst_sync_period"
+            android:inputType="time" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_category_sync_teacher">
+        <SwitchPreference
+            android:key="@string/pref_key_teacher_sync_enabled"
+            android:title="@string/pref_title_teacher_sync_enabled" />
+        <EditTextPreference
+            android:key="@string/pref_key_teacher_sync_period"
+            android:dependency="@string/pref_key_teacher_sync_enabled"
+            android:title="@string/pref_title_teacher_sync_period"
+            android:inputType="time" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

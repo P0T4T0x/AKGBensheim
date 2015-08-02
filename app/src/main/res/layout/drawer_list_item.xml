@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:clickable="true"
+    android:background="@drawable/drawer_list_item_ripple" >
+
+    <de.tobiaserthal.akgbensheim.ui.widget.TintableImageView
+        android:id="@+id/drawer_list_item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_drawer_home"
+        android:contentDescription="@string/des_drawer_list_item_icon"
+        app:tint="@color/drawer_icon_color_selector" />
+
+    <TextView
+        android:id="@+id/drawer_list_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/drawer_list_item_icon"
+        android:layout_toEndOf="@id/drawer_list_item_icon"
+        android:gravity="center_vertical"
+        android:minHeight="?attr/listPreferredItemHeightSmall"
+        android:textAppearance="?attr/textAppearanceListItemSmall"
+        android:textColor="@color/drawer_item_color_selector" />
+
+    <TextView
+        android:id="@+id/drawer_list_item_counter"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:background="@drawable/drawer_list_counter_bg"
+        android:textAppearance="?android:attr/textAppearanceSmallInverse" />
+</RelativeLayout>

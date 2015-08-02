@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/pref_category_subst">
+        <de.tobiaserthal.akgbensheim.preferences.IntEditTextPreference
+            android:key="@string/pref_key_subst_phase"
+            android:title="@string/pref_title_subst_phase"
+            android:numeric="integer"
+            android:maxLength="2"/>
+        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:key="@string/pref_key_subst_form"
+            android:entries="@array/pref_subst_form_options"
+            android:entryValues="@array/pref_subst_form_options_values"
+            android:title="@string/pref_title_subst_form" />
+        <Preference
+            android:key="@string/pref_key_subst_subject_settings"
+            android:title="@string/pref_title_subst_subject_settings" />
+        <Preference
+            android:key="@string/pref_key_subst_color_settings"
+            android:title="@string/pref_title_subst_color_settings"/>
+    </PreferenceCategory>
+
+    <!-- Sync section -->
+    <PreferenceCategory android:title="@string/pref_category_sync">
+        <CheckBoxPreference
+            android:key="@string/pref_key_sync_enabled"
+            android:title="@string/pref_title_sync_enabled"
+            android:summaryOn="@string/pref_summary_sync_enabled_on"
+            android:summaryOff="@string/pref_summary_sync_enabled_off"
+            android:widgetLayout="@layout/preference_switch_layout" />
+        <Preference
+            android:key="@string/pref_key_sync_settings"
+            android:title="@string/pref_title_sync_settings"
+            android:dependency="@string/pref_key_sync_enabled"
+            android:shouldDisableView="true" />
+    </PreferenceCategory>
+
+    <!-- Data section -->
+    <PreferenceCategory android:title="@string/pref_category_data">
+        <CheckBoxPreference
+            android:key="@string/pref_key_only_wifi"
+            android:title="@string/pref_title_only_wifi"
+            android:summary="@string/pref_summary_only_wifi"
+            android:widgetLayout="@layout/preference_switch_layout" />
+        <Preference
+            android:key="@string/pref_key_clear_cache"
+            android:title="@string/pref_title_clear_cache" />
+        <Preference
+            android:key="@string/pref_key_clear_data"
+            android:title="@string/pref_title_clear_data" />
+    </PreferenceCategory>
+
+    <!-- About section -->
+    <PreferenceCategory android:title="@string/pref_category_about">
+        <Preference
+            android:key="@string/pref_key_website"
+            android:title="@string/pref_title_website"
+            android:summary="@string/pref_summary_website">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://www.akg-bensheim.de" />
+        </Preference>
+        <Preference
+            android:key="@string/pref_key_licence"
+            android:title="@string/pref_title_licence"
+            android:summary="@string/pref_summary_licence" />
+        <Preference
+            android:key="@string/pref_key_about"
+            android:title="@string/pref_title_about"/>
+    </PreferenceCategory>
+
+    <!-- Support section -->
+    <PreferenceCategory android:title="@string/pref_category_support">
+        <Preference
+            android:key="@string/pref_key_mail_dev"
+            android:title="@string/pref_title_mail_dev"
+            android:summary="@string/pref_summary_mail_dev" >
+            <intent
+                android:action="android.intent.action.SEND"
+                android:mimeType="message/rfc822">
+                <extra android:name="android.intent.extra.EMAIL" android:value="@string/dev_email" />
+                <extra android:name="android.intent.extra.SUBJECT" android:value="@string/dev_email_subject" />
+            </intent>
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

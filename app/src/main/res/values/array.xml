@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="toolbar_spinner_items">
-        <item>@string/option_this_week</item>
-        <item>@string/option_next_week</item>
-    </string-array>
-</resources>

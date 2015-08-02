@@ -1,0 +1,117 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.tobiaserthal.akgbensheim.SubstDetailActivity">
+
+    <com.github.ksoichiro.android.observablescrollview.ObservableScrollView
+        android:id="@+id/subst_detail_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/subst_header_height"
+        android:clipToPadding="false"
+        android:background="@color/background_material_light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_light_background"
+
+                app:cardUseCompatPadding="true"
+                app:cardElevation="1.5dp"
+                app:cardCornerRadius="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/subst_detail_row" android:id="@+id/formRow" />
+                    <include layout="@layout/design_navigation_item_separator" />
+                    <include layout="@layout/subst_detail_row" android:id="@+id/dateRow" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_light_background"
+
+                app:cardUseCompatPadding="true"
+                app:cardElevation="1.5dp"
+                app:cardCornerRadius="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/subst_detail_row" android:id="@+id/typeRow" />
+                    <include layout="@layout/design_navigation_item_separator" />
+                    <include layout="@layout/subst_detail_row" android:id="@+id/lessonRow" />
+                    <include layout="@layout/design_navigation_item_separator" />
+                    <include layout="@layout/subst_detail_row" android:id="@+id/roomRow" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_light_background"
+
+                app:cardUseCompatPadding="true"
+                app:cardElevation="1.5dp"
+                app:cardCornerRadius="2dp">
+
+                <include layout="@layout/subst_detail_row" android:id="@+id/annotationRow" />
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+    </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
+
+    <FrameLayout
+        android:id="@+id/subst_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/subst_header_height"
+        android:background="@color/subst_red"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/subst_header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="60dp"
+            android:layout_marginStart="60dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse" />
+    </FrameLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        android:elevation="5dp"
+
+        android:theme="@style/Widget.AppTheme.Toolbar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+</merge>

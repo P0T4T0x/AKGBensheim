@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/color_settings_row" android:id="@+id/rowSubst" />
+        <include layout="@layout/design_navigation_item_separator" />
+        <include layout="@layout/color_settings_row" android:id="@+id/rowChange" />
+        <include layout="@layout/design_navigation_item_separator" />
+        <include layout="@layout/color_settings_row" android:id="@+id/rowReserv" />
+        <include layout="@layout/design_navigation_item_separator" />
+        <include layout="@layout/color_settings_row" android:id="@+id/rowCancel" />
+        <include layout="@layout/design_navigation_item_separator" />
+        <include layout="@layout/color_settings_row" android:id="@+id/rowSpecial" />
+        <include layout="@layout/design_navigation_item_separator" />
+        <include layout="@layout/color_settings_row" android:id="@+id/rowRoomSubst" />
+        <include layout="@layout/design_navigation_item_separator" />
+        <include layout="@layout/color_settings_row" android:id="@+id/rowShift" />
+        <include layout="@layout/design_navigation_item_separator" />
+        <include layout="@layout/color_settings_row" android:id="@+id/rowOther" />
+
+    </LinearLayout>
+</ScrollView>

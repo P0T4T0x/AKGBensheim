@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.github.ksoichiro.android.observablescrollview.ObservableScrollView
+        android:id="@+id/teacher_detail_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/flexible_space_image_height"
+        android:clipToPadding="false"
+        android:background="@color/background_material_light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_light_background"
+
+                app:cardUseCompatPadding="true"
+                app:cardElevation="1.5dp"
+                app:cardCornerRadius="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/teacher_detail_row" android:id="@+id/nameRow" />
+                    <include layout="@layout/design_navigation_item_separator" />
+                    <include layout="@layout/teacher_detail_row" android:id="@+id/shorthandRow" />
+                    <include layout="@layout/design_navigation_item_separator" />
+                    <include layout="@layout/teacher_detail_row" android:id="@+id/subjectsRow" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cardview_light_background"
+
+                app:cardUseCompatPadding="true"
+                app:cardElevation="1.5dp"
+                app:cardCornerRadius="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/teacher_detail_row_func" android:id="@+id/mailRow" />
+                    <include layout="@layout/design_navigation_item_separator" />
+                    <include layout="@layout/teacher_detail_row_func" android:id="@+id/addRow" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
+
+    <!-- declare the header layout -->
+    <RelativeLayout
+        android:id="@+id/teacher_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/flexible_space_image_height"
+        android:background="@android:color/white"
+        android:elevation="4dp">
+
+        <de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView
+            android:id="@+id/teacher_header_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_account_white"
+            android:background="@color/primary"/>
+
+        <TextView
+            android:id="@+id/teacher_header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/teacher_header_subtitle"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
+
+            android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
+            android:text="@string/title_activity_news_detail"/>
+
+        <TextView
+            android:id="@+id/teacher_header_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="128dp"
+            android:layout_marginEnd="128dp"
+
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"/>
+    </RelativeLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+
+        android:elevation="5dp"
+        android:theme="@style/Widget.AppTheme.Toolbar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+</merge>

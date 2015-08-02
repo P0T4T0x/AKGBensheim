@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="nav_drawer_items">
+        <item>@string/fragment_title_home</item>
+        <item>@string/fragment_title_subst</item>
+        <item>@string/fragment_title_food</item>
+        <item>@string/fragment_title_homework</item>
+        <item>@string/fragment_title_events</item>
+        <item>@string/fragment_title_news</item>
+        <item>@string/fragment_title_teachers</item>
+        <item>@string/activity_title_settings</item>
+        <item>@string/activity_title_faq</item>
+    </string-array>
+
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_drawer_home</item>
+        <item>@drawable/ic_drawer_clipboard_alert</item>
+        <item>@drawable/ic_drawer_food</item>
+        <item>@drawable/ic_drawer_clipboard_check</item>
+        <item>@drawable/ic_drawer_calendar_text</item>
+        <item>@drawable/ic_drawer_newspaper</item>
+        <item>@drawable/ic_drawer_account</item>
+        <item>@drawable/ic_drawer_settings</item>
+        <item>@drawable/ic_drawer_help_circle</item>
+    </array>
+
+    <array name="subst_colors">
+        <item>@color/subst_red</item>
+        <item>@color/subst_pink</item>
+        <item>@color/subst_purple</item>
+        <item>@color/subst_deepPurple</item>
+        <item>@color/subst_indigo</item>
+        <item>@color/subst_blue</item>
+        <item>@color/subst_lightBlue</item>
+        <item>@color/subst_cyan</item>
+        <item>@color/subst_teal</item>
+        <item>@color/subst_green</item>
+        <item>@color/subst_lightGreen</item>
+        <item>@color/subst_lime</item>
+        <item>@color/subst_orange</item>
+        <item>@color/subst_deepOrange</item>
+        <item>@color/subst_brown</item>
+        <item>@color/subst_grey</item>
+        <item>@color/subst_blueGrey</item>
+    </array>
+</resources>

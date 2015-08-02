@@ -1,141 +1,50 @@
 package de.tobiaserthal.akgbensheim;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
+import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.AdapterView;
-import android.widget.Spinner;
+import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-import de.tobiaserthal.akgbensheim.adapter.ToolBarSpinnerAdapter;
+import de.tobiaserthal.akgbensheim.event.EventFragment;
+import de.tobiaserthal.akgbensheim.foodplan.FoodPlanFragment;
+import de.tobiaserthal.akgbensheim.homework.HomeworkFragment;
+import de.tobiaserthal.akgbensheim.homework.HomeworkHostFragment;
+import de.tobiaserthal.akgbensheim.news.NewsFragment;
 import de.tobiaserthal.akgbensheim.preferences.SettingsActivity;
-import de.tobiaserthal.akgbensheim.utils.ConnectionDetector;
-import de.tobiaserthal.akgbensheim.utils.Log;
+import de.tobiaserthal.akgbensheim.subst.SubstFragment;
+import de.tobiaserthal.akgbensheim.teacher.TeacherFragment;
+import de.tobiaserthal.akgbensheim.ui.drawer.DrawerCallbacks;
+import de.tobiaserthal.akgbensheim.ui.drawer.DrawerFragment;
+import de.tobiaserthal.akgbensheim.ui.base.ToolbarActivity;
+import de.tobiaserthal.akgbensheim.ui.tabs.TabbedHostFragment;
 
-public class MainActivity extends ActionBarActivity
-        implements Spinner.OnItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String KEY_SELECTED_INDEX = "selected_index";
-    private static final String URL_FIXED = "http://www.akg-bensheim.de/akgweb2011/content/Vertretung/w/%02d/w00000.htm";
+public class MainActivity extends ToolbarActivity implements DrawerCallbacks {
+    private DrawerFragment navigationDrawer;
 
-    private int selectedIndex = 0;
-    private boolean fromSavedInstanceState;
-    private int week;
-
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private Spinner spinner;
-    private WebView webView;
-
-    static {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO)
-            System.setProperty("http.keepAlive", "false");
-    }
-
-    @TargetApi(11)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /* State check */
-        if(savedInstanceState != null) {
-            selectedIndex = savedInstanceState.getInt(KEY_SELECTED_INDEX, 0);
-            fromSavedInstanceState = true;
-            Log.d("MainActivity", "Restored activity from instance state with index selected: %d", selectedIndex);
-        } else {
-            selectedIndex = getPreferredWeek();
-            fromSavedInstanceState = false;
-            Log.d("MainActivity", "New activity instance created with preferred index: %d", selectedIndex);
-        }
+        setToolbar((Toolbar) findViewById(R.id.toolbar));
 
-        /* View id lookup */
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        webView = (WebView) findViewById(R.id.webView);
+        navigationDrawer = (DrawerFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.drawerFragment);
 
-        /* Toolbar setup */
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        /* Inflate spinner layout and add it to the toolbar*/
-        View spinnerContainer = LayoutInflater.from(this)
-                .inflate(R.layout.toolbar_spinner, toolbar, false);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-        );
-        toolbar.addView(spinnerContainer, layoutParams);
-
-        /* Set up Spinner data */
-        ToolBarSpinnerAdapter adapter = new ToolBarSpinnerAdapter(getResources().getString(R.string.title_substitute));
-        adapter.addItems(getResources().getStringArray(R.array.toolbar_spinner_items));
-
-        /* Set up the Spinner */
-        spinner = (Spinner) spinnerContainer.findViewById(R.id.spinner);
-        spinner.setAdapter(adapter);
-        if(!fromSavedInstanceState)
-            spinner.setSelection(selectedIndex);
-        spinner.setOnItemSelectedListener(this);
-
-        /* Set up swipeToRefreshLayout */
-        swipeRefreshLayout.setColorSchemeResources(R.color.primary, R.color.accent, R.color.primaryDark);
-        swipeRefreshLayout.setOnRefreshListener(this);
-
-        /* Set up webView */
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                swipeRefreshLayout.setRefreshing(false);
-                spinner.setEnabled(true);
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return !url.startsWith("#");
-            }
-        });
-
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setJavaScriptEnabled(false);
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-            webView.getSettings().setDisplayZoomControls(false);
-
-        webView.post(new Runnable() {
-            @Override
-            public void run() {
-                webView.zoomOut();
-            }
-        });
+        navigationDrawer.setup(
+                R.id.drawerFragment, (DrawerLayout) findViewById(R.id.drawerLayout), getToolbar());
     }
 
-    private int getPreferredWeek() {
-        int day = Calendar.getInstance(Locale.getDefault()).get(Calendar.DAY_OF_WEEK);
-        return  (day == Calendar.SATURDAY || day == Calendar.SUNDAY) ? 1 : 0;
+    @Override
+    public void onDestroy() {
+        navigationDrawer = null;
+        super.onDestroy();
     }
 
     @Override
@@ -146,183 +55,131 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
+    public void onBackPressed() {
+        if (navigationDrawer.isDrawerOpen())
+            navigationDrawer.closeDrawer();
+        else
+            super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(
-                        new Intent(MainActivity.this, SettingsActivity.class)
-                );
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: reconsider working with back stack
+    private void changeFragment(int index) {
+        Fragment fragment = getSupportFragmentManager()
+                .findFragmentByTag(String.valueOf(index));
+
+        if(fragment == null) {
+            fragment = createFragment(index);
+        }
+
+        if(fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container_main, fragment, String.valueOf(index))
+                    // .addToBackStack(String.valueOf(index))
+                    .commit();
+        }
+    }
+
+    private Fragment createFragment(int index) {
+        switch (index) {
+            case 0: {
+                return HomeFragment.newInstance();
+            }
+
+            case 1: {
+                return TabbedHostFragment.Builder
+                        .withClass(SubstFragment.class)
+                        .addPage(getString(R.string.subst_tab_form), SubstFragment.createArgs(SubstFragment.FORM))
+                        .addPage(getString(R.string.subst_tab_phase), SubstFragment.createArgs(SubstFragment.PHASE))
+                        .addPage(getString(R.string.subst_tab_all), SubstFragment.createArgs(SubstFragment.ALL))
+                        .build();
+            }
+
+            case 2: {
+                return FoodPlanFragment.newInstance();
+            }
+
+            case 3: {
+                return HomeworkHostFragment.Builder
+                        .withDefault()
+                        .addPage(getString(R.string.homework_tab_todo), HomeworkFragment.createArgs(HomeworkFragment.TODO, true))
+                        .addPage(getString(R.string.homework_tab_done), HomeworkFragment.createArgs(HomeworkFragment.DONE, false))
+                        .build();
+            }
+
+            case 4: {
+                return TabbedHostFragment.Builder
+                        .withClass(EventFragment.class)
+                        .addPage(getString(R.string.event_tab_coming), EventFragment.createArgs(EventFragment.COMING))
+                        .addPage(getString(R.string.event_tab_over), EventFragment.createArgs(EventFragment.OVER))
+                        .build();
+            }
+
+            case 5: {
+                return TabbedHostFragment.Builder
+                        .withClass(NewsFragment.class)
+                        .addPage(getString(R.string.news_tab_all), NewsFragment.createArgs(NewsFragment.ALL))
+                        .addPage(getString(R.string.news_tab_bookmarks), NewsFragment.createArgs(NewsFragment.BOOKMARKED))
+                        .build();
+            }
+
+            case 6: {
+                return TabbedHostFragment.Builder
+                        .withClass(TeacherFragment.class)
+                        .addPage(getString(R.string.teacher_tab_teachers), TeacherFragment.createArgs(TeacherFragment.TEACHER))
+                        .addPage(getString(R.string.teacher_tab_student_teachers), TeacherFragment.createArgs(TeacherFragment.STUDENT_TEACHER))
+                        .build();
+            }
+
+            default: {
+                return null;
+            }
         }
     }
 
     @Override
-    public void onPause() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            webView.onPause();
-        else
-            webView.pauseTimers();
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            webView.onResume();
-        else
-            webView.resumeTimers();
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (webView != null) {
-            webView.destroy();
-            webView = null;
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    public void onRestoreInstanceState(@NonNull Bundle inState) {
-        super.onRestoreInstanceState(inState);
-        webView.restoreState(inState);
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        webView.saveState(outState);
-        outState.putInt(KEY_SELECTED_INDEX, selectedIndex);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.d("MainActivity", "Spinner item at index: %d selected.", position);
-
-        if(fromSavedInstanceState) {
-            fromSavedInstanceState = false;
-            return;
-        }
-        selectedIndex = position;
-
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        switch (selectedIndex) {
-            case 0:
-                week = calendar.get(Calendar.WEEK_OF_YEAR);
+    public void onNavigationItemSelected(int index, int position, boolean reselect) {
+        switch (index) {
+            case 7: {
+                Intent settings = new Intent(this, SettingsActivity.class);
+                startActivity(settings);
                 break;
-            case 1:
-                calendar.add(Calendar.DATE, 7);
-                week = calendar.get(Calendar.WEEK_OF_YEAR);
+            }
+
+            case 8: {
+                Intent faqBrowser = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://www.akgbensheim.de/android/faq"));
+
+                startActivity(faqBrowser);
                 break;
-        }
+            }
 
-        if(ConnectionDetector.getInstance(getApplicationContext())
-                .allowedToUseConnection("pref_key_only_wifi"))
-            new Loader().execute(
-                    String.format(URL_FIXED, week)
-            );
-        else
-            webView.loadUrl(Loader.CODE_1);
+            default: {
+                changeFragment(index);
+                break;
+            }
+        }
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        Log.w("MainActivity", "No spinner item item selected. Should not happen!");
-    }
+    public void onHeaderItemSelected() {
+        Toast.makeText(this, "Header item selected!", Toast.LENGTH_SHORT).show();
 
-    @Override
-    public void onRefresh() {
-        if(ConnectionDetector.getInstance(getApplicationContext())
-                .allowedToUseConnection("pref_key_only_wifi"))
-           new Loader().execute(
-                   String.format(URL_FIXED, week)
-           );
-        else
-            swipeRefreshLayout.setRefreshing(false);
-    }
-
-    protected class Loader extends AsyncTask<String, Void, Loader.Response> {
-        private String url;
-        class Response {
-            int code;
-            long lastModified;
-
-            @Override
-            public String toString() {
-                return getClass().getSimpleName()
-                        + " [code=" + code
-                        + ", lastModified=" + lastModified
-                        + "]";
-            }
-        }
-
-        private static final String CODE_301 = "file:///android_asset/error/301.html";
-        private static final String CODE_404 = "file:///android_asset/error/404.html";
-        private static final String CODE_1 = "file:///android_asset/error/offline.html";
-        private static final String CODE_UNKNOWN = "file:///android_asset/error/unknown.html";
-
-        @Override
-        protected void onPreExecute() {
-            Log.d("MainActivity", "Starting asynchronous task \"Loader\"...");
-            swipeRefreshLayout.setRefreshing(true);
-            spinner.setEnabled(false);
-        }
-
-        @Override
-        protected Loader.Response doInBackground(String... params) {
-            url = params[0];
-            Loader.Response response = new Loader.Response();
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setConnectTimeout(2000);
-                connection.setRequestMethod("GET");
-                connection.setInstanceFollowRedirects(false);
-                connection.connect();
-
-                response.code = connection.getResponseCode();
-                response.lastModified = connection.getLastModified();
-                connection.disconnect();
-            } catch (IOException e) {
-                Log.e("Loader", e, "IOException occurred while connecting to: \"%s\"", url);
-                response.code = 1;
-            }
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(Loader.Response response) {
-            Log.d("Loader", "Loader finished with result: %s", response.toString());
-            switch (response.code) {
-                case 200:
-                    webView.loadUrl(url);
-
-                    Toast.makeText(
-                            MainActivity.this,
-                            new SimpleDateFormat(getResources().getString(R.string.last_modification), Locale.getDefault())
-                                    .format(new Date(response.lastModified)),
-                            Toast.LENGTH_SHORT
-                    ).show();
-                    break;
-                case 301:
-                    webView.loadUrl(CODE_301);
-                    break;
-                case 404:
-                    webView.loadUrl(CODE_404);
-                    break;
-                case 1:
-                    webView.loadUrl(CODE_1);
-                    break;
-                default:
-                    webView.loadUrl(CODE_UNKNOWN);
-                    break;
-            }
-        }
+        // Todo: start contact activity
     }
 }

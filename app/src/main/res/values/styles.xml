@@ -1,9 +1,10 @@
 <resources>
-    <!-- Application theme. -->
     <style name="AppTheme" parent="AppTheme.Base" />
 
-    <!-- Application base theme -->
+    <!-- Base application theme. -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/background_material_light</item>
+
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
@@ -12,17 +13,27 @@
         <item name="android:textColorSecondary">@color/secondaryText</item>
         <item name="android:textColorPrimaryInverse">@color/primaryTextInverse</item>
         <item name="android:textColorSecondaryInverse">@color/secondaryTextInverse</item>
+
+        <item name="android:textColorPrimaryDisableOnly">@color/secondaryText</item>
+        <item name="android:textColorPrimaryNoDisable">@color/primaryText</item>
     </style>
 
-    <style name="Widget.AppTheme.ToolbarSpinner" parent="Widget.AppTheme.ToolbarSpinner.Base" />
-    <style name="Widget.AppTheme.ToolbarSpinner.Base" parent="Widget.AppCompat.Spinner.DropDown.ActionBar">
-        <item name="android:background">@drawable/actionbar_ripple</item>
-        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
-        <item name="android:dropDownVerticalOffset">@dimen/action_bar_spinner_vertical_offset</item>
-        <item name="android:divider">@null</item>
+    <style name="Theme.AppCompat.Translucent" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 
     <style name="Widget.AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:background">@color/primary</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
+
+    <style name="TextAppearance.AppTheme.ToolBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textColor">@color/primaryTextInverse</item>
+    </style>
+
 </resources>
