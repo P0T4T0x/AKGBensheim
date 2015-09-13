@@ -23,7 +23,10 @@
  */
 package de.tobiaserthal.akgbensheim.data.provider.homework;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -94,7 +97,6 @@ public class HomeworkSelection extends AbstractSelection<HomeworkSelection> {
 
     /**
      * Query all entries with the done flag set to true
-     * and the date being after the current
      * and the title or the notes match the filter.
      * @param filter The filter to query the entries
      * @return A selection to query the database.
@@ -105,6 +107,19 @@ public class HomeworkSelection extends AbstractSelection<HomeworkSelection> {
                 .titleContains(filter).or()
                 .notesContains(filter)
                 .closeParen();
+    }
+
+    /**
+     * Query all the entries with the done flag set to false
+     * and the date in range of today and tomorrow.
+     * @return A selection to query the database.
+     */
+    public static HomeworkSelection getNextDays() {
+        Calendar calendar = GregorianCalendar.getInstance(Locale.getDefault());
+        calendar.add(Calendar.DATE, 1);
+
+        return getTodo().and()
+                .todoDateBeforeEq(calendar.getTime());
     }
 
     @Override

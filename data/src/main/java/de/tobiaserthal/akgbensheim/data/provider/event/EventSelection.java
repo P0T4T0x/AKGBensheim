@@ -23,7 +23,10 @@
  */
 package de.tobiaserthal.akgbensheim.data.provider.event;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -69,6 +72,14 @@ public class EventSelection extends AbstractSelection<EventSelection> {
                 .dateStringContains(query)
                 .descriptionContains(query)
                 .closeParen();
+    }
+
+    public static EventSelection getNext10Days() {
+        Calendar calendar = GregorianCalendar.getInstance(Locale.getDefault());
+        calendar.add(Calendar.DATE, 10);
+
+        return getComing().and()
+                .eventDateBeforeEq(calendar.getTime());
     }
 
     @Override

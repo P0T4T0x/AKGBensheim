@@ -50,4 +50,12 @@ public class FileUtils {
         }
         return returnString;
     }
+
+    public static String removeProtocol(String url) {
+        if(url == null) {
+            return "";
+        }
+
+        return url.replaceFirst("^(?:http(?:s)?://)?(?:www(?:[0-9]+)?\\.)", "");
+    }
 }

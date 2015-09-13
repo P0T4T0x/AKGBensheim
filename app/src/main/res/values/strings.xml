@@ -47,6 +47,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="homework_empty_text">No homework :)</string>
     <string name="homework_empty_query_text">No results found for: \"%1$s\"</string>
+    <string name="homework_todo_date_string">\'Todo until \'EEEE, d MMM yyyy</string>
     <string name="title_activity_homework">Homework</string>
     <string name="homework_edit_title_hint">Title / lesson</string>
     <string name="homework_edit_notes_hint">Notes</string>
@@ -78,4 +79,5 @@
     <string name="dev_email">android@akgbensheim.de</string>
     <string name="dev_email_subject">Support / Feedback</string>
     <string name="color_chooser">Choose a color:</string>
+    <string name="home_empty_text">Nothing for today!</string>
 </resources>

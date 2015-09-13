@@ -86,6 +86,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 case SYNC.TEACHERS:
                     syncTeachers(provider, syncResult);
                     break;
+                case -1:
+                    syncEvents(provider, syncResult);
+                    syncNews(provider, syncResult, 0, 1);
+                    syncSubstitutions(provider, syncResult);
+                    break;
                 default:
                     throw new IllegalArgumentException("You must pass a valid component id in bundle!");
             }
