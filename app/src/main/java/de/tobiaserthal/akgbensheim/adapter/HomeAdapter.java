@@ -3,6 +3,7 @@ package de.tobiaserthal.akgbensheim.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,35 +15,36 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import de.tobiaserthal.akgbensheim.HomeCallbacks;
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
 import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.provider.base.AbstractCursor;
+import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
 import de.tobiaserthal.akgbensheim.data.provider.event.EventCursor;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkCursor;
-import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
+import de.tobiaserthal.akgbensheim.tools.ColorUtil;
 import de.tobiaserthal.akgbensheim.tools.FileUtils;
+
+import static de.tobiaserthal.akgbensheim.MainNavigation.NavigationItem;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_EVENT;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_HOMEWORK;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_NEWS;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_SUBSTITUTION;
+
 
 /**
  * Created by tobiaserthal on 06.09.15.
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHolder> {
-
-    public static final int TYPE_EVENT = 0;
-    public static final int TYPE_HOMEWORK = 1;
-    public static final int TYPE_NEWS = 2;
-    public static final int TYPE_SUBST = 3;
     private static final String TAG = "HomeAdapter";
 
     private SparseArrayCompat<Cursor> cursorList;
-    private AdapterClickHandler clickHandler;
+    private HomeCallbacks callbacks;
     private SimpleDateFormat todoDateFormat;
+    private SimpleDateFormat eventDateFormat;
 
     public HomeAdapter(Context context) {
         setHasStableIds(true);
@@ -50,6 +52,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
         this.cursorList = new SparseArrayCompat<>();
         this.todoDateFormat = new SimpleDateFormat(
                 context.getString(R.string.homework_todo_date_string), Locale.getDefault());
+        this.eventDateFormat = new SimpleDateFormat(
+                "EEE", Locale.getDefault());
+    }
+
+    public void setCallbacks(HomeCallbacks callbacks) {
+        this.callbacks = callbacks;
     }
 
     @Override
@@ -64,24 +72,24 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
     public void onBindViewHolder(CursorViewHolder holder, int position) {
         Cursor cursor = getCursorAt(position);
         switch (holder.getItemViewType()) {
-            case TYPE_EVENT:
+            case FRAGMENT_EVENT:
                 holder.bindTitle(R.string.fragment_title_events);
                 holder.bindSubtitle(cursor.getCount() + " items to show");
                 holder.bindCursor(EventCursor.wrap(cursor));
                 break;
 
-            case TYPE_HOMEWORK:
+            case FRAGMENT_HOMEWORK:
                 holder.bindTitle(R.string.fragment_title_homework);
                 holder.bindCursor(HomeworkCursor.wrap(cursor));
                 break;
 
-            case TYPE_NEWS:
+            case FRAGMENT_NEWS:
                 holder.bindTitle(R.string.fragment_title_news);
                 holder.bindSubtitle(cursor.getCount() + " items to show");
                 holder.bindCursor(NewsCursor.wrap(cursor));
                 break;
 
-            case TYPE_SUBST:
+            case FRAGMENT_SUBSTITUTION:
                 holder.bindTitle(R.string.fragment_title_subst);
                 holder.bindCursor(SubstitutionCursor.wrap(cursor));
                 break;
@@ -100,7 +108,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
     }
 
     @Override
+    @NavigationItem
     public int getItemViewType(int position) {
+        //noinspection ResourceType
         return cursorList != null ?
                 cursorList.keyAt(position) : 0;
     }
@@ -115,7 +125,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
                 cursorList.valueAt(position) : null;
     }
 
-    public Cursor swapCursor(int id, Cursor cursor) {
+    public Cursor swapCursor(@NavigationItem int id, Cursor cursor) {
         Cursor oldCursor = getCursor(id);
         if(cursor == oldCursor) {
             return null;
@@ -147,11 +157,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
         }
     }
 
-    public void setOnItemClickListener(AdapterClickHandler adapterClickHandler) {
-        clickHandler = adapterClickHandler;
-    }
 
-    class CursorViewHolder extends RecyclerView.ViewHolder {
+    class CursorViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
         private TextView txtTitle;
         private TextView txtSubtitle;
@@ -163,6 +171,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
             txtTitle = (TextView) itemView.findViewById(R.id.home_list_item_title);
             txtSubtitle = (TextView) itemView.findViewById(R.id.home_list_item_subtitle);
             layItems = (LinearLayout) itemView.findViewById(R.id.home_list_items_layout);
+
+            // TODO
         }
 
         public void bindTitle(String title) {
@@ -178,21 +188,31 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
         }
 
         public void bindCursor(EventCursor cursor) {
+            layItems.removeAllViews();
+
             while (cursor.moveToNext()) {
                 View listItem = LayoutInflater.from(layItems.getContext())
-                        .inflate(android.R.layout.simple_list_item_2, layItems, false);
+                        .inflate(R.layout.home_list_item_text3, layItems, false);
+
+                TextView icon = (TextView) listItem.findViewById(android.R.id.icon);
+                icon.setText(eventDateFormat.format(cursor.getEventDate()));
+                icon.setBackgroundColor(ContextCompat.getColor(listItem.getContext(), R.color.primaryDark));
 
                 ((TextView) listItem.findViewById(android.R.id.text1)).setText(cursor.getTitle());
                 ((TextView) listItem.findViewById(android.R.id.text2)).setText(cursor.getDateString());
 
+                listItem.setTag(cursor.getId());
+                listItem.setOnClickListener(this);
                 layItems.addView(listItem);
             }
         }
 
         public void bindCursor(NewsCursor cursor) {
+            layItems.removeAllViews();
+
             while (cursor.moveToNext()) {
                 View listItem = LayoutInflater.from(layItems.getContext())
-                        .inflate(R.layout.home_list_item_news, layItems, false);
+                        .inflate(R.layout.home_list_item_text2, layItems, false);
 
                 ((TextView) listItem.findViewById(android.R.id.text1)).setText(cursor.getTitle());
                 ((TextView) listItem.findViewById(android.R.id.text2)).setText(FileUtils.removeProtocol(cursor.getArticleUrl()));
@@ -202,12 +222,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
                         .fit().centerCrop()
                         .into((ImageView) listItem.findViewById(android.R.id.icon));
 
+                listItem.setTag(cursor.getId());
+                listItem.setOnClickListener(this);
                 layItems.addView(listItem);
             }
         }
 
         public void bindCursor(HomeworkCursor cursor) {
-             while (cursor.moveToNext()) {
+            layItems.removeAllViews();
+
+            while (cursor.moveToNext()) {
                 View listItem = LayoutInflater.from(layItems.getContext())
                         .inflate(android.R.layout.simple_list_item_2, layItems, false);
 
@@ -216,21 +240,50 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
                 ((TextView) listItem.findViewById(android.R.id.text2)).setText(
                         todoDateFormat.format(cursor.getTodoDate()));
 
+                listItem.setTag(cursor.getId());
+                listItem.setOnClickListener(this);
                 layItems.addView(listItem);
             }
         }
 
         public void bindCursor(SubstitutionCursor cursor) {
+            layItems.removeAllViews();
+
             while (cursor.moveToNext()) {
                 View listItem = LayoutInflater.from(layItems.getContext())
-                        .inflate(android.R.layout.simple_list_item_2, layItems, false);
+                        .inflate(R.layout.home_list_item_text3, layItems, false);
 
-                ((TextView) listItem.findViewById(android.R.id.text1)).setText(
-                        cursor.getLessonSubst());
-                ((TextView) listItem.findViewById(android.R.id.text2)).setText(
-                        cursor.getLessonSubst());
+                TextView icon = (TextView) listItem.findViewById(android.R.id.icon);
+                TextView text1 = (TextView) listItem.findViewById(android.R.id.text1);
+                TextView text2 = (TextView) listItem.findViewById(android.R.id.text2);
 
+                icon.setText(cursor.getLesson());
+                icon.setBackgroundColor(ColorUtil.getInstance(listItem.getContext())
+                        .getColorFromSubstType(cursor.getType()));
+
+                text1.setText(cursor.getType());
+                text2.setText(listItem.getContext().getString(
+                                R.string.home_summary_subst,
+                                cursor.getPeriod(),
+                                cursor.getLessonSubst(),
+                                cursor.getRoomSubst())
+                );
+
+                listItem.setTag(cursor.getId());
+                listItem.setOnClickListener(this);
                 layItems.addView(listItem);
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            int type = getItemViewType();
+            long id = (long) v.getTag();
+
+            Log.d(TAG, "Sub item clicked for type: %d with id: %d", type, id);
+            if(callbacks != null) {
+                //noinspection ResourceType
+                callbacks.onSubItemClicked(type, id);
             }
         }
     }

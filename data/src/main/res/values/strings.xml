@@ -9,8 +9,8 @@
     <string name="subst_detail_room">%1$s instead of %2$s</string>
     <string name="subst_detail_lesson">%1$s instead of %2$s</string>
     <string name="subst_no_annotation">No annotations</string>
-    <string name="subst_share_text">, %1$sth period: %2$s in room %3$s instead of %4$s</string>
-    <string name="subst_share_calendar">%1$sth period: %2$s in room %3$s instead of %4$s</string>
+    <string name="subst_share_text">, %1$s. period: %2$s in room %3$s instead of %4$s</string>
+    <string name="subst_share_calendar">%1$s. period: %2$s in room %3$s instead of %4$s</string>
     <string name="action_share_chooser">Share via</string>
     <string name="news_share_text">%1$s ( Read on: %2$s )</string>
     <string name="action_share_chooser_email">Send email with:</string>
@@ -92,4 +92,6 @@
     <string name="pref_subst_form_option_d">Form d</string>
     <string name="pref_subst_form_option_c">Form c</string>
     <string name="pref_subst_form_option_b">Form b</string>
+    <string name="notify_subst_changed_title">Substitution plan changed!</string>
+    <string name="notify_subst_changed_content">%1$d changes were made since the last update.</string>
 </resources>

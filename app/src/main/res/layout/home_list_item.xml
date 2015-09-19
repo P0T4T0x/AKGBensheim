@@ -23,7 +23,9 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground">
 
             <TextView
                 android:id="@+id/home_list_item_title"
@@ -40,7 +42,6 @@
                 android:id="@+id/home_list_item_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:ellipsize="end"
                 android:singleLine="false"
                 android:maxLines="3"
@@ -60,7 +61,7 @@
             android:padding="4dp"
 
             android:showDividers="middle"
-            android:divider="@drawable/abc_list_divider_mtrl_alpha">
+            android:divider="@color/material_blue_grey_950">
 
         </LinearLayout>
 

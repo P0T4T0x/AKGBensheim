@@ -80,4 +80,9 @@
     <string name="dev_email_subject">Support / Feedback</string>
     <string name="color_chooser">Choose a color:</string>
     <string name="home_empty_text">Nothing for today!</string>
+    <string name="home_summary_subst">%1$s. period: %2$s in room %3$s</string>
+    <string name="title_activity_contact">AKG Bensheim</string>
+    <string name="email">info@akg-bensheim.de</string>
+    <string name="phone">+49625184320</string>
+    <string name="fax">+496251843250</string>
 </resources>

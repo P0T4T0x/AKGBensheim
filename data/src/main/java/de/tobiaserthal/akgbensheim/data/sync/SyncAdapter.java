@@ -53,10 +53,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     public static final class SYNC {
         public static final String ARG = "sync_id";
-        public static final int EVENTS = 0;
-        public static final int NEWS = 1;
-        public static final int SUBSTITUTIONS = 2;
-        public static final int TEACHERS = 3;
+
+        public static final int EVENTS = 0x1;
+        public static final int NEWS = 0x2;
+        public static final int SUBSTITUTIONS = 0x4;
+        public static final int TEACHERS = 0x8;
+
+        public static final int ALL = 0xE;
     }
 
     public SyncAdapter(Context context, boolean autoInitialize) {
@@ -72,28 +75,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.d(TAG, "Beginning sync with options: %s", extras.toString());
         try {
-            int which = extras.getInt(SYNC.ARG, SYNC.SUBSTITUTIONS);
-            switch (which) {
-                case SYNC.EVENTS:
-                    syncEvents(provider, syncResult);
-                    break;
-                case SYNC.NEWS:
-                    syncNews(provider, syncResult, 0, 1);
-                    break;
-                case SYNC.SUBSTITUTIONS:
-                    syncSubstitutions(provider, syncResult);
-                    break;
-                case SYNC.TEACHERS:
-                    syncTeachers(provider, syncResult);
-                    break;
-                case -1:
-                    syncEvents(provider, syncResult);
-                    syncNews(provider, syncResult, 0, 1);
-                    syncSubstitutions(provider, syncResult);
-                    break;
-                default:
-                    throw new IllegalArgumentException("You must pass a valid component id in bundle!");
-            }
+            ArrayList<ContentProviderOperation> batchList = new ArrayList<>();
+
+            int which = extras.getInt(SYNC.ARG, SYNC.ALL);
+            if((which & SYNC.NEWS) == SYNC.NEWS) { syncNews(provider, batchList, syncResult, 0, 1); }
+            if((which & SYNC.EVENTS) == SYNC.EVENTS) { syncEvents(provider, batchList, syncResult); }
+            if((which & SYNC.TEACHERS) == SYNC.TEACHERS) { syncTeachers(provider, batchList, syncResult); }
+            if((which & SYNC.SUBSTITUTIONS) == SYNC.SUBSTITUTIONS) { syncSubstitutions(provider, batchList, syncResult); }
+
+            Log.i(TAG, "Merge solution ready. Applying batch update to database...");
+            provider.applyBatch(batchList);
 
         } catch (RetrofitError e) {
             Log.e(TAG, e, "Error while trying to parse response!");
@@ -127,11 +118,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                             getContext(), -1, activity, PendingIntent.FLAG_UPDATE_CURRENT);
                 }
 
+                int changes = (int) syncResult.stats.numDeletes
+                        + (int) syncResult.stats.numUpdates
+                        + (int) syncResult.stats.numInserts;
+
                 NotificationCompat.Builder builder =
                         new NotificationCompat.Builder(getContext())
                                 .setSmallIcon(R.drawable.ic_launcher)
-                                .setContentTitle("Vertretungsplan aktualisiert")
-                                .setContentText("Test Test Test")
+                                .setContentTitle(getContext().getString(R.string.notify_subst_changed_title))
+                                .setContentText(getContext().getString(R.string.notify_subst_changed_content, changes))
                                 .setContentIntent(intent);
 
                 NotificationManagerCompat.from(getContext()).notify(1, builder.build());
@@ -139,8 +134,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void syncEvents(ContentProviderClient provider, SyncResult syncResult)
-            throws ApiError, RemoteException, OperationApplicationException {
+    private void syncEvents(ContentProviderClient provider, ArrayList<ContentProviderOperation> batch,
+                            SyncResult syncResult) throws ApiError, RemoteException, OperationApplicationException {
+        Log.i(TAG, "Computing update solution for events table...");
 
         Log.i(TAG, "Parsing results from rest server...");
         List<EventResponse> entries = RestServer.getEvents();
@@ -150,8 +146,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         for(EventResponse response : entries) {
             entryMap.put(response.getId(), response);
         }
-
-        ArrayList<ContentProviderOperation> batch = new ArrayList<>();
 
         Log.i(TAG, "Fetching local database...");
         EventSelection query = new EventSelection();
@@ -200,12 +194,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             syncResult.stats.numInserts ++;
         }
-        Log.i(TAG, "Merge solution ready. Applying batch update to database...");
-        provider.applyBatch(batch);
+
+        Log.i(TAG, "Finished adding update solution for event table.");
     }
 
-    private void syncNews(ContentProviderClient provider, SyncResult syncResult, int start, int numOfSites)
-            throws ApiError, RemoteException, OperationApplicationException {
+    private void syncNews(ContentProviderClient provider, ArrayList<ContentProviderOperation> batch,
+                          SyncResult syncResult, int start, int numOfSites) throws ApiError, RemoteException, OperationApplicationException {
+        Log.i(TAG, "Computing update solution for news table...");
 
         Log.i(TAG, "Parsing results from rest server..."); // TODO: check
         List<NewsResponse> entries = new ArrayList<>();
@@ -218,8 +213,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         for(NewsResponse response : entries) {
             entryMap.put(response.getId(), response);
         }
-
-        ArrayList<ContentProviderOperation> batch = new ArrayList<>();
 
         Log.i(TAG, "Fetching local database...");
         NewsSelection query = new NewsSelection();
@@ -269,12 +262,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.stats.numInserts ++;
         }
 
-        Log.i(TAG, "Merge solution ready. Applying batch update to database...");
-        provider.applyBatch(batch);
+        Log.i(TAG, "Finished adding update solution for news table.");
     }
 
-    private void syncSubstitutions(ContentProviderClient provider, SyncResult syncResult)
-            throws RemoteException, ApiError, OperationApplicationException {
+    private void syncSubstitutions(ContentProviderClient provider, ArrayList<ContentProviderOperation> batch,
+                                   SyncResult syncResult) throws RemoteException, ApiError, OperationApplicationException {
+        Log.i(TAG, "Computing update solution for substitutions table...");
+
 
         Log.i(TAG, "Parsing results from rest server...");
         List<SubstitutionResponse> entries = RestServer.getSubstitutions();
@@ -284,8 +278,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         for(SubstitutionResponse response : entries) {
             entryMap.put(response.getId(), response);
         }
-
-        ArrayList<ContentProviderOperation> batch = new ArrayList<>();
 
         Log.i(TAG, "Fetching local database...");
         SubstitutionSelection query = new SubstitutionSelection();
@@ -335,12 +327,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.stats.numInserts ++;
         }
 
-        Log.i(TAG, "Merge solution ready. Applying batch update to database...");
-        provider.applyBatch(batch);
+        Log.i(TAG, "Finished adding update solution for substitution table.");
     }
 
-    private void syncTeachers(ContentProviderClient provider, SyncResult syncResult)
-            throws RemoteException, ApiError, OperationApplicationException {
+    private void syncTeachers(ContentProviderClient provider, ArrayList<ContentProviderOperation> batch,
+                              SyncResult syncResult) throws RemoteException, ApiError, OperationApplicationException {
+        Log.i(TAG, "Computing update solution for teachers table...");
 
         Log.i(TAG, "Parsing results from rest server...");
         List<TeacherResponse> entries = RestServer.getTeachers();
@@ -350,8 +342,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         for(TeacherModel response : entries) {
             entryMap.put(response.getId(), response);
         }
-
-        ArrayList<ContentProviderOperation> batch = new ArrayList<>();
 
         Log.i(TAG, "Fetching local database...");
         TeacherSelection query = new TeacherSelection();
@@ -400,7 +390,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.stats.numInserts ++;
         }
 
-        Log.i(TAG, "Merge solution ready. Applying batch update to database...");
-        provider.applyBatch(batch);
+        Log.i(TAG, "Finished adding update solution for teachers table.");
     }
 }

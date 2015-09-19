@@ -74,9 +74,9 @@ public class EventSelection extends AbstractSelection<EventSelection> {
                 .closeParen();
     }
 
-    public static EventSelection getNext10Days() {
+    public static EventSelection getNext7Days() {
         Calendar calendar = GregorianCalendar.getInstance(Locale.getDefault());
-        calendar.add(Calendar.DATE, 10);
+        calendar.add(Calendar.DATE, 6);
 
         return getComing().and()
                 .eventDateBeforeEq(calendar.getTime());

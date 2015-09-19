@@ -24,7 +24,7 @@ import de.tobiaserthal.akgbensheim.ui.base.ToolbarActivity;
 import de.tobiaserthal.akgbensheim.ui.tabs.TabbedHostFragment;
 
 
-public class MainActivity extends ToolbarActivity implements DrawerCallbacks {
+public class MainActivity extends ToolbarActivity implements MainNavigation {
     private DrawerFragment navigationDrawer;
 
     @Override
@@ -77,31 +77,13 @@ public class MainActivity extends ToolbarActivity implements DrawerCallbacks {
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO: reconsider working with back stack
-    private void changeFragment(int index) {
-        Fragment fragment = getSupportFragmentManager()
-                .findFragmentByTag(String.valueOf(index));
-
-        if(fragment == null) {
-            fragment = createFragment(index);
-        }
-
-        if(fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container_main, fragment, String.valueOf(index))
-                    // .addToBackStack(String.valueOf(index))
-                    .commit();
-        }
-    }
-
-    private Fragment createFragment(int index) {
-        switch (index) {
-            case 0: {
+    private Fragment createFragment(@NavigationItem int item) {
+        switch (item) {
+            case FRAGMENT_HOME: {
                 return HomeFragment.newInstance();
             }
 
-            case 1: {
+            case FRAGMENT_SUBSTITUTION: {
                 return TabbedHostFragment.Builder
                         .withClass(SubstFragment.class)
                         .addPage(getString(R.string.subst_tab_form), SubstFragment.createArgs(SubstFragment.FORM))
@@ -110,11 +92,11 @@ public class MainActivity extends ToolbarActivity implements DrawerCallbacks {
                         .build();
             }
 
-            case 2: {
+            case FRAGMENT_FOODPLAN: {
                 return FoodPlanFragment.newInstance();
             }
 
-            case 3: {
+            case FRAGMENT_HOMEWORK: {
                 return HomeworkHostFragment.Builder
                         .withDefault()
                         .addPage(getString(R.string.homework_tab_todo), HomeworkFragment.createArgs(HomeworkFragment.TODO, true))
@@ -122,7 +104,7 @@ public class MainActivity extends ToolbarActivity implements DrawerCallbacks {
                         .build();
             }
 
-            case 4: {
+            case FRAGMENT_EVENT: {
                 return TabbedHostFragment.Builder
                         .withClass(EventFragment.class)
                         .addPage(getString(R.string.event_tab_coming), EventFragment.createArgs(EventFragment.COMING))
@@ -130,7 +112,7 @@ public class MainActivity extends ToolbarActivity implements DrawerCallbacks {
                         .build();
             }
 
-            case 5: {
+            case FRAGMENT_NEWS: {
                 return TabbedHostFragment.Builder
                         .withClass(NewsFragment.class)
                         .addPage(getString(R.string.news_tab_all), NewsFragment.createArgs(NewsFragment.ALL))
@@ -138,7 +120,7 @@ public class MainActivity extends ToolbarActivity implements DrawerCallbacks {
                         .build();
             }
 
-            case 6: {
+            case FRAGMENT_TEACHER: {
                 return TabbedHostFragment.Builder
                         .withClass(TeacherFragment.class)
                         .addPage(getString(R.string.teacher_tab_teachers), TeacherFragment.createArgs(TeacherFragment.TEACHER))
@@ -153,33 +135,38 @@ public class MainActivity extends ToolbarActivity implements DrawerCallbacks {
     }
 
     @Override
-    public void onNavigationItemSelected(int index, int position, boolean reselect) {
-        switch (index) {
-            case 7: {
-                Intent settings = new Intent(this, SettingsActivity.class);
-                startActivity(settings);
-                break;
-            }
+    public void switchToNavigationItem(@NavigationItem int item) {
+        Fragment fragment = getSupportFragmentManager()
+                .findFragmentByTag(String.valueOf(item));
 
-            case 8: {
-                Intent faqBrowser = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://www.akgbensheim.de/android/faq"));
+        if(fragment == null) {
+            fragment = createFragment(item);
+        }
 
-                startActivity(faqBrowser);
-                break;
-            }
-
-            default: {
-                changeFragment(index);
-                break;
-            }
+        if(fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container_main, fragment, String.valueOf(item))
+                            // .addToBackStack(String.valueOf(index))
+                    .commit();
         }
     }
 
     @Override
-    public void onHeaderItemSelected() {
-        Toast.makeText(this, "Header item selected!", Toast.LENGTH_SHORT).show();
+    public void callNavigationExtra(@NavigationExtra int extra) {
+        switch (extra) {
+            case ACTIVITY_FAQ:
+                Intent faqBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.akgbensheim.de/android/faq"));
+                startActivity(faqBrowser);
+                break;
 
-        // Todo: start contact activity
+            case ACTIVITY_CONTACT:
+                break;
+
+            case ACTIVITY_SETTINGS:
+                Intent settings = new Intent(this, SettingsActivity.class);
+                startActivity(settings);
+                break;
+        }
     }
 }

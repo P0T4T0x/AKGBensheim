@@ -1,22 +1,21 @@
-package de.tobiaserthal.akgbensheim.teacher;
+package de.tobiaserthal.akgbensheim.contact;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.Loader;
-import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
@@ -27,25 +26,18 @@ import com.nineoldandroids.view.ViewHelper;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
-import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherCursor;
-import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherSelection;
 import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
 import de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView;
 
-public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
-        implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
+/**
+ * Created by tobiaserthal on 18.09.15.
+ */
+public class ContactActivity extends OverlayActivity<ObservableScrollView> implements View.OnClickListener {
 
     private View headerView;
     private TextView headerTitle;
     private TextView headerSubtitle;
-
-    private TeacherCursor teacher;
     private BackdropImageView imageView;
-    private TextView nameView;
-    private TextView shorthandView;
-    private TextView subjectsView;
-    private TextView mailView;
-    private TextView addView;
 
     private int actionBarTitleMargin;
     private int flexibleSpaceShowFABOffset;
@@ -56,13 +48,10 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
     private final Interpolator materialInterpolator = new AccelerateDecelerateInterpolator();
     private final ArgbEvaluator colorInterpolator = new ArgbEvaluator();
 
-    public static final String EXTRA_PARAM_ID = "detail:_id";
     private static final float MAX_TEXT_SCALE_DELTA = 0.25f;
 
     public static void startDetail(FragmentActivity activity, long id) {
-        Intent intent = new Intent(activity, TeacherDetailActivity.class);
-        intent.putExtra(EXTRA_PARAM_ID, id);
-
+        Intent intent = new Intent(activity, ContactActivity.class);
         activity.startActivity(intent);
     }
 
@@ -84,52 +73,41 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teacher_detail);
+        setContentView(R.layout.activity_contact);
 
         setToolbar((Toolbar) findViewById(R.id.toolbar));
-        setScrollable((ObservableScrollView) findViewById(R.id.teacher_detail_scrollView));
+        setScrollable((ObservableScrollView) findViewById(R.id.contact_detail_scrollView));
         if(getSupportActionBar() != null) {
             getSupportActionBar().setTitle(null);
             getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_HOME);
         }
 
-        headerView = findViewById(R.id.teacher_header);
-        headerTitle = (TextView) findViewById(R.id.teacher_header_title);
-        headerSubtitle = (TextView) findViewById(R.id.teacher_header_subtitle);
+        headerView = findViewById(R.id.contact_header);
+        headerTitle = (TextView) findViewById(R.id.contact_header_title);
+        headerSubtitle = (TextView) findViewById(R.id.contact_header_subtitle);
 
-        imageView = (BackdropImageView) findViewById(R.id.teacher_header_imageView);
+        imageView = (BackdropImageView) findViewById(R.id.contact_header_imageView);
         imageView.setScrimColor(getResources().getColor(R.color.primary));
         statusBarColor = getResources().getColor(R.color.primaryDark);
 
-        nameView        = setupRow(R.id.nameRow, R.drawable.ic_information_outline, R.string.teacher_detail_name);
-        shorthandView   = setupRow(R.id.shorthandRow, R.drawable.ic_information_outline, R.string.teacher_detail_shorthand);
-        subjectsView    = setupRow(R.id.subjectsRow, R.drawable.ic_information_outline, R.string.teacher_detail_subjects);
-
-        mailView    = setupFuncRow(R.id.mailRow, R.drawable.ic_email, this);
-        addView     = setupFuncRow(R.id.addRow, R.drawable.ic_account_plus, this);
+        setupRow(R.id.addressRow, R.drawable.ic_drawer_home, R.string.address, this);
+        setupRow(R.id.emailRow, R.drawable.ic_email, R.string.email, this);
+        setupRow(R.id.phoneRow, R.drawable.ic_phone_grey600_24dp, R.string.phone, this);
+        setupRow(R.id.faxRow, R.drawable.ic_message_text_outline, R.string.fax, this);
 
         flexibleSpaceImageHeight = getResources().getDimensionPixelSize(R.dimen.flexible_space_image_height);
         flexibleSpaceShowFABOffset = getResources().getDimensionPixelSize(R.dimen.flexible_space_show_fab_offset);
         actionBarTitleMargin = getResources().getDimensionPixelSize(R.dimen.flexible_space_header_margin_left);
-
-        getSupportLoaderManager().initLoader(0, null, this);
     }
 
-    private TextView setupRow(int rowId, int iconRes, int titleRes) {
-        View row = findViewById(rowId);
-        ((ImageView) row.findViewById(android.R.id.icon)).setImageResource(iconRes);
-        ((TextView) row.findViewById(android.R.id.text1)).setText(titleRes);
-
-        return (TextView) row.findViewById(android.R.id.text2);
-    }
-
-    private TextView setupFuncRow(int rowId, int iconRes, View.OnClickListener listener) {
-        View row = findViewById(rowId);
+    private void setupRow(int rowId, @DrawableRes int iconRes, @StringRes int stringRes, View.OnClickListener listener) {
+        TextView row = (TextView) findViewById(rowId);
         row.setClickable(true);
+        row.setText(stringRes);
         row.setOnClickListener(listener);
 
-        ((ImageView) row.findViewById(android.R.id.icon)).setImageResource(iconRes);
-        return (TextView) row.findViewById(android.R.id.text1);
+        Drawable start = ContextCompat.getDrawable(row.getContext(), iconRes);
+        TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(row, start, null, null, null);
     }
 
     @Override
@@ -146,55 +124,22 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.mailRow:
-                ModelUtils.startMailIntent(this, teacher);
+            case R.id.addressRow:
+                ContactUtils.startMapViewIntent(this);
                 break;
 
-            case R.id.addRow:
-                ModelUtils.startContactsIntent(this, teacher);
+            case R.id.emailRow:
+                ContactUtils.startEmailIntent(this);
+                break;
+
+            case R.id.phoneRow:
+                ContactUtils.startDialIntent(this);
+                break;
+
+            case R.id.faxRow:
+                // Are you serious?
                 break;
         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return TeacherSelection.get(
-                getIntent().getLongExtra(EXTRA_PARAM_ID, 0L)).loader(this, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data == null)
-            return;
-
-        // TODO: check this and change in all other detail views if necessary
-        TeacherCursor oldCursor = teacher;
-        teacher = TeacherCursor.wrap(data);
-
-        if(oldCursor != null) {
-            oldCursor.close();
-        }
-
-        if(!teacher.moveToFirst()) {
-            return;
-        }
-
-        headerTitle.setText(teacher.getFirstName() + " " + teacher.getLastName());
-        nameView.setText(teacher.getFirstName() + " " + teacher.getLastName());
-
-        headerSubtitle.setText(teacher.getSubjects());
-        subjectsView.setText(teacher.getSubjects());
-
-        shorthandView.setText(teacher.getShorthand());
-
-        mailView.setText(teacher.getEmail());
-        addView.setText(R.string.action_add_to_contacts);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        teacher.close();
-        teacher = null;
     }
 
     @Override
@@ -239,12 +184,8 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
     }
 
     @Override
-    public void onDownMotionEvent() {
-
-    }
+    public void onDownMotionEvent() {}
 
     @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-
-    }
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {}
 }

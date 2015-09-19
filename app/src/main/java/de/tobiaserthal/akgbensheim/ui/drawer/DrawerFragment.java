@@ -1,6 +1,7 @@
 package de.tobiaserthal.akgbensheim.ui.drawer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -23,11 +24,23 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.tobiaserthal.akgbensheim.R;
+import de.tobiaserthal.akgbensheim.MainNavigation;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkColumns;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkSelection;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionColumns;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
-import de.tobiaserthal.akgbensheim.tools.FileUtils;
+
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_NEWS;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_HOME;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_EVENT;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_TEACHER;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_HOMEWORK;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_FOODPLAN;
+import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_SUBSTITUTION;
+
+import static de.tobiaserthal.akgbensheim.MainNavigation.ACTIVITY_FAQ;
+import static de.tobiaserthal.akgbensheim.MainNavigation.ACTIVITY_CONTACT;
+import static de.tobiaserthal.akgbensheim.MainNavigation.ACTIVITY_SETTINGS;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -48,9 +61,9 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
     /**
-     * A pointer to the current callbacks instance (the Activity).
+     * A pointer to the current navigation manager (parent activity).
      */
-    private DrawerCallbacks drawerCallbacks;
+    private MainNavigation mainNavigation;
 
     /**
      * The adapter that manages the navigation items.
@@ -256,19 +269,19 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            drawerCallbacks = (DrawerCallbacks) activity;
+            mainNavigation = (MainNavigation) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
+            throw new ClassCastException("Parent context must implement NavigationDrawerCallbacks.");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        drawerCallbacks = null;
+        mainNavigation = null;
     }
 
     @Override
@@ -291,8 +304,44 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
             closeDrawer(200);
         }
 
-        if(drawerCallbacks != null) {
-            drawerCallbacks.onNavigationItemSelected(index, position, reselect);
+        if(mainNavigation != null) {
+            switch (index) {
+                case 0:
+                    mainNavigation.switchToNavigationItem(FRAGMENT_HOME);
+                    break;
+
+                case 1:
+                    mainNavigation.switchToNavigationItem(FRAGMENT_SUBSTITUTION);
+                    break;
+
+                case 2:
+                    mainNavigation.switchToNavigationItem(FRAGMENT_FOODPLAN);
+                    break;
+
+                case 3:
+                    mainNavigation.switchToNavigationItem(FRAGMENT_HOMEWORK);
+                    break;
+
+                case 4:
+                    mainNavigation.switchToNavigationItem(FRAGMENT_EVENT);
+                    break;
+
+                case 5:
+                    mainNavigation.switchToNavigationItem(FRAGMENT_NEWS);
+                    break;
+
+                case 6:
+                    mainNavigation.switchToNavigationItem(FRAGMENT_TEACHER);
+                    break;
+
+                case 7:
+                    mainNavigation.callNavigationExtra(ACTIVITY_SETTINGS);
+                    break;
+
+                case 8:
+                    mainNavigation.callNavigationExtra(ACTIVITY_FAQ);
+                    break;
+            }
 
             if(drawerAdapter.getItem(position).isCheckable()) {
                 getActivity().setTitle(drawerAdapter.getItem(position).getTitle());
@@ -302,8 +351,8 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
 
     @Override
     public void onHeaderItemSelected() {
-        if(drawerCallbacks != null) {
-            drawerCallbacks.onHeaderItemSelected();
+        if(mainNavigation != null) {
+            mainNavigation.callNavigationExtra(ACTIVITY_CONTACT);
         }
     }
 

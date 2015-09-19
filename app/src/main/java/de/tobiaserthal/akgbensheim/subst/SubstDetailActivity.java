@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.ActionBar;
@@ -33,6 +34,7 @@ import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
+import de.tobiaserthal.akgbensheim.tools.ColorUtil;
 import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
 
 public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
@@ -63,6 +65,13 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
         Intent intent = new Intent(activity, SubstDetailActivity.class);
         intent.putExtra(EXTRA_PARAM_ID, id);
         intent.putExtra(EXTRA_PARAM_COLOR, color);
+
+        activity.startActivity(intent);
+    }
+
+    public static void startDetail(FragmentActivity activity, long id) {
+        Intent intent = new Intent(activity, SubstDetailActivity.class);
+        intent.putExtra(EXTRA_PARAM_ID, id);
 
         activity.startActivity(intent);
     }
@@ -104,14 +113,8 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
         flexibleSpaceHeaderHeight = getResources().getDimensionPixelSize(R.dimen.subst_header_height);
         headerTitleVerticalMargin = getResources().getDimensionPixelSize(R.dimen.subst_header_title_margin);
 
-        int primary = getIntent().getIntExtra(
-                EXTRA_PARAM_COLOR, getResources().getColor(R.color.primary));
-
-        int primaryDark = ColorUtils.compositeColors(
-                getResources().getColor(R.color.insetsForeground), primary);
-
-        headerView.setBackgroundColor(primary);
-        setRequestedStatusBarTint(primaryDark);
+        setColorScheme(getIntent()
+                .getIntExtra(EXTRA_PARAM_COLOR, getResources().getColor(R.color.primary)));
 
         txtForm         = setupRow(R.id.formRow, R.drawable.ic_account_multiple);
         txtDate         = setupRow(R.id.dateRow, R.drawable.ic_calendar_clock);
@@ -141,6 +144,14 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
         }
 
         return row;
+    }
+
+    private void setColorScheme(int color) {
+        int dark = ColorUtils.compositeColors(
+                ContextCompat.getColor(this, R.color.insetsForeground), color);
+
+        headerView.setBackgroundColor(color);
+        setRequestedStatusBarTint(dark);
     }
 
     @Override
@@ -191,6 +202,9 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
         if(!subst.moveToFirst()) {
             return;
         }
+
+        setColorScheme(ColorUtil.getInstance(this)
+                .getColorFromSubstType(subst.getType()));
 
         headerTextView.setText(ModelUtils.summarize(subst));
         txtForm.setText(getResources().getString(R.string.subst_detail_form, subst.getFormKey()));
