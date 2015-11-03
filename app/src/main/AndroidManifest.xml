@@ -5,6 +5,7 @@
     <application
         android:name=".AKGBensheim"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -20,8 +21,7 @@
         <activity
             android:name=".subst.SubstDetailActivity"
             android:label="@string/title_activity_subst_detail"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.tobiaserthal.akgbensheim.MainActivity" />
@@ -29,8 +29,7 @@
         <activity
             android:name=".news.NewsDetailActivity"
             android:label="@string/title_activity_news_detail"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.tobiaserthal.akgbensheim.MainActivity" />
@@ -38,8 +37,7 @@
         <activity
             android:name=".teacher.TeacherDetailActivity"
             android:label="@string/title_activity_teacher_detail"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.tobiaserthal.akgbensheim.MainActivity" />
@@ -47,8 +45,7 @@
         <activity
             android:name=".homework.HomeworkEditActivity"
             android:label="@string/title_activity_homework"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.tobiaserthal.akgbensheim.MainActivity" />
@@ -56,8 +53,7 @@
         <activity
             android:name=".event.EventDetailActivity"
             android:label="@string/title_activity_event_detail"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.tobiaserthal.akgbensheim.MainActivity" />
@@ -65,6 +61,14 @@
         <activity
             android:name=".preferences.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.tobiaserthal.akgbensheim.MainActivity" />
+        </activity>
+        <activity
+            android:name=".contact.ContactActivity"
+            android:label="@string/title_activity_contact"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

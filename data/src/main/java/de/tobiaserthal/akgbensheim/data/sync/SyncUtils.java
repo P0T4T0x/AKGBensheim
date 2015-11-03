@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.preferences.PreferenceKey;
 import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter.SYNC;
 
@@ -18,6 +19,7 @@ import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
 public class SyncUtils {
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
     public static final String ACCOUNT_TYPE = "de.tobiaserthal.akgbensheim.account";
+    public static final String TAG = "SyncUtils";
 
     public static void createSyncAccount(Context context) {
         createSyncAccount(context, true);
@@ -32,7 +34,10 @@ public class SyncUtils {
         Account account = AuthenticatorService.getAccount(ACCOUNT_TYPE);
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+
+        Log.d(TAG, "Adding account to system manager...");
         if (accountManager.addAccountExplicitly(account, null, null)) {
+            Log.d(TAG, "Setting up sync settings...");
 
             // Inform the system that this account supports sync
             ContentResolver.setIsSyncable(account, DataProvider.AUTHORITY, 1);
@@ -54,7 +59,9 @@ public class SyncUtils {
         // data has been deleted. (Note that it's possible to clear app data WITHOUT affecting
         // the account list, so wee need to check both.)
         if (newAccount || !setupComplete) {
-            triggerRefresh();
+            Log.d(TAG, "Firing initial sync process...");
+
+            triggerRefresh(SYNC.ALL);
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putBoolean(PREF_SETUP_COMPLETE, true).commit();
         }
@@ -74,19 +81,15 @@ public class SyncUtils {
                 DataProvider.AUTHORITY);
     }
 
-    public static void triggerRefresh() {
-        Bundle options = new Bundle();
-        options.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        options.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-
-        ContentResolver.requestSync(
+    public static void cancelCurrentSync() {
+        ContentResolver.cancelSync(
                 AuthenticatorService.getAccount(ACCOUNT_TYPE),
-                DataProvider.AUTHORITY,
-                options
-        );
+                DataProvider.AUTHORITY);
     }
 
     public static void triggerRefresh(int which) {
+        Log.d(TAG, "Force refresh triggered for id: %d", which);
+
         Bundle options = new Bundle();
         options.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         options.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);

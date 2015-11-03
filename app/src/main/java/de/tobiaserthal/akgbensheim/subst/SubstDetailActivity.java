@@ -62,7 +62,7 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
     public static final String EXTRA_PARAM_COLOR = "detail:color";
 
     public static void startDetail(FragmentActivity activity, long id, int color) {
-        Intent intent = new Intent(activity, SubstDetailActivity.class);
+        Intent intent = createOverlayActivity(activity, SubstDetailActivity.class);
         intent.putExtra(EXTRA_PARAM_ID, id);
         intent.putExtra(EXTRA_PARAM_COLOR, color);
 

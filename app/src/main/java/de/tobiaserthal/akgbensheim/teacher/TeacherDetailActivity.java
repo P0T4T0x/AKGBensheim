@@ -60,7 +60,7 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
     private static final float MAX_TEXT_SCALE_DELTA = 0.25f;
 
     public static void startDetail(FragmentActivity activity, long id) {
-        Intent intent = new Intent(activity, TeacherDetailActivity.class);
+        Intent intent = createOverlayActivity(activity, TeacherDetailActivity.class);
         intent.putExtra(EXTRA_PARAM_ID, id);
 
         activity.startActivity(intent);

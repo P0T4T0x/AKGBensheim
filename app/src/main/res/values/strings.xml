@@ -85,4 +85,7 @@
     <string name="email">info@akg-bensheim.de</string>
     <string name="phone">+49625184320</string>
     <string name="fax">+496251843250</string>
+    <string name="notify_network_unavailable">Could not connect! Check your network settings and retry.</string>
+    <string name="retry">Retry</string>
+    <string name="notify_foodplan_failed">Could not fetch the foodplan from server!</string>
 </resources>

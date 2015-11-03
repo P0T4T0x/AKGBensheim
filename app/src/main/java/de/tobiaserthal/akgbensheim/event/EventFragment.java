@@ -44,7 +44,7 @@ import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
  * A simple {@link Fragment} subclass.
  */
 public class EventFragment extends TabbedListFragment<EventAdapter>
-        implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
+        implements LoaderManager.LoaderCallbacks<Cursor>,
         SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     public static final String TAG = "EventFragment";
@@ -59,25 +59,6 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
     public static final int COMING = 0x0;
     public static final int OVER = 0x1;
 
-    private Object syncObserverHandle;
-    private final SyncStatusObserver syncStatusObserver = new SyncStatusObserver() {
-        @Override
-        public void onStatusChanged(int which) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Account account = AuthenticatorService.getAccount(SyncUtils.ACCOUNT_TYPE);
-                    boolean syncActive = ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
-                    boolean syncPending = ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
-
-                    boolean refresh = syncActive || syncPending;
-                    Log.d(TAG, "Status change detected. Refreshing: %b", refresh);
-                    refreshLayout.setRefreshing(refresh);
-                }
-            });
-        }
-    };
-
     private final Runnable initLoader = new Runnable() {
         @Override
         public void run() {
@@ -89,7 +70,6 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
 
     private int viewFlag;
     private String currentFilter;
-    private SwipeRefreshLayout refreshLayout;
 
     private String emptyText;
     private String emptyQueryText;
@@ -139,13 +119,7 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_event, container, false);
-
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
-        refreshLayout.setColorSchemeResources(R.color.primary, R.color.accent, R.color.primaryDark);
-        refreshLayout.setOnRefreshListener(this);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_event, container, false);
     }
 
     @Override
@@ -173,32 +147,9 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        syncStatusObserver.onStatusChanged(0);
-        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING
-                | ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
-        syncObserverHandle = ContentResolver.addStatusChangeListener(mask, syncStatusObserver);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        if(syncObserverHandle != null) {
-            ContentResolver.removeStatusChangeListener(syncObserverHandle);
-            syncObserverHandle = null;
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         getHandler().removeCallbacks(initLoader);
         getAdapter().setOnClickListener(null);
-
-        refreshLayout.setOnRefreshListener(null);
-        refreshLayout = null;
 
         super.onDestroyView();
     }
@@ -253,12 +204,6 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "Resetting loader with id: %d", loader.getId());
         getAdapter().swapCursor(null);
-    }
-
-    @Override
-    public void onRefresh() {
-        Log.d(TAG, "Force refresh triggered!");
-        SyncUtils.triggerRefresh(SyncAdapter.SYNC.EVENTS);
     }
 
     @Override

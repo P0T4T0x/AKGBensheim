@@ -47,7 +47,6 @@ import de.tobiaserthal.akgbensheim.data.rest.model.substitution.SubstitutionResp
 import de.tobiaserthal.akgbensheim.data.rest.model.teacher.TeacherResponse;
 import retrofit.RetrofitError;
 
-//TODO: make sync methods a generic abstract class?
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
 
@@ -59,7 +58,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         public static final int SUBSTITUTIONS = 0x4;
         public static final int TEACHERS = 0x8;
 
-        public static final int ALL = 0xE;
+        public static final int ALL = 0xF;
     }
 
     public SyncAdapter(Context context, boolean autoInitialize) {
@@ -100,37 +99,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.databaseError = true;
         } finally {
             Log.i(TAG, "Finished syncing: %s", syncResult.toString());
-
-            if(syncResult.madeSomeProgress()) {
-                PendingIntent intent;
-                try {
-                    Class<?> pendingClass = Class.forName("de.tobiaserthal.akgbensheim.MainActivity");
-                    Intent activity = new Intent(getContext(), pendingClass);
-
-                    intent = PendingIntent.getActivity(
-                            getContext(), 0, activity, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-
-                    Intent activity = new Intent();
-                    intent = PendingIntent.getActivity(
-                            getContext(), -1, activity, PendingIntent.FLAG_UPDATE_CURRENT);
-                }
-
-                int changes = (int) syncResult.stats.numDeletes
-                        + (int) syncResult.stats.numUpdates
-                        + (int) syncResult.stats.numInserts;
-
-                NotificationCompat.Builder builder =
-                        new NotificationCompat.Builder(getContext())
-                                .setSmallIcon(R.drawable.ic_launcher)
-                                .setContentTitle(getContext().getString(R.string.notify_subst_changed_title))
-                                .setContentText(getContext().getString(R.string.notify_subst_changed_content, changes))
-                                .setContentIntent(intent);
-
-                NotificationManagerCompat.from(getContext()).notify(1, builder.build());
-            }
         }
     }
 
@@ -391,5 +359,32 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         Log.i(TAG, "Finished adding update solution for teachers table.");
+    }
+
+    private void broadcastNotification(int changes) {
+        PendingIntent intent;
+        try {
+            Class<?> pendingClass = Class.forName("de.tobiaserthal.akgbensheim.MainActivity");
+            Intent activity = new Intent(getContext(), pendingClass);
+
+            intent = PendingIntent.getActivity(
+                    getContext(), 0, activity, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+
+            Intent activity = new Intent();
+            intent = PendingIntent.getActivity(
+                    getContext(), -1, activity, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getContext())
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(getContext().getString(R.string.notify_subst_changed_title))
+                        .setContentText(getContext().getString(R.string.notify_subst_changed_content, changes))
+                        .setContentIntent(intent);
+
+        NotificationManagerCompat.from(getContext()).notify(1, builder.build());
     }
 }

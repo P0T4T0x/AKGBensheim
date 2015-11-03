@@ -57,7 +57,7 @@ public class SubstitutionSelection extends AbstractSelection<SubstitutionSelecti
         return new SubstitutionSelection();
     }
 
-    public static SubstitutionSelection getToday() {
+    public SubstitutionSelection getToday() {
         Calendar calendar = new GregorianCalendar(Locale.getDefault());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);

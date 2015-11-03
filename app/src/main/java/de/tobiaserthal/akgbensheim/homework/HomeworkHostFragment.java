@@ -64,6 +64,7 @@ public class HomeworkHostFragment extends TabbedHostFragment {
         return root;
     }
 
+    @Override
     public void onPageSelected(int position) {
         if(needsButton(position)) {
             showFab(true);

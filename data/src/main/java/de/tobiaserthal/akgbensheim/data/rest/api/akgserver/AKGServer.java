@@ -38,6 +38,11 @@ public class AKGServer {
                     != HttpURLConnection.HTTP_OK)
                 return null;
 
+            if(!"application/pdf".equals(
+                    connection.getContentType())) {
+                return null;
+            }
+
             byte[] result;
             if(connection.getContentLength() > 5242880) {
                 result = readFromConnectionWithCache(connection, context, domain.getFile());

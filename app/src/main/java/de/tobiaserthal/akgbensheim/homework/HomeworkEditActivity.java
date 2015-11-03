@@ -49,7 +49,7 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
     private EditText txtNotes;
 
     public static void startDetail(FragmentActivity activity, long id) {
-        Intent intent = new Intent(activity, HomeworkEditActivity.class);
+        Intent intent = createOverlayActivity(activity, HomeworkEditActivity.class);
         intent.putExtra(EXTRA_PARAM_ID, id);
 
         activity.startActivity(intent);

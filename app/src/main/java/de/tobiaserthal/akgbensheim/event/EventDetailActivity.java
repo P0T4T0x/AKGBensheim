@@ -51,7 +51,7 @@ public class EventDetailActivity extends OverlayActivity<ObservableScrollView> i
     public static final String EXTRA_PARAM_ID = "detail:_id";
 
     public static void startDetail(FragmentActivity activity, long id) {
-        Intent intent = new Intent(activity, EventDetailActivity.class);
+        Intent intent = createOverlayActivity(activity, EventDetailActivity.class);
         intent.putExtra(EXTRA_PARAM_ID, id);
 
         activity.startActivity(intent);

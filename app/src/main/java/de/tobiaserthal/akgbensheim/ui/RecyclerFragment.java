@@ -94,9 +94,15 @@ public class RecyclerFragment<A extends RecyclerView.Adapter> extends Fragment {
     };
 
     private final RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             RecyclerFragment.this.onScrolled(dx, dy);
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            RecyclerFragment.this.onScrollStateChanged(newState);
         }
     };
 
@@ -212,6 +218,10 @@ public class RecyclerFragment<A extends RecyclerView.Adapter> extends Fragment {
 
     public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
         // empty body
+    }
+
+    public void onScrollStateChanged(int state) {
+         // empty body
     }
 
     public void onScrolled(int dx, int dy) {

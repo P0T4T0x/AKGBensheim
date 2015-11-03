@@ -13,6 +13,8 @@ import de.tobiaserthal.akgbensheim.ui.RecyclerFragment;
 public abstract class TabbedListFragment<A extends RecyclerView.Adapter>
         extends RecyclerFragment<A> implements TabbedFragment {
 
+    private ScrollState lastState = ScrollState.STOP;
+
     @Override
     public LoaderManager getLoaderManager() {
         return getParentFragment().getLoaderManager();
@@ -21,21 +23,31 @@ public abstract class TabbedListFragment<A extends RecyclerView.Adapter>
     @Override
     public void onScrolled(int dX, int dY) {
         getParent().moveToolbar(-dY);
+
+        if(dY > 0) {
+            lastState = ScrollState.UP;
+        } else if(dY < 0) {
+            lastState = ScrollState.DOWN;
+        } else {
+            lastState = ScrollState.STOP;
+        }
     }
 
     @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollDirection) {
-        switch (scrollDirection) {
-            case DOWN:
-                getParent().showToolbar();
-                break;
-            case UP:
-                if(getParent().getToolbarTranslation()
-                        > -getParent().getToolbar().getHeight() / 2)
+    public void onScrollStateChanged(int state) {
+        if (state == RecyclerView.SCROLL_STATE_IDLE) {
+            switch (lastState) {
+                case DOWN:
                     getParent().showToolbar();
-                else
-                    getParent().hideToolbar();
-                break;
+                    break;
+                case UP:
+                    if(getParent().getToolbarTranslation()
+                            > -getParent().getToolbar().getHeight() / 2)
+                        getParent().showToolbar();
+                    else
+                        getParent().hideToolbar();
+                    break;
+            }
         }
     }
 

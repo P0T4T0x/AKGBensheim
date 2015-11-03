@@ -19,25 +19,37 @@ public class BackdropImageView extends ImageView {
     private static final int SCRIM_ALPHA_DIFF = MAX_SCRIM_ALPHA - MIN_SCRIM_ALPHA;
 
     private float mScrimDarkness;
+    private float factor;
     private int mScrimColor = Color.BLACK;
     private int mScrollOffset;
     private int mImageOffset;
 
     private final Paint mScrimPaint;
 
+    public BackdropImageView(Context context) {
+        super(context);
+        mScrimPaint = new Paint();
+        factor = 2;
+    }
+
     public BackdropImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mScrimPaint = new Paint();
+        factor = 2;
     }
 
     private void setScrollOffset(int offset) {
         if (offset != mScrollOffset) {
             mScrollOffset = offset;
-            mImageOffset = -offset / 2;
+            mImageOffset = (int) (-offset / factor);
             offsetTopAndBottom(offset - getTop());
 
             ViewCompat.postInvalidateOnAnimation(this);
         }
+    }
+
+    public void setFactor(float factor) {
+        this.factor = factor;
     }
 
     @Override

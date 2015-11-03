@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.R;
+import de.tobiaserthal.akgbensheim.data.NetworkManager;
 import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
 import de.tobiaserthal.akgbensheim.data.provider.FoodPlanLoader;
 import de.tobiaserthal.akgbensheim.data.rest.model.foodplan.FoodPlanKeys;
@@ -52,7 +55,25 @@ public class FoodPlanFragment extends ToolbarFragment
         @Override
         public void onReceive(Context context, Intent intent) {
             displayStatus(false);
-            getLoaderManager().getLoader(0).onContentChanged();
+
+            int code = intent.getIntExtra("code", FoodPlanService.CODE_FAILURE);
+            switch (code) {
+                case FoodPlanService.CODE_SUCCESS:
+                    getLoaderManager().getLoader(0).onContentChanged();
+                    break;
+
+                case FoodPlanService.CODE_FAILURE:
+                    getLoaderManager().getLoader(0).reset();
+                    Snackbar.make(getContentView(), R.string.notify_foodplan_failed, Snackbar.LENGTH_LONG)
+                            .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.md_edittext_error))
+                            .setAction(R.string.retry, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    refresh();
+                                }
+                            }).show();
+                    break;
+            }
         }
     };
 
@@ -88,7 +109,7 @@ public class FoodPlanFragment extends ToolbarFragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        backgroundColor = getResources().getColor(R.color.background_material_light);
+        backgroundColor = ContextCompat.getColor(getActivity(), R.color.background_material_light);
     }
 
     @Override
@@ -101,10 +122,12 @@ public class FoodPlanFragment extends ToolbarFragment
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
 
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+        tabLayout.setBackgroundColor(
+                ContextCompat.getColor(getActivity(), R.color.primary)
+        );
         tabLayout.setTabTextColors(
-                getResources().getColor(R.color.secondaryTextInverse),
-                getResources().getColor(R.color.primaryTextInverse)
+                ContextCompat.getColor(getActivity(), R.color.secondaryTextInverse),
+                ContextCompat.getColor(getActivity(), R.color.primaryTextInverse)
         );
 
         int padding = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
@@ -211,16 +234,28 @@ public class FoodPlanFragment extends ToolbarFragment
     }
 
     private void refresh() {
-        displayStatus(true);
+        boolean accessEnabled = NetworkManager.getInstance(getContext()).isAccessAllowed();
+        if(accessEnabled) {
+            displayStatus(true);
 
-        Intent intent = new Intent(getActivity(), FoodPlanService.class);
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+            Intent intent = new Intent(getActivity(), FoodPlanService.class);
+            Calendar calendar = Calendar.getInstance(Locale.getDefault());
 
-        intent.putExtra("first", calendar.get(Calendar.WEEK_OF_YEAR));
-        calendar.add(Calendar.WEEK_OF_YEAR, 1);
-        intent.putExtra("second", calendar.get(Calendar.WEEK_OF_YEAR));
+            intent.putExtra("first", calendar.get(Calendar.WEEK_OF_YEAR));
+            calendar.add(Calendar.WEEK_OF_YEAR, 1);
+            intent.putExtra("second", calendar.get(Calendar.WEEK_OF_YEAR));
 
-        getActivity().startService(intent);
+            getActivity().startService(intent);
+        } else {
+            Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_LONG)
+                    .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.md_edittext_error))
+                    .setAction(R.string.retry, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            refresh();
+                        }
+                    }).show();
+        }
     }
 
     private void displayStatus(boolean syncing) {

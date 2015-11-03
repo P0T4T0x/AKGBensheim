@@ -4,11 +4,14 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SyncInfo;
 import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -19,6 +22,7 @@ import android.view.ViewGroup;
 import de.tobiaserthal.akgbensheim.adapter.HomeAdapter;
 import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
 import de.tobiaserthal.akgbensheim.data.Log;
+import de.tobiaserthal.akgbensheim.data.NetworkManager;
 import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
 import de.tobiaserthal.akgbensheim.data.provider.event.EventColumns;
@@ -29,6 +33,7 @@ import de.tobiaserthal.akgbensheim.data.provider.news.NewsColumns;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsSelection;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionColumns;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
+import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
 import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
 import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
 import de.tobiaserthal.akgbensheim.event.EventDetailActivity;
@@ -55,28 +60,19 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
     private final SyncStatusObserver syncStatusObserver = new SyncStatusObserver() {
         @Override
         public void onStatusChanged(int which) {
-            getActivity().runOnUiThread(new Runnable() {
+            Account account = AuthenticatorService.getAccount(SyncUtils.ACCOUNT_TYPE);
+            boolean syncActive = ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
+            boolean syncPending = ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
+
+            final boolean refresh = syncActive || syncPending;
+            Log.d(TAG, "Status change detected. Active: %b, pending: %b, refreshing: %b", syncActive, syncPending, refresh);
+
+            swipeRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    Account account = AuthenticatorService.getAccount(SyncUtils.ACCOUNT_TYPE);
-                    boolean syncActive = ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
-                    boolean syncPending = ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
-
-                    boolean refresh = syncActive || syncPending;
-                    Log.d(TAG, "Status change detected. Refreshing: %b", refresh);
                     swipeRefreshLayout.setRefreshing(refresh);
                 }
             });
-        }
-    };
-
-    private final Runnable initLoader = new Runnable() {
-        @Override
-        public void run() {
-            getLoaderManager().initLoader(FRAGMENT_SUBSTITUTION, Bundle.EMPTY, HomeFragment.this);
-            getLoaderManager().initLoader(FRAGMENT_HOMEWORK, Bundle.EMPTY, HomeFragment.this);
-            getLoaderManager().initLoader(FRAGMENT_EVENT, Bundle.EMPTY, HomeFragment.this);
-            getLoaderManager().initLoader(FRAGMENT_NEWS, Bundle.EMPTY, HomeFragment.this);
         }
     };
 
@@ -114,6 +110,16 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getLoaderManager().initLoader(FRAGMENT_SUBSTITUTION, Bundle.EMPTY, HomeFragment.this);
+        getLoaderManager().initLoader(FRAGMENT_HOMEWORK, Bundle.EMPTY, HomeFragment.this);
+        getLoaderManager().initLoader(FRAGMENT_EVENT, Bundle.EMPTY, HomeFragment.this);
+        getLoaderManager().initLoader(FRAGMENT_NEWS, Bundle.EMPTY, HomeFragment.this);
+    }
+
+    @Override
     public View onCreateContentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -135,12 +141,8 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
         // Create the layout manager
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(
                 getResources().getInteger(R.integer.news_list_columns),
-                StaggeredGridLayoutManager.VERTICAL
-        );
+                StaggeredGridLayoutManager.VERTICAL);
         setLayoutManager(manager);
-
-        // start loader
-        getHandler().post(initLoader);
     }
 
     @Override
@@ -165,7 +167,6 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
 
     @Override
     public void onDestroyView() {
-        getHandler().removeCallbacks(initLoader);
         getAdapter().setCallbacks(null);
 
         swipeRefreshLayout.setOnRefreshListener(null);
@@ -193,7 +194,21 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
     @Override
     public void onRefresh() {
         Log.d(TAG, "Force refresh triggered!");
-        SyncUtils.triggerRefresh(-1); // wont work yet
+
+        boolean allowed = NetworkManager.getInstance(getActivity()).isAccessAllowed();
+        if(allowed) {
+            SyncUtils.triggerRefresh(SyncAdapter.SYNC.NEWS | SyncAdapter.SYNC.EVENTS | SyncAdapter.SYNC.SUBSTITUTIONS);
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_SHORT)
+                    .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.md_edittext_error))
+                    .setAction(R.string.retry, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onRefresh();
+                        }
+                    }).show();
+        }
     }
 
     @Override
@@ -205,7 +220,8 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
                 SubstitutionSelection selection = SubstitutionSelection.getForm(
                         PreferenceProvider.getInstance(getActivity()).getSubstPhase(),
                         PreferenceProvider.getInstance(getActivity()).getSubstForm(),
-                        PreferenceProvider.getInstance(getActivity()).getSubstSubjects());
+                        PreferenceProvider.getInstance(getActivity()).getSubstSubjects())
+                        .getToday();
 
                 String[] projection = {
                         SubstitutionColumns._ID,

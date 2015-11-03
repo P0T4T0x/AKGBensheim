@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:foreground="?attr/selectableItemBackground"
 
     card_view:cardUseCompatPadding="true"
     card_view:cardElevation="1.5dp"
@@ -58,10 +57,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
 
-            android:padding="4dp"
-
-            android:showDividers="middle"
-            android:divider="@color/material_blue_grey_950">
+            android:padding="4dp">
 
         </LinearLayout>
 

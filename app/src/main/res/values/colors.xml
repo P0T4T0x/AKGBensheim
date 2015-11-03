@@ -35,4 +35,5 @@
     <color name="subst_grey">#616161</color>
     <color name="subst_blueGrey">#455A64</color>
     <color name="divider">#B6B6B6</color>
+    <color name="windowBackground">#EEEEEE</color>
 </resources>

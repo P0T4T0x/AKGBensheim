@@ -50,8 +50,8 @@ public class ContactActivity extends OverlayActivity<ObservableScrollView> imple
 
     private static final float MAX_TEXT_SCALE_DELTA = 0.25f;
 
-    public static void startDetail(FragmentActivity activity, long id) {
-        Intent intent = new Intent(activity, ContactActivity.class);
+    public static void startDetail(FragmentActivity activity) {
+        Intent intent = createOverlayActivity(activity, ContactActivity.class);
         activity.startActivity(intent);
     }
 

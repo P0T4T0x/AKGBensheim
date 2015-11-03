@@ -1,9 +1,5 @@
 package de.tobiaserthal.akgbensheim.news;
 
-
-import android.accounts.Account;
-import android.content.ContentResolver;
-import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
@@ -11,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
@@ -23,34 +17,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tonicartos.superslim.LayoutManager;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.adapter.NewsAdapter;
-import de.tobiaserthal.akgbensheim.adapter.SubstAdapter;
 import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
 import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
+
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsColumns;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsSelection;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
-import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
-import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
-import de.tobiaserthal.akgbensheim.homework.HomeworkFragment;
-import de.tobiaserthal.akgbensheim.subst.SubstDetailActivity;
 import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class NewsFragment extends TabbedListFragment<NewsAdapter>
-        implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
-        SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+        implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     public static final String TAG = "NewsFragment";
 
@@ -64,25 +48,6 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
     public static final int ALL = 0x0;
     public static final int BOOKMARKED = 0x1;
 
-    private Object syncObserverHandle;
-    private final SyncStatusObserver syncStatusObserver = new SyncStatusObserver() {
-        @Override
-        public void onStatusChanged(int which) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Account account = AuthenticatorService.getAccount(SyncUtils.ACCOUNT_TYPE);
-                    boolean syncActive = ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
-                    boolean syncPending = ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
-
-                    boolean refresh = syncActive || syncPending;
-                    Log.d(TAG, "Status change detected. Refreshing: %b", refresh);
-                    refreshLayout.setRefreshing(refresh);
-                }
-            });
-        }
-    };
-
     private final Runnable initLoader = new Runnable() {
         @Override
         public void run() {
@@ -94,7 +59,6 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
 
     private int viewFlag;
     private String currentFilter;
-    private SwipeRefreshLayout refreshLayout;
 
     private String emptyText;
     private String emptyQueryText;
@@ -138,10 +102,6 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_news, container, false);
 
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
-        refreshLayout.setColorSchemeResources(R.color.primary, R.color.accent, R.color.primaryDark);
-        refreshLayout.setOnRefreshListener(this);
-
         // setup click listener
         getAdapter().setOnClickListener(new AdapterClickHandler() {
             @Override
@@ -181,32 +141,9 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        syncStatusObserver.onStatusChanged(0);
-        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING
-                | ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
-        syncObserverHandle = ContentResolver.addStatusChangeListener(mask, syncStatusObserver);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        if(syncObserverHandle != null) {
-            ContentResolver.removeStatusChangeListener(syncObserverHandle);
-            syncObserverHandle = null;
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         getHandler().removeCallbacks(initLoader);
         getAdapter().setOnClickListener(null);
-
-        refreshLayout.setOnRefreshListener(null);
-        refreshLayout = null;
 
         super.onDestroyView();
     }
@@ -260,12 +197,6 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "Resetting loader with id: %d", loader.getId());
         getAdapter().swapCursor(null);
-    }
-
-    @Override
-    public void onRefresh() {
-        Log.d(TAG, "Force refresh triggered!");
-        SyncUtils.triggerRefresh(SyncAdapter.SYNC.NEWS);
     }
 
     @Override

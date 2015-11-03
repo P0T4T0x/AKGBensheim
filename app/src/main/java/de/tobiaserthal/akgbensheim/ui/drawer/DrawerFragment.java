@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.MainNavigation;
+import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkColumns;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkSelection;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionColumns;
@@ -59,6 +60,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
      * expands it. This shared preference tracks this.
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
+    private static final String TAG = "DrawerFragment";
 
     /**
      * A pointer to the current navigation manager (parent activity).
@@ -358,10 +360,11 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(TAG, "Creating loader with id: %d", id);
         switch (id) {
             case 0: {
                 String[] projection = {"count(" + SubstitutionColumns._ID + ")"};
-                return SubstitutionSelection.getForm(9, "a", null).loader(getActivity(), projection);
+                return SubstitutionSelection.getForm(5, "a", null).loader(getActivity(), projection);
             }
 
             case 1: {
@@ -376,6 +379,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(TAG, "Loader finished with id: %d", loader.getId());
         switch (loader.getId()) {
             case 0:
                 if(data.moveToFirst()) {

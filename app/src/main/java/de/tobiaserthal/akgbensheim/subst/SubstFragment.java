@@ -1,9 +1,5 @@
 package de.tobiaserthal.akgbensheim.subst;
 
-import android.accounts.Account;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
@@ -11,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,8 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.tonicartos.superslim.LayoutManager;
 
 import java.lang.annotation.Retention;
@@ -32,23 +25,17 @@ import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.adapter.SubstAdapter;
 import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
 import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceKey;
 import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionColumns;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
-import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
-import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
 import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SubstFragment extends TabbedListFragment<SubstAdapter>
-        implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener,
-        SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+        implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     public static final String TAG = "SubstFragment";
 
@@ -63,28 +50,8 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     public static final int PHASE = 0x1;
     public static final int ALL = 0x2;
 
-    private Object syncObserverHandle;
-    private final SyncStatusObserver syncStatusObserver = new SyncStatusObserver() {
-        @Override
-        public void onStatusChanged(int which) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Account account = AuthenticatorService.getAccount(SyncUtils.ACCOUNT_TYPE);
-                    boolean syncActive = ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
-                    boolean syncPending = ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
-
-                    boolean refresh = syncActive || syncPending;
-                    Log.d(TAG, "Status change detected. Refreshing: %b", refresh);
-                    refreshLayout.setRefreshing(refresh);
-                }
-            });
-        }
-    };
-
     private int viewFlag;
     private String currentFilter;
-    private SwipeRefreshLayout refreshLayout;
 
     private String emptyText;
     private String emptyQueryText;
@@ -118,7 +85,6 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
         form = PreferenceProvider.getInstance(getActivity()).getSubstForm();
         subjects = PreferenceProvider.getInstance(getActivity()).getSubstSubjects();
 
-        System.out.println("FUUUUUUUUCK: " + form);
         getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, this);
     }
 
@@ -145,10 +111,6 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
         // Inflate layout
         View view = inflater.inflate(R.layout.fragment_subst, container, false);
 
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
-        refreshLayout.setColorSchemeResources(R.color.primary, R.color.accent, R.color.primaryDark);
-        refreshLayout.setOnRefreshListener(this);
-
         // set adapter
         getAdapter().setOnClickListener(new AdapterClickHandler() {
             @Override
@@ -167,9 +129,6 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
         // Create the layout manager
         LayoutManager manager = new LayoutManager(getActivity());
         setLayoutManager(manager);
-
-        // start loader
-        //getHandler().post(initLoader);
     }
 
     @Override
@@ -185,32 +144,8 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        syncStatusObserver.onStatusChanged(0);
-        final int mask = ContentResolver.SYNC_OBSERVER_TYPE_PENDING
-                | ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
-        syncObserverHandle = ContentResolver.addStatusChangeListener(mask, syncStatusObserver);
-}
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        if(syncObserverHandle != null) {
-            ContentResolver.removeStatusChangeListener(syncObserverHandle);
-            syncObserverHandle = null;
-        }
-    }
-
-    @Override
     public void onDestroyView() {
         getAdapter().setOnClickListener(null);
-
-        refreshLayout.setOnRefreshListener(null);
-        refreshLayout = null;
-
         super.onDestroyView();
     }
 
@@ -273,12 +208,6 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(TAG, "Resetting loader with id: %d", loader.getId());
         getAdapter().swapCursor(null);
-    }
-
-    @Override
-    public void onRefresh() {
-        Log.d(TAG, "Force refresh triggered!");
-        SyncUtils.triggerRefresh(SyncAdapter.SYNC.SUBSTITUTIONS);
     }
 
     @Override

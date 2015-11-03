@@ -1,6 +1,12 @@
 package de.tobiaserthal.akgbensheim.ui;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
@@ -14,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -27,10 +34,14 @@ import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
+import java.io.ByteArrayOutputStream;
+
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.Log;
+import de.tobiaserthal.akgbensheim.tools.ColorUtil;
 import de.tobiaserthal.akgbensheim.tools.ViewUtils;
 import de.tobiaserthal.akgbensheim.ui.base.ToolbarActivity;
+import de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView;
 
 public abstract class OverlayActivity<S extends View & Scrollable> extends ToolbarActivity
         implements TouchInterceptionFrameLayout.TouchInterceptionListener, ObservableScrollViewCallbacks {
@@ -39,6 +50,9 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
 
     private S scrollable;
     private ScrollState state;
+
+    private FrameLayout containerView;
+    private BackdropImageView backdropImageView;
     private TouchInterceptionFrameLayout frameLayout;
 
     private VelocityTracker velocityTracker;
@@ -46,7 +60,6 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
     private float initialY;
     private float movedDistanceY;
 
-    private int scrimColor;
     private int fromStatusBarColor;
     private int toStatusBarColor;
     private boolean fromSavedInstanceState;
@@ -57,6 +70,39 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
     private static final Interpolator ENTER_INTERPOLATOR = new LinearOutSlowInInterpolator();
     private static final Interpolator EXIT_INTERPOLATOR = new DecelerateInterpolator();
     private static final ArgbEvaluator ARGB_EVALUATOR = new ArgbEvaluator();
+
+    public static <T extends OverlayActivity<?>> Intent createOverlayActivity(Activity activity, Class<T> clazz) {
+        Intent startIntent = new Intent(activity, clazz);
+        View root = activity.findViewById(android.R.id.content);
+
+        Rect clipRect = new Rect();
+        activity.getWindow().getDecorView()
+                .getWindowVisibleDisplayFrame(clipRect);
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                root.getWidth(),
+                root.getHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawRGB(0xEE, 0xEE, 0xEE);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            canvas.translate(0, -clipRect.top / 2);
+            canvas.clipRect(clipRect);
+        }
+        root.draw(canvas);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+
+        byte[] data = stream.toByteArray();
+        startIntent.putExtra("bgBitmap", data);
+
+        Log.d(TAG, "Rendered background image with size of %d bytes.", data.length);
+        return startIntent;
+    }
 
     private final Runnable runEnterAnim = new Runnable() {
         @Override
@@ -79,19 +125,19 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
                     }
                 });
 
-                ValueAnimator animator2 = ValueAnimator.ofObject(ARGB_EVALUATOR, fromStatusBarColor, toStatusBarColor);
+                ValueAnimator animator2 = ValueAnimator.ofFloat(0, 1);
                 animator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        setStatusBarColor((Integer) animation.getAnimatedValue());
+                        setScrimTo((Float) animation.getAnimatedValue());
                     }
                 });
 
-                ValueAnimator animator3 = ValueAnimator.ofFloat(0, 1);
+                ValueAnimator animator3 = ValueAnimator.ofObject(ARGB_EVALUATOR, fromStatusBarColor, toStatusBarColor);
                 animator3.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        setScrimTo((Float) animation.getAnimatedValue());
+                        setStatusBarColor((Integer) animation.getAnimatedValue());
                     }
                 });
 
@@ -120,11 +166,35 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
-        setScrimColor(R.color.dim_background);
+
+        byte[] byteArray = getIntent().getByteArrayExtra("bgBitmap");
+        Bitmap screenshot = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        if(screenshot == null) {
+            throw new IllegalArgumentException("You have to provide a valid bitmap!");
+        }
+
+        containerView = new FrameLayout(this);
+        containerView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+
+        backdropImageView = new BackdropImageView(this);
+
+        backdropImageView.setFactor(1.125f);
+        backdropImageView.setScrimColor(Color.BLACK);
+        backdropImageView.setImageBitmap(screenshot);
+        backdropImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        containerView.addView(backdropImageView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
 
         frameLayout = new TouchInterceptionFrameLayout(this);
         frameLayout.setScrollInterceptionListener(this);
-        frameLayout.setLayoutParams(new FrameLayout.LayoutParams(
+
+        containerView.addView(frameLayout, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
@@ -167,10 +237,6 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
         snapToBottom();
     }
 
-    public void setScrimColor(@ColorRes int colorRes) {
-        scrimColor = getResources().getColor(colorRes);
-    }
-
     @Override
     public void setContentView(int resId) {
         if(frameLayout == null)
@@ -180,7 +246,7 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
         View view = getLayoutInflater().inflate(resId, frameLayout, true);
         view.setVisibility(View.INVISIBLE);
 
-        super.setContentView(frameLayout);
+        super.setContentView(containerView);
         ScrollUtils.addOnGlobalLayoutListener(frameLayout, runEnterAnim);
     }
 
@@ -207,7 +273,7 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
         frameLayout.removeAllViews();
         frameLayout.addView(contentView);
 
-        super.setContentView(frameLayout);
+        super.setContentView(containerView);
         ScrollUtils.addOnGlobalLayoutListener(frameLayout, runEnterAnim);
     }
 
@@ -337,8 +403,7 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
     }
 
     private void setScrimTo(float fraction) {
-        int color = ColorUtils.setAlphaComponent(scrimColor, (int) (fraction * 0xFF));
-        setBackgroundColor(color);
+        backdropImageView.setProgress((int) (fraction * (-getScreenHeight())), fraction);
     }
 
     private void setStatusBarTo(float fraction) {
@@ -378,10 +443,6 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
         animatorSet.setDuration(ANIMATION_DURATION);
         animatorSet.setInterpolator(ENTER_INTERPOLATOR);
         animatorSet.start();
-    }
-
-    private void setBackgroundColor(int color) {
-        getWindow().getDecorView().setBackgroundColor(color);
     }
 
     private void setStatusBarColor(int color) {
@@ -449,7 +510,7 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
                 onEndExitAnimation();
 
                 OverlayActivity.super.finish();
-                overridePendingTransition(0, 0);
+                overridePendingTransition(0, R.anim.abc_fade_out);
             }
 
             @Override

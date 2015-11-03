@@ -14,23 +14,28 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import java.lang.ref.WeakReference;
 
 import de.tobiaserthal.akgbensheim.R;
+import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.tools.ViewUtils;
 
 /**
  * A simple fragment wrapper that helps you to create fragments with the ability to manage the
  * parent activity's toolbar by adding a header view or animating it.
  */
+// FIXME: header sometimes not animating in position
 public abstract class ToolbarFragment extends Fragment {
     private static final int INTERNAL_CONTENT_VIEW_ID = 0x000000;
     private static final int INTERNAL_HEADER_VIEW_ID = 0x000001;
+    private static final String TAG = "TabbedFragment";
 
     /* private pointer */
+    private ValueAnimator toolbarAnimator;
     private WeakReference<Toolbar> toolbar;
     private View headerView;
     private View contentView;
@@ -111,6 +116,10 @@ public abstract class ToolbarFragment extends Fragment {
         ensureToolbar();
         ensureHeader();
         ensureContent();
+
+        if(savedInstanceState == null) {
+            showToolbar(false);
+        }
     }
 
     @Override
@@ -237,9 +246,9 @@ public abstract class ToolbarFragment extends Fragment {
      */
     public void setToolbarTranslation(float translation) {
         float transY = ScrollUtils.getFloat(translation, -getToolbar().getHeight(), 0);
+        onToolbarMoved(transY);
 
-        ViewPropertyAnimator.animate(getHeaderView()).cancel();
-        ViewPropertyAnimator.animate(getToolbar()).cancel();
+        prepareAnimator();
         ViewHelper.setTranslationY(getHeaderView(), transY);
         ViewHelper.setTranslationY(getToolbar(), transY);
     }
@@ -252,9 +261,9 @@ public abstract class ToolbarFragment extends Fragment {
         if(!animated) {
             float headerTranslationY = ViewHelper.getTranslationY(getToolbar());
             if(headerTranslationY != 0) {
-                ViewPropertyAnimator.animate(getToolbar()).cancel();
-                ViewPropertyAnimator.animate(getHeaderView()).cancel();
+                onToolbarMoved(0);
 
+                prepareAnimator();
                 ViewHelper.setTranslationY(getToolbar(), 0);
                 ViewHelper.setTranslationY(getHeaderView(), 0);
             }
@@ -273,9 +282,9 @@ public abstract class ToolbarFragment extends Fragment {
             float headerTranslationY = ViewHelper.getTranslationY(getToolbar());
             int toolbarHeight = getToolbar().getHeight();
             if (headerTranslationY != -toolbarHeight) {
-                ViewPropertyAnimator.animate(getToolbar()).cancel();
-                ViewPropertyAnimator.animate(getHeaderView()).cancel();
+                onToolbarMoved(-toolbarHeight);
 
+                prepareAnimator();
                 ViewHelper.setTranslationY(getToolbar(), -toolbarHeight);
                 ViewHelper.setTranslationY(getHeaderView(), -toolbarHeight);
             }
@@ -289,13 +298,14 @@ public abstract class ToolbarFragment extends Fragment {
      * Animate the toolbar and header back into the visible view area
      */
     public void showToolbar() {
+        Log.d(TAG, "showToolbar()");
+
         float headerTranslationY = ViewHelper.getTranslationY(getToolbar());
         if(headerTranslationY != 0) {
-            ViewPropertyAnimator.animate(getToolbar()).cancel();
-            ViewPropertyAnimator.animate(getToolbar()).translationY(0).setDuration(toolbarAnimMillis).start();
+            prepareAnimator();
 
-            ViewPropertyAnimator.animate(getHeaderView()).cancel();
-            ViewPropertyAnimator.animate(getHeaderView()).translationY(0).setDuration(toolbarAnimMillis).start();
+            toolbarAnimator.setFloatValues(headerTranslationY, 0);
+            toolbarAnimator.start();
         }
     }
 
@@ -303,14 +313,15 @@ public abstract class ToolbarFragment extends Fragment {
      * Animate the toolbar and header out of the visible view area
      */
     public void hideToolbar() {
+        Log.d(TAG, "hideToolbar()");
+
         float headerTranslationY = ViewHelper.getTranslationY(getToolbar());
         int toolbarHeight = getToolbar().getHeight();
         if(headerTranslationY != -toolbarHeight) {
-            ViewPropertyAnimator.animate(getToolbar()).cancel();
-            ViewPropertyAnimator.animate(getToolbar()).translationY(-toolbarHeight).setDuration(toolbarAnimMillis).start();
+            prepareAnimator();
 
-            ViewPropertyAnimator.animate(getHeaderView()).cancel();
-            ViewPropertyAnimator.animate(getHeaderView()).translationY(-toolbarHeight).setDuration(toolbarAnimMillis).start();
+            toolbarAnimator.setFloatValues(headerTranslationY, -toolbarHeight);
+            toolbarAnimator.start();
         }
     }
 
@@ -340,5 +351,28 @@ public abstract class ToolbarFragment extends Fragment {
      */
     public boolean toolbarIsHidden() {
         return ViewHelper.getTranslationY(getToolbar()) <= -getToolbar().getHeight();
+    }
+
+    private void prepareAnimator() {
+        if(toolbarAnimator == null) {
+            toolbarAnimator = new ValueAnimator();
+            toolbarAnimator.setDuration(toolbarAnimMillis);
+            toolbarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float translationY = (float) animation.getAnimatedValue();
+                    ViewHelper.setTranslationY(getHeaderView(), translationY);
+                    ViewHelper.setTranslationY(getToolbar(), translationY);
+
+                    onToolbarMoved(translationY);
+                }
+            });
+        } else {
+            toolbarAnimator.cancel();
+        }
+    }
+
+    public void onToolbarMoved(float translationY) {
+        // empty
     }
 }

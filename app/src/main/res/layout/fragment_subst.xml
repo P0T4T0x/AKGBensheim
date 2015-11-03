@@ -3,22 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout"
+    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+        android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
 
-        <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            android:paddingTop="?attr/actionBarSize"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:clipToPadding="false"/>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:paddingTop="?attr/actionBarSize"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:clipToPadding="false"/>
 
     <TextView
         android:id="@android:id/empty"
@@ -30,5 +23,4 @@
         android:gravity="center"
         android:drawableTop="@drawable/ic_drawer_clipboard_alert"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
 </FrameLayout>

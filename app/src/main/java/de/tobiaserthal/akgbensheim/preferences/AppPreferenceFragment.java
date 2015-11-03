@@ -2,6 +2,7 @@ package de.tobiaserthal.akgbensheim.preferences;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 
 import com.github.machinarius.preferencefragment.PreferenceFragment;
@@ -20,7 +21,7 @@ public class AppPreferenceFragment extends PreferenceFragment
     private NavigationCallback listener;
 
     private Preference phaseSetting;
-    private Preference formSetting;
+    private ListPreference formSetting;
     private Preference subjectSetting;
     private Preference colorSettings;
 
@@ -52,7 +53,7 @@ public class AppPreferenceFragment extends PreferenceFragment
 
         // get preferences
         phaseSetting = findPreference(keys.getKeyPhase());
-        formSetting = findPreference(keys.getKeyForm());
+        formSetting = (ListPreference) findPreference(keys.getKeyForm());
         subjectSetting = findPreference(keys.getKeySubjectFilter());
         colorSettings = findPreference(keys.getKeySubstColorSettings());
 
@@ -100,6 +101,22 @@ public class AppPreferenceFragment extends PreferenceFragment
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
+        final String key = preference.getKey();
+        final PreferenceKey keys = PreferenceKey.getInstance(getActivity());
+
+        if(key.equals(keys.getKeyPhase())) {
+            phaseSetting.setSummary((String) newValue);
+
+            int value = Integer.valueOf((String) newValue);
+            if(value > 9) {
+                formSetting.setEnabled(false);
+                formSetting.setValueIndex(0);
+            } else {
+                formSetting.setEnabled(true);
+                formSetting.setValueIndex(1);
+            }
+        }
+
         return true;
     }
 

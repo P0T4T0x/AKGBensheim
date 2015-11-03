@@ -43,6 +43,7 @@ public class TabbedHostFragment extends ToolbarFragment {
 
     private static final int FLOW_TAB_BOUNDARY = 3;
 
+    private int tabHeight;
     private boolean pagerShown;
     private CacheFragmentStatePagerAdapter adapter;
     private FragmentManager retainedFragmentManager;
@@ -170,8 +171,8 @@ public class TabbedHostFragment extends ToolbarFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         if (retainedFragmentManager != null) {
             //restore the last retained child fragment manager to the new
@@ -208,6 +209,7 @@ public class TabbedHostFragment extends ToolbarFragment {
         pageTitles.addAll(titles);
         pageArgs.addAll(args);
 
+        tabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
         if(pageTitles.isEmpty() || pageArgs.isEmpty()) {
             throw new IllegalStateException("No page titles or arguments passed!");
         }
@@ -301,9 +303,7 @@ public class TabbedHostFragment extends ToolbarFragment {
         ViewCompat.setPaddingRelative(tabLayout, padding, 0, padding, 0);
 
         tabLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                getResources().getDimensionPixelSize(R.dimen.tab_height)
-        ));
+                ViewGroup.LayoutParams.MATCH_PARENT, tabHeight));
 
         return tabLayout;
     }
@@ -368,6 +368,14 @@ public class TabbedHostFragment extends ToolbarFragment {
     public TabLayout getTabLayout() {
         ensureTabs();
         return tabLayout;
+    }
+
+    public int getTabHeight() {
+        if(tabLayout == null) {
+            return tabHeight;
+        }
+
+        return tabLayout.getHeight();
     }
 
     private void ensurePager() {

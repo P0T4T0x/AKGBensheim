@@ -10,14 +10,19 @@ import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import de.tobiaserthal.akgbensheim.contact.ContactActivity;
 import de.tobiaserthal.akgbensheim.event.EventFragment;
+import de.tobiaserthal.akgbensheim.event.EventHostFragment;
 import de.tobiaserthal.akgbensheim.foodplan.FoodPlanFragment;
 import de.tobiaserthal.akgbensheim.homework.HomeworkFragment;
 import de.tobiaserthal.akgbensheim.homework.HomeworkHostFragment;
 import de.tobiaserthal.akgbensheim.news.NewsFragment;
+import de.tobiaserthal.akgbensheim.news.NewsHostFragment;
 import de.tobiaserthal.akgbensheim.preferences.SettingsActivity;
 import de.tobiaserthal.akgbensheim.subst.SubstFragment;
+import de.tobiaserthal.akgbensheim.subst.SubstHostFragment;
 import de.tobiaserthal.akgbensheim.teacher.TeacherFragment;
+import de.tobiaserthal.akgbensheim.teacher.TeacherHostFragment;
 import de.tobiaserthal.akgbensheim.ui.drawer.DrawerCallbacks;
 import de.tobiaserthal.akgbensheim.ui.drawer.DrawerFragment;
 import de.tobiaserthal.akgbensheim.ui.base.ToolbarActivity;
@@ -84,8 +89,8 @@ public class MainActivity extends ToolbarActivity implements MainNavigation {
             }
 
             case FRAGMENT_SUBSTITUTION: {
-                return TabbedHostFragment.Builder
-                        .withClass(SubstFragment.class)
+                return SubstHostFragment.Builder
+                        .withDefault()
                         .addPage(getString(R.string.subst_tab_form), SubstFragment.createArgs(SubstFragment.FORM))
                         .addPage(getString(R.string.subst_tab_phase), SubstFragment.createArgs(SubstFragment.PHASE))
                         .addPage(getString(R.string.subst_tab_all), SubstFragment.createArgs(SubstFragment.ALL))
@@ -105,24 +110,24 @@ public class MainActivity extends ToolbarActivity implements MainNavigation {
             }
 
             case FRAGMENT_EVENT: {
-                return TabbedHostFragment.Builder
-                        .withClass(EventFragment.class)
+                return EventHostFragment.Builder
+                        .withDefault()
                         .addPage(getString(R.string.event_tab_coming), EventFragment.createArgs(EventFragment.COMING))
                         .addPage(getString(R.string.event_tab_over), EventFragment.createArgs(EventFragment.OVER))
                         .build();
             }
 
             case FRAGMENT_NEWS: {
-                return TabbedHostFragment.Builder
-                        .withClass(NewsFragment.class)
+                return NewsHostFragment.Builder
+                        .withDefault()
                         .addPage(getString(R.string.news_tab_all), NewsFragment.createArgs(NewsFragment.ALL))
                         .addPage(getString(R.string.news_tab_bookmarks), NewsFragment.createArgs(NewsFragment.BOOKMARKED))
                         .build();
             }
 
             case FRAGMENT_TEACHER: {
-                return TabbedHostFragment.Builder
-                        .withClass(TeacherFragment.class)
+                return TeacherHostFragment.Builder
+                        .withDefault()
                         .addPage(getString(R.string.teacher_tab_teachers), TeacherFragment.createArgs(TeacherFragment.TEACHER))
                         .addPage(getString(R.string.teacher_tab_student_teachers), TeacherFragment.createArgs(TeacherFragment.STUDENT_TEACHER))
                         .build();
@@ -161,6 +166,7 @@ public class MainActivity extends ToolbarActivity implements MainNavigation {
                 break;
 
             case ACTIVITY_CONTACT:
+                ContactActivity.startDetail(this);
                 break;
 
             case ACTIVITY_SETTINGS:
