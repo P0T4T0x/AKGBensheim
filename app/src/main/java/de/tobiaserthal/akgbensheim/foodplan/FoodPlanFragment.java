@@ -12,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +50,9 @@ public class FoodPlanFragment extends ToolbarFragment
 
     private boolean syncing;
     private int backgroundColor;
+
+    private View emptyView;
+    private ReaderView readerView;
 
     private static final int HIDE_DURATION = 2000;
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -109,7 +113,7 @@ public class FoodPlanFragment extends ToolbarFragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        backgroundColor = ContextCompat.getColor(getActivity(), R.color.background_material_light);
+        backgroundColor = ContextCompat.getColor(getActivity(), R.color.background_light);
     }
 
     @Override
@@ -147,30 +151,42 @@ public class FoodPlanFragment extends ToolbarFragment
         return (TabLayout) getHeaderContent();
     }
 
-    private ReaderView getReaderView() {
-        return (ReaderView) getContentView();
-    }
-
     @Override
     public View onCreateContentView(LayoutInflater inflater, ViewGroup container,
                                     Bundle savedInstanceState) {
 
+        View root = inflater.inflate(R.layout.fragment_food_plan, container, false);
+
+        /*
+        FrameLayout frameLayout = new FrameLayout(container.getContext());
+        frameLayout.setLayoutParams(new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
         ReaderView readerView = new ReaderView(container.getContext());
-        readerView.setId(android.R.id.tabcontent);
+        readerView.setId(R.id.pdfReader);
 
         readerView.getPlugPDFDisplay().setBackgroundColor(backgroundColor);
         readerView.setReaderListener(this);
 
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+        frameLayout.addView(readerView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
-        );
+        ));
+
 
         int topMargin = getResources().getDimensionPixelSize(R.dimen.tab_height);
-        params.setMargins(0, topMargin, 0, 0);
-        readerView.setLayoutParams(params);
+        ViewCompat.setPaddingRelative(frameLayout, 0, topMargin, 0, 0);
+        */
 
-        return readerView;
+        readerView = (ReaderView) root.findViewById(R.id.pdfReader);
+        readerView.getPlugPDFDisplay().setBackgroundColor(backgroundColor);
+        readerView.setReaderListener(this);
+
+        emptyView = root.findViewById(android.R.id.empty);
+        emptyView.setVisibility(View.INVISIBLE);
+
+        return root;
     }
 
     @Override
@@ -180,7 +196,7 @@ public class FoodPlanFragment extends ToolbarFragment
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt("currentPosition", getReaderView().getPageIdx());
+        outState.putInt("currentPosition", readerView.getPageIdx());
         super.onSaveInstanceState(outState);
     }
 
@@ -228,8 +244,8 @@ public class FoodPlanFragment extends ToolbarFragment
     public void onPause() {
         super.onPause();
 
-        getReaderView().removeCallbacks(hideBars);
-        getReaderView().removeCallbacks(showBars);
+        readerView.removeCallbacks(hideBars);
+        readerView.removeCallbacks(showBars);
         getActivity().unregisterReceiver(receiver);
     }
 
@@ -276,17 +292,24 @@ public class FoodPlanFragment extends ToolbarFragment
     @Override
     public void onLoadFinished(Loader<byte[]> loader, byte[] data) {
         if(data != null) {
-            getReaderView().openData(data, data.length, "");
-            getReaderView().getPlugPDFDisplay().setBackgroundColor(backgroundColor);
+            readerView.openData(data, data.length, "");
+            readerView.getPlugPDFDisplay().setBackgroundColor(backgroundColor);
 
             getTabLayout().removeAllTabs();
-            for(int i = 0; i < getReaderView().getPageCount(); i++) {
+            for(int i = 0; i < readerView.getPageCount(); i++) {
                 String title = MessageFormat.format(
                         getString(R.string.foodplan_tab_titles), i);
 
                 TabLayout.Tab tab = getTabLayout().newTab().setText(title);
                 getTabLayout().addTab(tab);
             }
+
+            readerView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.INVISIBLE);
+
+        } else {
+            emptyView.setVisibility(View.VISIBLE);
+            readerView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -300,9 +323,8 @@ public class FoodPlanFragment extends ToolbarFragment
     public void onDestroyView() {
         getTabLayout().setOnTabSelectedListener(null);
 
-        if (getReaderView() != null
-                && getReaderView().getDocument() != null) {
-            getReaderView().clear();
+        if (readerView != null && readerView.getDocument() != null) {
+            readerView.clear();
         }
 
         super.onDestroyView();
@@ -316,8 +338,9 @@ public class FoodPlanFragment extends ToolbarFragment
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-        if(getReaderView() != null)
-            getReaderView().goToPage(tab.getPosition());
+        if(readerView != null) {
+            readerView.goToPage(tab.getPosition());
+        }
     }
 
     @Override
@@ -328,8 +351,8 @@ public class FoodPlanFragment extends ToolbarFragment
 
     @Override
     public void onLoadFinish(DocumentState.OPEN open) {
-        getReaderView().removeCallbacks(hideBars);
-        getReaderView().postDelayed(hideBars, HIDE_DURATION);
+        readerView.removeCallbacks(hideBars);
+        readerView.postDelayed(hideBars, HIDE_DURATION);
     }
 
     @Override
@@ -337,17 +360,20 @@ public class FoodPlanFragment extends ToolbarFragment
 
     @Override
     public void onGoToPage(int index, int count) {
-        getTabLayout().getTabAt(index - 1).select();
+        TabLayout.Tab tab = getTabLayout().getTabAt(index - 1 );
+        if(tab != null) {
+            tab.select();
+        }
     }
 
     @Override
     public void onSingleTapUp(MotionEvent motionEvent) {
         if(toolbarIsShown()) {
-            getReaderView().removeCallbacks(hideBars);
-            getReaderView().post(hideBars);
+            readerView.removeCallbacks(hideBars);
+            readerView.post(hideBars);
         } else {
-            getReaderView().post(showBars);
-            getReaderView().postDelayed(hideBars, HIDE_DURATION);
+            readerView.post(showBars);
+            readerView.postDelayed(hideBars, HIDE_DURATION);
         }
     }
 
@@ -359,8 +385,8 @@ public class FoodPlanFragment extends ToolbarFragment
 
     @Override
     public void onScroll(int dX, int dY) {
-        getReaderView().removeCallbacks(hideBars);
-        getReaderView().post(hideBars);
+        readerView.removeCallbacks(hideBars);
+        readerView.post(hideBars);
     }
 
     @Override

@@ -19,6 +19,7 @@
         android:padding="4dp">
 
         <LinearLayout
+            android:id="@+id/home_list_header_layout"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

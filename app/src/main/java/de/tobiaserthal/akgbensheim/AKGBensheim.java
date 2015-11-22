@@ -1,6 +1,7 @@
 package de.tobiaserthal.akgbensheim;
 
 import android.app.Application;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import com.epapyrus.plugpdf.core.PlugPDF;
@@ -8,10 +9,13 @@ import com.epapyrus.plugpdf.core.PlugPDFException;
 
 import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.NetworkManager;
+import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
 
 public class AKGBensheim extends Application {
-    private final NetworkManager.NetworkChangeListener networkListener = new NetworkManager.NetworkChangeListener() {
+    private final NetworkManager.NetworkChangeReceiver networkChangeReceiver
+            = new NetworkManager.NetworkChangeReceiver() {
+
         @Override
         public void onNetworkAccessibilityChanged(boolean allowed) {
             if(!allowed) {
@@ -27,10 +31,14 @@ public class AKGBensheim extends Application {
 
         // Create sync account to bind pending syncs to
         // Perform initial sync if necessary
-        SyncUtils.createSyncAccount(this);
+        // SyncUtils.createSyncAccount(this);
 
         // Listen to network changes by subscribing a listener
-        NetworkManager.getInstance(this).addNetworkListener(networkListener);
+        NetworkManager.getInstance(this);
+        networkChangeReceiver.registerOn(this);
+
+        // Initialize Preference Manager
+        PreferenceProvider.getInstance(this);
 
         // Initialize PlugPDF
         try {
@@ -51,9 +59,12 @@ public class AKGBensheim extends Application {
     public void onLowMemory() {
         super.onLowMemory();
 
+        PreferenceProvider provider = PreferenceProvider.getInstance(this);
+        PreferenceProvider.destroyInstance(provider);
+
         // unregister Network Manager callbacks which might hold references to context objects
         NetworkManager manager = NetworkManager.getInstance(this);
-        manager.removeNetworkListener(networkListener);
+        networkChangeReceiver.unregisterFrom(this);
         NetworkManager.destroyInstance(manager);
     }
 }

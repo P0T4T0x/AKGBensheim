@@ -19,11 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 import com.nineoldandroids.view.ViewHelper;
 
@@ -32,9 +30,9 @@ import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
+import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
-import de.tobiaserthal.akgbensheim.tools.ColorUtil;
 import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
 
 public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
@@ -70,7 +68,7 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
     }
 
     public static void startDetail(FragmentActivity activity, long id) {
-        Intent intent = new Intent(activity, SubstDetailActivity.class);
+        Intent intent = createOverlayActivity(activity, SubstDetailActivity.class);
         intent.putExtra(EXTRA_PARAM_ID, id);
 
         activity.startActivity(intent);
@@ -203,8 +201,8 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
             return;
         }
 
-        setColorScheme(ColorUtil.getInstance(this)
-                .getColorFromSubstType(subst.getType()));
+        setColorScheme(PreferenceProvider.getInstance(this)
+                .getColorFromType(subst.getType()));
 
         headerTextView.setText(ModelUtils.summarize(subst));
         txtForm.setText(getResources().getString(R.string.subst_detail_form, subst.getFormKey()));

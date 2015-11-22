@@ -1,7 +1,7 @@
 package de.tobiaserthal.akgbensheim.ui.drawer;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,9 +24,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.ref.WeakReference;
+
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.MainNavigation;
 import de.tobiaserthal.akgbensheim.data.Log;
+import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkColumns;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkSelection;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionColumns;
@@ -84,16 +88,35 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     private boolean fromSavedInstanceState;
     private boolean userLearnedDrawer;
 
+    private ChangeReceiver preferenceChangeReceiver;
+    static class ChangeReceiver extends PreferenceProvider.PreferenceChangeReceiver {
+        private WeakReference<DrawerFragment> reference;
+
+        public ChangeReceiver(DrawerFragment fragment) {
+            reference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void onSubstPreferenceChange() {
+            DrawerFragment fragment = reference.get();
+            if(fragment != null) {
+                fragment.getLoaderManager().restartLoader(FRAGMENT_SUBSTITUTION, Bundle.EMPTY, fragment);
+            }
+        }
+    }
+
     public DrawerFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        getLoaderManager().initLoader(0, null, this);
-        getLoaderManager().initLoader(1, null, this);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mainNavigation = (MainNavigation) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Parent context must implement NavigationDrawerCallbacks.");
+        }
     }
 
     @Override
@@ -135,11 +158,15 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
         drawerAdapter.addSpecialItem(navMenuItemTitles[7], navMenuItemIcons.getResourceId(7, -1));
         drawerAdapter.addSpecialItem(navMenuItemTitles[8], navMenuItemIcons.getResourceId(8, -1));
 
-        drawerAdapter.setOnItemClickListener(this);
-
         navMenuItemIcons.recycle();
 
+        drawerAdapter.setOnItemClickListener(this);
         drawerAdapter.selectPosition(currentSelectedPosition);
+
+        preferenceChangeReceiver = new ChangeReceiver(this);
+        IntentFilter filter = new IntentFilter(PreferenceProvider.ACTION_SUBST);
+        LocalBroadcastManager.getInstance(getContext())
+                .registerReceiver(preferenceChangeReceiver, filter);
     }
 
     @Override
@@ -155,6 +182,14 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         return recyclerView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getLoaderManager().initLoader(FRAGMENT_SUBSTITUTION, null, this);
+        getLoaderManager().initLoader(FRAGMENT_HOMEWORK, null, this);
     }
 
     /**
@@ -271,13 +306,16 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mainNavigation = (MainNavigation) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Parent context must implement NavigationDrawerCallbacks.");
-        }
+    public void onDestroy() {
+        getLoaderManager().destroyLoader(FRAGMENT_SUBSTITUTION);
+        getLoaderManager().destroyLoader(FRAGMENT_HOMEWORK);
+
+        // unregister listener
+        LocalBroadcastManager
+                .getInstance(getContext())
+                .unregisterReceiver(preferenceChangeReceiver);
+
+        super.onDestroy();
     }
 
     @Override
@@ -344,10 +382,6 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
                     mainNavigation.callNavigationExtra(ACTIVITY_FAQ);
                     break;
             }
-
-            if(drawerAdapter.getItem(position).isCheckable()) {
-                getActivity().setTitle(drawerAdapter.getItem(position).getTitle());
-            }
         }
     }
 
@@ -362,12 +396,17 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "Creating loader with id: %d", id);
         switch (id) {
-            case 0: {
+            case FRAGMENT_SUBSTITUTION: {
                 String[] projection = {"count(" + SubstitutionColumns._ID + ")"};
-                return SubstitutionSelection.getForm(5, "a", null).loader(getActivity(), projection);
+                SubstitutionSelection selection = SubstitutionSelection.getForm(
+                        PreferenceProvider.getInstance(getActivity()).getSubstPhase(),
+                        PreferenceProvider.getInstance(getActivity()).getSubstForm(),
+                        PreferenceProvider.getInstance(getActivity()).getSubstSubjects());
+
+                return selection.loader(getActivity(), projection);
             }
 
-            case 1: {
+            case FRAGMENT_HOMEWORK: {
                 String[] projection = {"count(" + HomeworkColumns._ID + ")"};
                 return HomeworkSelection.getTodo().loader(getActivity(), projection);
             }
@@ -381,14 +420,14 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "Loader finished with id: %d", loader.getId());
         switch (loader.getId()) {
-            case 0:
+            case FRAGMENT_SUBSTITUTION:
                 if(data.moveToFirst()) {
                     drawerAdapter.updateItemCount(1, data.getInt(0));
                 }
 
                 break;
 
-            case 1:
+            case FRAGMENT_HOMEWORK:
                 if(data.moveToFirst()) {
                     drawerAdapter.updateItemCount(3, data.getInt(0));
                 }
@@ -400,10 +439,10 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         switch (loader.getId()) {
-            case 0:
+            case FRAGMENT_SUBSTITUTION:
                 drawerAdapter.updateItemCount(1, 0);
                 break;
-            case 1:
+            case FRAGMENT_HOMEWORK:
                 drawerAdapter.updateItemCount(3, 0);
                 break;
         }

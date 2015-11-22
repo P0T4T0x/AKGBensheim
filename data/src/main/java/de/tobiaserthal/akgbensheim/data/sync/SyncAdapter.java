@@ -170,7 +170,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                           SyncResult syncResult, int start, int numOfSites) throws ApiError, RemoteException, OperationApplicationException {
         Log.i(TAG, "Computing update solution for news table...");
 
-        Log.i(TAG, "Parsing results from rest server..."); // TODO: check
+        Log.i(TAG, "Parsing results from rest server...");
         List<NewsResponse> entries = new ArrayList<>();
         for(int i = 0; i < numOfSites; i ++) {
             entries.addAll(RestServer.getNews(start + i * 10));

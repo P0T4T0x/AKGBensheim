@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -142,6 +143,7 @@ public class TabbedHostFragment extends ToolbarFragment {
             }
 
             lastState = state;
+            TabbedHostFragment.this.onPageScrollStateChanged(state);
         }
 
         @Override
@@ -293,10 +295,10 @@ public class TabbedHostFragment extends ToolbarFragment {
                         TabLayout.MODE_FIXED :
                         TabLayout.MODE_SCROLLABLE);
 
-        tabLayout.setBackgroundColor(getResources().getColor(R.color.primary));
+        tabLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.primary));
         tabLayout.setTabTextColors(
-                getResources().getColor(R.color.secondaryTextInverse),
-                getResources().getColor(R.color.primaryTextInverse)
+                ContextCompat.getColor(getActivity(), R.color.secondaryTextInverse),
+                ContextCompat.getColor(getActivity(), R.color.primaryTextInverse)
         );
 
         int padding = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
@@ -335,6 +337,10 @@ public class TabbedHostFragment extends ToolbarFragment {
     }
 
     public void onPageTransition(int fromPage, int toPage, float offset){
+        // empty body
+    }
+
+    public void onPageScrollStateChanged(int state) {
         // empty body
     }
 

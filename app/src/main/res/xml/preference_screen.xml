@@ -2,15 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/pref_category_subst">
-        <de.tobiaserthal.akgbensheim.preferences.IntEditTextPreference
+        <Preference
             android:key="@string/pref_key_subst_phase"
-            android:title="@string/pref_title_subst_phase"
-            android:numeric="integer"
-            android:maxLength="2"/>
-        <com.afollestad.materialdialogs.prefs.MaterialListPreference
+            android:title="@string/pref_title_subst_phase"/>
+        <Preference
             android:key="@string/pref_key_subst_form"
-            android:entries="@array/pref_subst_form_options"
-            android:entryValues="@array/pref_subst_form_options_values"
             android:title="@string/pref_title_subst_form" />
         <Preference
             android:key="@string/pref_key_subst_subject_settings"

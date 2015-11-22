@@ -19,9 +19,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
 
-        android:text="@string/subst_empty_text"
+        android:text="@string/news_empty_text"
         android:gravity="center"
-        android:drawableTop="@drawable/ic_drawer_clipboard_alert"
+        android:drawableTop="@drawable/ic_drawer_newspaper"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
 </FrameLayout>

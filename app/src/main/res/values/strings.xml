@@ -5,12 +5,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="fragment_title_home">Home</string>
-    <string name="fragment_title_subst">Substitutions</string>
-    <string name="fragment_title_food">Foodplan</string>
-    <string name="fragment_title_homework">Homework</string>
-    <string name="fragment_title_events">Events</string>
-    <string name="fragment_title_news">News</string>
-    <string name="fragment_title_teachers">Teachers</string>
+    <string name="fragment_title_subst">@string/model_title_subst</string>
+    <string name="fragment_title_food">@string/model_title_food</string>
+    <string name="fragment_title_homework">@string/model_title_homework</string>
+    <string name="fragment_title_events">@string/model_title_events</string>
+    <string name="fragment_title_news">@string/model_title_news</string>
+    <string name="fragment_title_teachers">@string/model_title_teachers</string>
     <string name="activity_title_settings">Settings</string>
     <string name="activity_title_faq">FAQ</string>
     <string name="options">Options</string>
@@ -88,4 +88,13 @@
     <string name="notify_network_unavailable">Could not connect! Check your network settings and retry.</string>
     <string name="retry">Retry</string>
     <string name="notify_foodplan_failed">Could not fetch the foodplan from server!</string>
+    <string name="home_list_subtitle_generic">{0, choice, 0#No item to show|1#1 Item to show|1&lt;{0} items to show}</string>
+    <string name="pref_prompt_clear_cache">Clearing the cache can save you some space, but can also cause missbehaviour.</string>
+    <string name="pref_prompt_clear_data">Clear the data diretory to get some free space. Keep in mind that you might have to download data like the foodplan again.</string>
+    <string name="pref_title_subst_sync_item_title">Synchronize %1$s</string>
+    <string name="pref_title_subst_sync_item_frequency">Frequency: %1$s</string>
+    <string name="pref_prompt_sync_frequency">Choose a frequency:</string>
+    <string name="news_empty_text">No news!</string>
+    <string name="foodplan_empty_text">Foodplan not available!</string>
+
 </resources>

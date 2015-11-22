@@ -9,9 +9,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -38,7 +36,6 @@ import java.io.ByteArrayOutputStream;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.tools.ColorUtil;
 import de.tobiaserthal.akgbensheim.tools.ViewUtils;
 import de.tobiaserthal.akgbensheim.ui.base.ToolbarActivity;
 import de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView;

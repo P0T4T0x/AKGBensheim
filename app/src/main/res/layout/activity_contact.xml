@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:paddingTop="@dimen/flexible_space_image_height"
         android:clipToPadding="false"
-        android:background="@color/background_material_light">
+        android:background="@color/background_light">
 
         <LinearLayout
             android:layout_width="match_parent"

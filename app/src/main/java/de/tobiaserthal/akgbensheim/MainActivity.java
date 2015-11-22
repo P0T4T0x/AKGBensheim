@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import de.tobiaserthal.akgbensheim.contact.ContactActivity;
+import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
 import de.tobiaserthal.akgbensheim.event.EventFragment;
 import de.tobiaserthal.akgbensheim.event.EventHostFragment;
 import de.tobiaserthal.akgbensheim.foodplan.FoodPlanFragment;
@@ -36,6 +37,8 @@ public class MainActivity extends ToolbarActivity implements MainNavigation {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SyncUtils.createSyncAccount(this);
 
         setToolbar((Toolbar) findViewById(R.id.toolbar));
 
@@ -144,16 +147,107 @@ public class MainActivity extends ToolbarActivity implements MainNavigation {
         Fragment fragment = getSupportFragmentManager()
                 .findFragmentByTag(String.valueOf(item));
 
-        if(fragment == null) {
-            fragment = createFragment(item);
+        CharSequence title;
+        switch (item) {
+            case FRAGMENT_HOME: {
+                if(fragment == null) {
+                    fragment = HomeFragment.newInstance();
+                }
+
+                title = getString(R.string.fragment_title_home);
+                break;
+            }
+
+            case FRAGMENT_SUBSTITUTION: {
+                if(fragment == null) {
+                    fragment = SubstHostFragment.Builder
+                            .withDefault()
+                            .addPage(getString(R.string.subst_tab_form), SubstFragment.createArgs(SubstFragment.FORM))
+                            .addPage(getString(R.string.subst_tab_phase), SubstFragment.createArgs(SubstFragment.PHASE))
+                            .addPage(getString(R.string.subst_tab_all), SubstFragment.createArgs(SubstFragment.ALL))
+                            .build();
+                }
+
+                title = getString(R.string.fragment_title_subst);
+                break;
+            }
+
+            case FRAGMENT_FOODPLAN: {
+                if(fragment == null) {
+                    fragment = FoodPlanFragment.newInstance();
+                }
+
+                title = getString(R.string.fragment_title_food);
+                break;
+            }
+
+            case FRAGMENT_HOMEWORK: {
+                if(fragment == null) {
+                    fragment = HomeworkHostFragment.Builder
+                            .withDefault()
+                            .addPage(getString(R.string.homework_tab_todo), HomeworkFragment.createArgs(HomeworkFragment.TODO, true))
+                            .addPage(getString(R.string.homework_tab_done), HomeworkFragment.createArgs(HomeworkFragment.DONE, false))
+                            .build();
+                }
+
+                title = getString(R.string.fragment_title_homework);
+                break;
+            }
+
+            case FRAGMENT_EVENT: {
+                if(fragment == null) {
+                    fragment = EventHostFragment.Builder
+                            .withDefault()
+                            .addPage(getString(R.string.event_tab_coming), EventFragment.createArgs(EventFragment.COMING))
+                            .addPage(getString(R.string.event_tab_over), EventFragment.createArgs(EventFragment.OVER))
+                            .build();
+                }
+
+                title = getString(R.string.fragment_title_events);
+                break;
+            }
+
+            case FRAGMENT_NEWS: {
+                if(fragment == null) {
+                    fragment = NewsHostFragment.Builder
+                            .withDefault()
+                            .addPage(getString(R.string.news_tab_all), NewsFragment.createArgs(NewsFragment.ALL))
+                            .addPage(getString(R.string.news_tab_bookmarks), NewsFragment.createArgs(NewsFragment.BOOKMARKED))
+                            .build();
+                }
+
+                title = getString(R.string.fragment_title_news);
+                break;
+            }
+
+            case FRAGMENT_TEACHER: {
+                if (fragment == null) {
+                    fragment = TeacherHostFragment.Builder
+                            .withDefault()
+                            .addPage(getString(R.string.teacher_tab_teachers), TeacherFragment.createArgs(TeacherFragment.TEACHER))
+                            .addPage(getString(R.string.teacher_tab_student_teachers), TeacherFragment.createArgs(TeacherFragment.STUDENT_TEACHER))
+                            .build();
+                }
+
+                title = getString(R.string.fragment_title_teachers);
+                break;
+            }
+
+            default: {
+                fragment = null;
+                title = getTitle().toString();
+                break;
+            }
         }
 
         if(fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container_main, fragment, String.valueOf(item))
-                            // .addToBackStack(String.valueOf(index))
+                    // .addToBackStack(String.valueOf(index))
                     .commit();
+
+            setTitle(title);
         }
     }
 

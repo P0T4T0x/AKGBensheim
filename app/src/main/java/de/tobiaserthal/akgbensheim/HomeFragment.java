@@ -1,10 +1,9 @@
 package de.tobiaserthal.akgbensheim;
 
 import android.accounts.Account;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SyncInfo;
+import android.content.IntentFilter;
 import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -13,14 +12,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.ref.WeakReference;
+
 import de.tobiaserthal.akgbensheim.adapter.HomeAdapter;
-import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
 import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.NetworkManager;
 import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
@@ -76,6 +77,31 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
         }
     };
 
+    static class ChangeReceiver extends PreferenceProvider.PreferenceChangeReceiver {
+        private WeakReference<HomeFragment> reference;
+
+        public ChangeReceiver(HomeFragment fragment) {
+            reference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void onColorPreferenceChange() {
+            HomeFragment fragment = reference.get();
+            if(fragment != null) {
+                fragment.getAdapter().notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onSubstPreferenceChange() {
+            HomeFragment fragment = reference.get();
+            if(fragment != null) {
+                fragment.getLoaderManager().restartLoader(FRAGMENT_SUBSTITUTION, Bundle.EMPTY, fragment);
+            }
+        }
+    }
+
+    private ChangeReceiver preferenceChangeReceiver;
     private SwipeRefreshLayout swipeRefreshLayout;
     private MainNavigation mainNavigation;
 
@@ -107,16 +133,23 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
         adapter.setCallbacks(this);
 
         setAdapter(adapter);
+
+        // listen for preference changes
+        preferenceChangeReceiver = new ChangeReceiver(this);
+        IntentFilter filter = new IntentFilter(PreferenceProvider.ACTION_SUBST);
+        LocalBroadcastManager
+                .getInstance(getContext())
+                .registerReceiver(preferenceChangeReceiver, filter);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(FRAGMENT_SUBSTITUTION, Bundle.EMPTY, HomeFragment.this);
-        getLoaderManager().initLoader(FRAGMENT_HOMEWORK, Bundle.EMPTY, HomeFragment.this);
-        getLoaderManager().initLoader(FRAGMENT_EVENT, Bundle.EMPTY, HomeFragment.this);
-        getLoaderManager().initLoader(FRAGMENT_NEWS, Bundle.EMPTY, HomeFragment.this);
+        getLoaderManager().initLoader(FRAGMENT_SUBSTITUTION, Bundle.EMPTY, this);
+        getLoaderManager().initLoader(FRAGMENT_HOMEWORK, Bundle.EMPTY, this);
+        getLoaderManager().initLoader(FRAGMENT_EVENT, Bundle.EMPTY, this);
+        getLoaderManager().initLoader(FRAGMENT_NEWS, Bundle.EMPTY, this);
     }
 
     @Override
@@ -182,6 +215,11 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
         getLoaderManager().destroyLoader(FRAGMENT_EVENT);
         getLoaderManager().destroyLoader(FRAGMENT_NEWS);
 
+        // unregister listener
+        LocalBroadcastManager
+                .getInstance(getContext())
+                .unregisterReceiver(preferenceChangeReceiver);
+
         super.onDestroy();
     }
 
@@ -197,7 +235,7 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
 
         boolean allowed = NetworkManager.getInstance(getActivity()).isAccessAllowed();
         if(allowed) {
-            SyncUtils.triggerRefresh(SyncAdapter.SYNC.NEWS | SyncAdapter.SYNC.EVENTS | SyncAdapter.SYNC.SUBSTITUTIONS);
+            SyncUtils.forceRefresh(SyncAdapter.SYNC.NEWS | SyncAdapter.SYNC.EVENTS | SyncAdapter.SYNC.SUBSTITUTIONS);
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_SHORT)

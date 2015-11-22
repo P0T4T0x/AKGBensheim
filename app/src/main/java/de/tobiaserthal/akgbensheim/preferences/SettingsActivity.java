@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -32,7 +33,7 @@ public class SettingsActivity extends ToolbarActivity
         }
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.primaryDark));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.primaryDark));
         }
 
         getSupportFragmentManager()

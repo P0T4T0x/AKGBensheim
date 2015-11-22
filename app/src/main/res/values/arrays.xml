@@ -23,24 +23,4 @@
         <item>@drawable/ic_drawer_settings</item>
         <item>@drawable/ic_drawer_help_circle</item>
     </array>
-
-    <array name="subst_colors">
-        <item>@color/subst_red</item>
-        <item>@color/subst_pink</item>
-        <item>@color/subst_purple</item>
-        <item>@color/subst_deepPurple</item>
-        <item>@color/subst_indigo</item>
-        <item>@color/subst_blue</item>
-        <item>@color/subst_lightBlue</item>
-        <item>@color/subst_cyan</item>
-        <item>@color/subst_teal</item>
-        <item>@color/subst_green</item>
-        <item>@color/subst_lightGreen</item>
-        <item>@color/subst_lime</item>
-        <item>@color/subst_orange</item>
-        <item>@color/subst_deepOrange</item>
-        <item>@color/subst_brown</item>
-        <item>@color/subst_grey</item>
-        <item>@color/subst_blueGrey</item>
-    </array>
 </resources>

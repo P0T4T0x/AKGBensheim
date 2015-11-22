@@ -19,26 +19,25 @@ import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
  * Created by tobiaserthal on 20.10.15.
  */
 public class NetworkManager {
-    private static final String TAG = "NetworkManager";
+    public static final String TAG = "NetworkManager";
+    public static final String ACTION_NETWORK = "de.tobiaserthal.akgbensheim.data.NetworkManager.ACTION_NETWORK";
 
     private Context context;
     private static NetworkManager instance;
     private ConnectivityManager connectivityManager;
-    private ArrayList<NetworkChangeListener> listeners;
 
     private final BroadcastReceiver networkReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, Intent data) {
             boolean allowed = isAccessAllowed();
 
-            for(int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onNetworkAccessibilityChanged(allowed);
-            }
+            Intent intent = new Intent(ACTION_NETWORK);
+            intent.putExtra("allowed", allowed);
+            ///context.sendBroadcast(intent);
         }
     };
 
     private NetworkManager(Context context) {
-        this.listeners = new ArrayList<>();
         this.context = context.getApplicationContext();
         this.connectivityManager = (ConnectivityManager) getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -57,16 +56,6 @@ public class NetworkManager {
 
     public Context getContext() {
         return context;
-    }
-
-    public void addNetworkListener(NetworkChangeListener listener) {
-        if(listener != null) {
-            listeners.add(listener);
-        }
-    }
-
-    public void removeNetworkListener(NetworkChangeListener listener) {
-        listeners.remove(listener);
     }
 
     public boolean isAccessAllowed() {
@@ -92,12 +81,25 @@ public class NetworkManager {
     public static void destroyInstance(NetworkManager manager) {
         if(manager != null) {
             manager.getContext().unregisterReceiver(manager.networkReceiver);
-            manager.listeners.clear();
         }
     }
 
+    public static class NetworkChangeReceiver extends BroadcastReceiver {
 
-    public interface NetworkChangeListener {
-        void onNetworkAccessibilityChanged(boolean allowed);
+        public void registerOn(Context context) {
+            IntentFilter intent = new IntentFilter(ACTION_NETWORK);
+            context.registerReceiver(this, intent);
+        }
+
+        public void unregisterFrom(Context context) {
+            context.unregisterReceiver(this);
+        }
+
+        @Override
+        public final void onReceive(Context context, Intent intent) {
+            onNetworkAccessibilityChanged(intent.getBooleanExtra("allowed", false));
+        }
+
+        public void onNetworkAccessibilityChanged(boolean accessAllowed) {}
     }
 }

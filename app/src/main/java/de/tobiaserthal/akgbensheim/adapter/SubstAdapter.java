@@ -15,9 +15,9 @@ import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
 import de.tobiaserthal.akgbensheim.adapter.tools.BaseViewHolder;
 import de.tobiaserthal.akgbensheim.adapter.tools.SectionCursorAdapter;
+import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
 import de.tobiaserthal.akgbensheim.subst.SubstFragment;
-import de.tobiaserthal.akgbensheim.tools.ColorUtil;
 
 public class SubstAdapter extends SectionCursorAdapter<SubstitutionCursor, Date,
         SubstAdapter.ItemViewHolder, SubstAdapter.SectionViewHolder> {
@@ -130,8 +130,10 @@ public class SubstAdapter extends SectionCursorAdapter<SubstitutionCursor, Date,
             String type = cursor.getType();
             txtType.setText(type);
 
-            itemView.setTag(ColorUtil.getInstance(getContext()).getColorFromSubstType(type));
-            ((CardView) itemView).setCardBackgroundColor((Integer) itemView.getTag());
+            int color = PreferenceProvider.getInstance(getContext()).getColorFromType(type);
+
+            itemView.setTag(color);
+            ((CardView) itemView).setCardBackgroundColor(color);
         }
 
         @Override

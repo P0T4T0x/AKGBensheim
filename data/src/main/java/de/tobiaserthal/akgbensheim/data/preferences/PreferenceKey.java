@@ -74,59 +74,43 @@ public class PreferenceKey {
         return context.getString(R.string.pref_key_sync_settings);
     }
 
-    public String getKeyEventSyncEnabled() {
-        return context.getString(R.string.pref_key_event_sync_enabled);
-    }
-
-    public String getKeyEventSyncPeriod() {
-        return context.getString(R.string.pref_key_event_sync_period);
-    }
-
-    public long getDefaultEventSyncPeriod() {
-        return 24 * 60;
-    }
-
-    public String getKeyNewsSyncEnabled() {
-        return context.getString(R.string.pref_key_news_sync_enabled);
-    }
-
-    public String getKeyNewsSyncPeriod() {
-        return context.getString(R.string.pref_key_news_sync_period);
-    }
-
-    public long getDefaultNewsSyncPeriod() {
-        return 24 * 60;
-    }
-
-    public String getKeySubstSyncEnabled() {
-        return context.getString(R.string.pref_key_subst_sync_enabled);
-    }
-
-    public String getKeySubstSyncPeriod() {
-        return context.getString(R.string.pref_key_subst_sync_period);
-    }
-
-    public long getDefaultSubstSyncPeriod() {
-        return 30;
-    }
-
-    public String getKeyTeacherSyncEnabled() {
-        return context.getString(R.string.pref_key_teacher_sync_enabled);
-    }
-
-    public String getKeyTeacherSyncPeriod() {
-        return context.getString(R.string.pref_key_teacher_sync_period);
-    }
-
-    public long getDefaultTeacherSyncPeriod() {
-        return 7 * 24 * 60;
-    }
-
     public String getKeySubstSubjectSettings() {
         return context.getString(R.string.pref_key_subst_subject_settings);
     }
 
     public String getKeySubstColorSettings() {
         return context.getString(R.string.pref_key_subst_color_settings);
+    }
+
+    public String getKeyColorSubst() {
+        return context.getString(R.string.pref_key_subst_color_subst);
+    }
+
+    public String getKeyColorChange() {
+        return context.getString(R.string.pref_key_subst_color_change);
+    }
+
+    public String getKeyColorReserv() {
+        return context.getString(R.string.pref_key_subst_color_reserv);
+    }
+
+    public String getKeyColorCancel() {
+        return context.getString(R.string.pref_key_subst_color_cancel);
+    }
+
+    public String getKeyColorSpecial() {
+        return context.getString(R.string.pref_key_subst_color_special);
+    }
+
+    public String getKeyColorRoomSubst() {
+        return context.getString(R.string.pref_key_subst_color_roomSubst);
+    }
+
+    public String getKeyColorShift() {
+        return context.getString(R.string.pref_key_subst_color_shift);
+    }
+
+    public String getKeyColorOther() {
+        return context.getString(R.string.pref_key_subst_color_other);
     }
 }

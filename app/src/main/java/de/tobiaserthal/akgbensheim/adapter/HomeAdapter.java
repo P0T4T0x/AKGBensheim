@@ -15,17 +15,18 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.HomeCallbacks;
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.Log;
+import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
 import de.tobiaserthal.akgbensheim.data.provider.event.EventCursor;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkCursor;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
-import de.tobiaserthal.akgbensheim.tools.ColorUtil;
 import de.tobiaserthal.akgbensheim.tools.FileUtils;
 
 import static de.tobiaserthal.akgbensheim.MainNavigation.NavigationItem;
@@ -42,6 +43,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
     private static final String TAG = "HomeAdapter";
 
     private SparseArrayCompat<Cursor> cursorList;
+
+    private Context context;
     private HomeCallbacks callbacks;
     private SimpleDateFormat todoDateFormat;
     private SimpleDateFormat eventDateFormat;
@@ -49,6 +52,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
     public HomeAdapter(Context context) {
         setHasStableIds(true);
 
+        this.context = context;
         this.cursorList = new SparseArrayCompat<>();
         this.todoDateFormat = new SimpleDateFormat(
                 context.getString(R.string.homework_todo_date_string), Locale.getDefault());
@@ -74,8 +78,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
         switch (holder.getItemViewType()) {
             case FRAGMENT_EVENT:
                 holder.bindTitle(R.string.fragment_title_events);
-                holder.bindSubtitle(cursor.getCount() + " items to show");
                 holder.bindCursor(EventCursor.wrap(cursor));
+                holder.bindSubtitle(
+                        MessageFormat.format(
+                                context.getString(R.string.home_list_subtitle_generic),
+                                cursor.getCount()
+                        )
+                );
                 break;
 
             case FRAGMENT_HOMEWORK:
@@ -85,8 +94,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
 
             case FRAGMENT_NEWS:
                 holder.bindTitle(R.string.fragment_title_news);
-                holder.bindSubtitle(cursor.getCount() + " items to show");
                 holder.bindCursor(NewsCursor.wrap(cursor));
+                holder.bindSubtitle(
+                        MessageFormat.format(
+                                context.getString(R.string.home_list_subtitle_generic),
+                                cursor.getCount()
+                        )
+                );
                 break;
 
             case FRAGMENT_SUBSTITUTION:
@@ -163,6 +177,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
 
         private TextView txtTitle;
         private TextView txtSubtitle;
+
+        private LinearLayout layHeader;
         private LinearLayout layItems;
 
         public CursorViewHolder(View itemView) {
@@ -170,9 +186,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
 
             txtTitle = (TextView) itemView.findViewById(R.id.home_list_item_title);
             txtSubtitle = (TextView) itemView.findViewById(R.id.home_list_item_subtitle);
-            layItems = (LinearLayout) itemView.findViewById(R.id.home_list_items_layout);
 
-            // TODO
+            layHeader = (LinearLayout) itemView.findViewById(R.id.home_list_header_layout);
+            layItems = (LinearLayout) itemView.findViewById(R.id.home_list_items_layout);
         }
 
         public void bindTitle(String title) {
@@ -181,6 +197,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
 
         public void bindTitle(@StringRes int stringRes) {
             txtTitle.setText(stringRes);
+            layHeader.setOnClickListener(this);
         }
 
         public void bindSubtitle(String subtitle) {
@@ -258,8 +275,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
                 TextView text2 = (TextView) listItem.findViewById(android.R.id.text2);
 
                 icon.setText(cursor.getLesson());
-                icon.setBackgroundColor(ColorUtil.getInstance(listItem.getContext())
-                        .getColorFromSubstType(cursor.getType()));
+                icon.setBackgroundColor(PreferenceProvider.getInstance(listItem.getContext())
+                        .getColorFromType(cursor.getType()));
 
                 text1.setText(cursor.getType());
                 text2.setText(listItem.getContext().getString(
@@ -278,12 +295,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
         @Override
         public void onClick(View v) {
             int type = getItemViewType();
-            long id = (long) v.getTag();
 
-            Log.d(TAG, "Sub item clicked for type: %d with id: %d", type, id);
-            if(callbacks != null) {
-                //noinspection ResourceType
-                callbacks.onSubItemClicked(type, id);
+            if(v.getTag() != null) {
+                long id = (long) v.getTag();
+
+                Log.d(TAG, "Sub item clicked for type: %d with id: %d", type, id);
+                if (callbacks != null) {
+                    //noinspection ResourceType
+                    callbacks.onSubItemClicked(type, id);
+                }
+            } else {
+                Log.d(TAG, "Item clicked for type: %d", type);
+                if(callbacks != null) {
+                    //noinspection ResourceType
+                    callbacks.onItemClicked(type);
+                }
             }
         }
     }

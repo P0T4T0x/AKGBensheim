@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="pref_subst_form_options">
-        <item>@string/option_none</item>
         <item>@string/pref_subst_form_option_a</item>
         <item>@string/pref_subst_form_option_b</item>
         <item>@string/pref_subst_form_option_c</item>
@@ -10,7 +9,6 @@
         <item>@string/pref_subst_form_option_s</item>
     </string-array>
     <string-array name="pref_subst_form_options_values">
-        <item></item>
         <item>a</item>
         <item>b</item>
         <item>c</item>
@@ -18,4 +16,72 @@
         <item>e</item>
         <item>s</item>
     </string-array>
+
+    <string-array name="pref_subst_phase_options">
+        <item>@string/pref_subst_phase_option_5</item>
+        <item>@string/pref_subst_phase_option_6</item>
+        <item>@string/pref_subst_phase_option_7</item>
+        <item>@string/pref_subst_phase_option_8</item>
+        <item>@string/pref_subst_phase_option_9</item>
+        <item>@string/pref_subst_phase_option_10</item>
+        <item>@string/pref_subst_phase_option_11</item>
+        <item>@string/pref_subst_phase_option_12</item>
+        <item>@string/pref_subst_phase_option_13</item>
+    </string-array>
+
+    <integer-array name="pref_subst_phase_options_values">
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+    </integer-array>
+
+    <string-array name="pref_subst_sync_frequency_options">
+        <item>@string/pref_subst_frequency_15m</item>
+        <item>@string/pref_subst_frequency_30m</item>
+        <item>@string/pref_subst_frequency_60m</item>
+        <item>@string/pref_subst_frequency_12h</item>
+        <item>@string/pref_subst_frequency_24h</item>
+        <item>@string/pref_subst_frequency_02d</item>
+        <item>@string/pref_subst_frequency_07d</item>
+        <item>@string/pref_subst_frequency_02w</item>
+        <item>@string/pref_subst_frequency_04w</item>
+    </string-array>
+
+    <integer-array name="pref_subst_sync_frequency_options_values">
+        <item>900</item>
+        <item>1800</item>
+        <item>3600</item>
+        <item>43200</item>
+        <item>86400</item>
+        <item>172800</item>
+        <item>604800</item>
+        <item>1209600</item>
+        <item>2419200</item>
+    </integer-array>
+
+    <array name="subst_colors">
+        <item>@color/subst_red</item>
+        <item>@color/subst_pink</item>
+        <item>@color/subst_purple</item>
+        <item>@color/subst_deepPurple</item>
+        <item>@color/subst_indigo</item>
+        <item>@color/subst_blue</item>
+        <item>@color/subst_lightBlue</item>
+        <item>@color/subst_cyan</item>
+        <item>@color/subst_teal</item>
+        <item>@color/subst_green</item>
+        <item>@color/subst_lightGreen</item>
+        <item>@color/subst_lime</item>
+        <item>@color/subst_orange</item>
+        <item>@color/subst_deepOrange</item>
+        <item>@color/subst_brown</item>
+        <item>@color/subst_grey</item>
+        <item>@color/subst_blueGrey</item>
+    </array>
 </resources>

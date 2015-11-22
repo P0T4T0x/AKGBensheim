@@ -1,11 +1,13 @@
 package de.tobiaserthal.akgbensheim.subst;
 
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -20,6 +22,7 @@ import com.tonicartos.superslim.LayoutManager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.adapter.SubstAdapter;
@@ -34,6 +37,7 @@ import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
+
 public class SubstFragment extends TabbedListFragment<SubstAdapter>
         implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
@@ -59,6 +63,36 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     private int phase;
     private String form;
     private String[] subjects;
+
+    private ChangeReceiver changeReceiver;
+
+    static class ChangeReceiver extends PreferenceProvider.PreferenceChangeReceiver {
+        private WeakReference<SubstFragment> reference;
+
+        public ChangeReceiver(SubstFragment fragment) {
+            reference = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void onColorPreferenceChange() {
+            SubstFragment fragment = reference.get();
+            if(fragment != null) {
+                fragment.getAdapter().notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onSubstPreferenceChange() {
+            SubstFragment fragment = reference.get();
+            if(fragment != null) {
+                fragment.phase = PreferenceProvider.getInstance(fragment.getActivity()).getSubstPhase();
+                fragment.form = PreferenceProvider.getInstance(fragment.getActivity()).getSubstForm();
+                fragment.subjects = PreferenceProvider.getInstance(fragment.getActivity()).getSubstSubjects();
+
+                fragment.getLoaderManager().restartLoader(fragment.viewFlag, Bundle.EMPTY, fragment);
+            }
+        }
+    }
 
     /**
      * Creates a new bundle you can pass to a instance of this fragment during
@@ -102,6 +136,13 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
 
         // Create the adapter
         setAdapter(new SubstAdapter(getActivity(), null, viewFlag));
+
+        // listen for preference changes
+        changeReceiver = new ChangeReceiver(this);
+        IntentFilter filter = new IntentFilter(PreferenceProvider.ACTION_SUBST);
+        LocalBroadcastManager
+                .getInstance(getContext())
+                .registerReceiver(changeReceiver, filter);
     }
 
     @Override
@@ -152,6 +193,12 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     @Override
     public void onDestroy() {
         getLoaderManager().destroyLoader(viewFlag);
+
+        // unregister the receiver
+        LocalBroadcastManager
+                .getInstance(getContext())
+                .unregisterReceiver(changeReceiver);
+
         super.onDestroy();
     }
 

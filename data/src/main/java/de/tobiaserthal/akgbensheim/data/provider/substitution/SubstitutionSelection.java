@@ -33,6 +33,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.base.AbstractSelection;
 
 /**
@@ -64,14 +65,13 @@ public class SubstitutionSelection extends AbstractSelection<SubstitutionSelecti
         calendar.set(Calendar.SECOND, 0);
 
         Date today = calendar.getTime();
-
         calendar.add(Calendar.DATE, 1);
-
         Date tomorrow = calendar.getTime();
 
-        return getAll()
+        return and().openParen()
                 .substDateAfterEq(today).and()
-                .substDateBefore(tomorrow);
+                .substDateBefore(tomorrow)
+                .closeParen();
     }
 
     /**
@@ -124,7 +124,7 @@ public class SubstitutionSelection extends AbstractSelection<SubstitutionSelecti
     public static SubstitutionSelection getForm(int phase, String form, String[] lessons) {
         SubstitutionSelection selection = getPhase(phase);
 
-        if(!TextUtils.isEmpty(form)) {
+        if(phase < PreferenceProvider.getSubstPhaseSek2()) {
             selection.and().formKeyContains(form);
         }
 

@@ -57,7 +57,7 @@ public class TeacherHostFragment extends TabbedHostFragment {
 
             boolean allowed = NetworkManager.getInstance(getActivity()).isAccessAllowed();
             if(allowed) {
-                SyncUtils.triggerRefresh(SyncAdapter.SYNC.TEACHERS);
+                SyncUtils.forceRefresh(SyncAdapter.SYNC.TEACHERS);
             } else {
                 refreshLayout.setRefreshing(false);
                 Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_SHORT)
@@ -132,10 +132,9 @@ public class TeacherHostFragment extends TabbedHostFragment {
     }
 
     @Override
-    public void onPageSelected(int position) {
+    public void onPageScrollStateChanged(int state) {
         ensureRefreshLayout();
-        //refreshLayout.setSwipeableChildren(android.R.id.list, android.R.id.empty);
-        //refreshListener.onRefresh();
+        refreshLayout.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
     }
 
     private void ensureRefreshLayout() {

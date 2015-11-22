@@ -89,7 +89,7 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
             viewFlag = getArguments().getInt(ARG_VIEW_FLAG, ALL);
         }
 
-        emptyText = getResources().getString(R.string.subst_empty_text);
+        emptyText = getResources().getString(R.string.news_empty_text);
         emptyQueryText = getResources().getString(R.string.subst_empty_query_text);
 
         // Create the adapter

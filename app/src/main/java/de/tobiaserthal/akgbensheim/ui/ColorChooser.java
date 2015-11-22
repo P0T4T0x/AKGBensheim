@@ -1,6 +1,5 @@
 package de.tobiaserthal.akgbensheim.ui;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -15,8 +14,6 @@ import android.os.Bundle;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -148,7 +145,7 @@ public class ColorChooser extends DialogFragment implements View.OnClickListener
             ));
 
             mark.setImageResource(R.drawable.ic_checkbox_marked_circle);
-            mark.setVisibility(i == preselect ?
+            mark.setVisibility(colors[i] == preselect ?
                     View.VISIBLE : View.GONE);
 
             child.addView(mark);

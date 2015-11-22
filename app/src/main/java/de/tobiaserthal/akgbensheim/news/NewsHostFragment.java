@@ -23,7 +23,6 @@ import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
 import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
 import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
 import de.tobiaserthal.akgbensheim.ui.tabs.TabbedHostFragment;
-import de.tobiaserthal.akgbensheim.ui.widget.MultiSwipeRefreshLayout;
 
 /**
  * Created by tobiaserthal on 23.09.15.
@@ -58,7 +57,7 @@ public class NewsHostFragment extends TabbedHostFragment {
 
             boolean allowed = NetworkManager.getInstance(getActivity()).isAccessAllowed();
             if(allowed) {
-                SyncUtils.triggerRefresh(SyncAdapter.SYNC.NEWS);
+                SyncUtils.forceRefresh(SyncAdapter.SYNC.NEWS);
             } else {
                 refreshLayout.setRefreshing(false);
                 Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_SHORT)
@@ -134,10 +133,9 @@ public class NewsHostFragment extends TabbedHostFragment {
     }
 
     @Override
-    public void onPageSelected(int position) {
+    public void onPageScrollStateChanged(int state) {
         ensureRefreshLayout();
-        //refreshLayout.setSwipeableChildren(android.R.id.list, android.R.id.empty);
-        //refreshListener.onRefresh();
+        refreshLayout.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
     }
 
     private void ensureRefreshLayout() {

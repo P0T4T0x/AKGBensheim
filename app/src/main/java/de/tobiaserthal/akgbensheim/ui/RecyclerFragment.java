@@ -48,7 +48,6 @@ import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.tools.EndlessRecyclerViewOnScrollListener;
 import de.tobiaserthal.akgbensheim.tools.ViewUtils;
 
-// TODO: Refine empty view flexibility
 // FIXME: Reset scroll values to prevent wrong behaviour (e.g. when data set changed to 1 item and the recyclerview can't scroll anymore)
 public class RecyclerFragment<A extends RecyclerView.Adapter> extends Fragment {
 

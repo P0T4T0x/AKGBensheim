@@ -3,6 +3,7 @@ package de.tobiaserthal.akgbensheim.subst;
 import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SyncInfo;
 import android.content.SyncStatusObserver;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -55,7 +56,7 @@ public class SubstHostFragment extends TabbedHostFragment {
 
             boolean allowed = NetworkManager.getInstance(getActivity()).isAccessAllowed();
             if(allowed) {
-                SyncUtils.triggerRefresh(SyncAdapter.SYNC.SUBSTITUTIONS);
+                SyncUtils.forceRefresh(SyncAdapter.SYNC.SUBSTITUTIONS);
             } else {
                 refreshLayout.setRefreshing(false);
                 Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_SHORT)
@@ -80,7 +81,6 @@ public class SubstHostFragment extends TabbedHostFragment {
                                     Bundle savedInstanceState) {
 
         final Context context = container.getContext();
-        //FrameLayout root = new FrameLayout(context);
 
         SwipeRefreshLayout refreshLayout = new SwipeRefreshLayout(context);
         refreshLayout.setProgressViewOffset(false, getToolbar().getHeight(), getToolbar().getHeight() + 200);
@@ -138,19 +138,14 @@ public class SubstHostFragment extends TabbedHostFragment {
     }
 
     @Override
-    public void onPageSelected(int position) {
+    public void onPageScrollStateChanged(int state) {
         ensureRefreshLayout();
-        //refreshLayout.setSwipeableChildren(android.R.id.list, android.R.id.empty);
-        //refreshListener.onRefresh();
+        refreshLayout.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
     }
 
     @Override
     public void onToolbarMoved(float translationY) {
         ensureRefreshLayout();
-
-        Log.d(TAG, "Offset: %d, Stop: %d",
-                getToolbar().getHeight() + (int) translationY,
-                getToolbar().getHeight() + (int) translationY + 200);
 
         refreshLayout.setProgressViewOffset(
                 false,

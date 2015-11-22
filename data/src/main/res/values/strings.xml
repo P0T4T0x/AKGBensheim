@@ -29,16 +29,6 @@
     <string name="pref_key_mail_dev">pref_mailDev</string>
     <string name="pref_key_about">pref_about</string>
     <string name="pref_key_sync_enabled">pref_syncEnabled</string>
-    <string name="pref_key_event_sync_enabled">pref_eventSyncEnabled</string>
-    <string name="pref_key_event_sync_period">pref_eventSyncPeriod</string>
-    <string name="pref_key_homework_sync_enabled">pref_homeworkSyncEnabled</string>
-    <string name="pref_key_homework_sync_period">pref_homeworkSyncPeriod</string>
-    <string name="pref_key_news_sync_enabled">pref_newsSyncEnabled</string>
-    <string name="pref_key_news_sync_period">pref_newsSyncPeriod</string>
-    <string name="pref_key_subst_sync_enabled">pref_substSyncEnabled</string>
-    <string name="pref_key_subst_sync_period">pref_substSyncPeriod</string>
-    <string name="pref_key_teacher_sync_enabled">pref_teacherSyncEnabled</string>
-    <string name="pref_key_teacher_sync_period">pref_teacherSyncPeriod</string>
     <string name="pref_category_about">About</string>
     <string name="pref_key_website">pref_website</string>
     <string name="pref_summary_licence">Shows legal information and licence agreements.</string>
@@ -85,6 +75,17 @@
     <string name="pref_title_subst_color_roomSubst">Room substitution</string>
     <string name="pref_title_subst_color_shift">Shift</string>
     <string name="pref_title_subst_color_other">Other</string>
+
+    <string name="pref_key_subst_color_subst">pref_substColorSubst</string>
+    <string name="pref_key_subst_color_trans">pref_substColorTrans</string>
+    <string name="pref_key_subst_color_change">pref_substColorChange</string>
+    <string name="pref_key_subst_color_reserv">pref_substColorReserv</string>
+    <string name="pref_key_subst_color_cancel">pref_substColorCancel</string>
+    <string name="pref_key_subst_color_special">pref_substColorSpecial</string>
+    <string name="pref_key_subst_color_roomSubst">pref_substColorRoomSubst</string>
+    <string name="pref_key_subst_color_shift">pref_substColorShift</string>
+    <string name="pref_key_subst_color_other">pref_substColorOther</string>
+
     <string name="option_none">none</string>
     <string name="pref_subst_form_option_a">Form a</string>
     <string name="pref_subst_form_option_s">Form s</string>
@@ -94,4 +95,33 @@
     <string name="pref_subst_form_option_b">Form b</string>
     <string name="notify_subst_changed_title">Substitution plan changed!</string>
     <string name="notify_subst_changed_content">%1$d changes were made since the last update.</string>
+
+    <string name="pref_subst_phase_option_5">Phase 5</string>
+    <string name="pref_subst_phase_option_6">Phase 6</string>
+    <string name="pref_subst_phase_option_7">Phase 7</string>
+    <string name="pref_subst_phase_option_8">Phase 8</string>
+    <string name="pref_subst_phase_option_9">Phase 9</string>
+    <string name="pref_subst_phase_option_10">Phase 10</string>
+    <string name="pref_subst_phase_option_11">Phase 11</string>
+    <string name="pref_subst_phase_option_12">Phase 12</string>
+    <string name="pref_subst_phase_option_13">Phase 13</string>
+
+    <string name="pref_subst_frequency_15m">Every 15 min.</string>
+    <string name="pref_subst_frequency_30m">Every 30 min.</string>
+    <string name="pref_subst_frequency_60m">Hourly</string>
+    <string name="pref_subst_frequency_12h">Twice a day</string>
+    <string name="pref_subst_frequency_24h">Daily</string>
+
+    <string name="pref_subst_frequency_02d">Every 2nd day</string>
+    <string name="pref_subst_frequency_07d">Weekly</string>
+    <string name="pref_subst_frequency_02w">Every 2nd week</string>
+    <string name="pref_subst_frequency_04w">Monthly</string>
+
+
+    <string name="model_title_subst">Substitutions</string>
+    <string name="model_title_food">Foodplan</string>
+    <string name="model_title_homework">Homework</string>
+    <string name="model_title_events">Events</string>
+    <string name="model_title_news">News</string>
+    <string name="model_title_teachers">Teachers</string>
 </resources>
