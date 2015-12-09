@@ -42,7 +42,6 @@ import de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView;
 
 import static de.tobiaserthal.akgbensheim.R.drawable.abc_ic_menu_share_mtrl_alpha;
 
-// TODO: maybe use CollapsingTextHelper to draw toolbar title
 public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
