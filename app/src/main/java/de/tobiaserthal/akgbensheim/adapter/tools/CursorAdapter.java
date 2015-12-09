@@ -231,12 +231,15 @@ public abstract class CursorAdapter<CS extends AbstractCursor, VH extends BaseVi
             if (mDataSetObserver != null) newCursor.registerDataSetObserver(mDataSetObserver);
             mDataValid = true;
             // notify the observers about the new cursor
-            notifyDataSetChanged();
+            onContentChanged();
         } else {
             mDataValid = false;
             // notify the observers about the lack of a data set
-            notifyDataSetChanged();
+            onContentChanged();
         }
+
+        System.out.println("Swapped cursor");
+
         return oldCursor;
     }
 

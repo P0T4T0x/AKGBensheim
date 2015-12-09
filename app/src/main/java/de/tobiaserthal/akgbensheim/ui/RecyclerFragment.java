@@ -323,10 +323,11 @@ public class RecyclerFragment<A extends RecyclerView.Adapter> extends Fragment {
     }
 
     private void checkDataSet() {
-        Log.d("RecyclerFragment", "Checking dataset...");
+        boolean empty = treatAsEmpty(getItemCount());
+
+        Log.d("RecyclerFragment", "Dataset change detected! Count: %d, Empty: %b", getItemCount(), empty);
         if(emptyTextView != null) {
-            emptyTextView.setVisibility(
-                    treatAsEmpty(getItemCount()) ?
+            emptyTextView.setVisibility(empty ?
                             View.VISIBLE : View.GONE
             );
         }

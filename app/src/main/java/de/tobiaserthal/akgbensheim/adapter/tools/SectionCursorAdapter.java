@@ -44,6 +44,7 @@ public abstract class SectionCursorAdapter<CS extends AbstractCursor, T, VH exte
 
     public SectionCursorAdapter(Context context, CS cursor, int flags, Comparator<T> comparator) {
         super(context, cursor, flags);
+        /*
         registerAdapterDataObserver(new AdapterDataObserver() {
             @Override
             public void onChanged() {
@@ -57,7 +58,21 @@ public abstract class SectionCursorAdapter<CS extends AbstractCursor, T, VH exte
             }
         });
 
+        */
         setSectionComparator(comparator);
+    }
+
+    @Override
+    public void onContentChanged() {
+        if (hasValidData()) {
+            buildSections();
+        } else {
+            sectionMap.clear();
+            sectionIndexList.clear();
+            fastScrollItems = null;
+        }
+
+        super.onContentChanged();
     }
 
     /**

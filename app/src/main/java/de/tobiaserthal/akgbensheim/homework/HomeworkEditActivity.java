@@ -51,6 +51,7 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
     private Button btnDate;
     private EditText txtTitle;
     private EditText txtNotes;
+    private boolean valid = false;
 
     public static void startDetail(FragmentActivity activity, long id) {
         Intent intent = createOverlayActivity(activity, HomeworkEditActivity.class);
@@ -133,6 +134,7 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
                 return true;
 
             case R.id.action_delete:
+                valid = false;
                 deleteHomework();
                 return true;
 
@@ -166,7 +168,10 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
 
     @Override
     public void onPause() {
-        saveHomework();
+        if(valid) {
+            saveHomework();
+        }
+
         super.onPause();
     }
 
@@ -223,6 +228,7 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(data == null) {
+            valid = false;
             return;
         }
 
@@ -234,9 +240,11 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
         }
 
         if(!homework.moveToFirst()) {
+            valid = false;
             return;
         }
 
+        valid = true;
         supportInvalidateOptionsMenu();
 
         if(values != null) {
@@ -273,5 +281,7 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
 
         values = null;
         homework = null;
+
+        valid = false;
     }
 }
