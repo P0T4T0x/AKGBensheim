@@ -118,32 +118,6 @@ public class HomeworkFragment extends TabbedListFragment<HomeworkAdapter>
                 StaggeredGridLayoutManager.VERTICAL);
 
         setLayoutManager(manager);
-
-        // TODO: improve this
-        ItemTouchHelper.SimpleCallback callback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                switch (viewFlag) {
-                    case TODO:
-                        new HomeworkContentValues()
-                                .putDone(true)
-                                .update(getActivity().getContentResolver(), HomeworkSelection.get(viewHolder.getItemId()));
-                        break;
-                    case DONE:
-                        HomeworkSelection.get(viewHolder.getItemId())
-                                .delete(getActivity().getContentResolver());
-                        break;
-                }
-            }
-        };
-
-        //ItemTouchHelper helper = new ItemTouchHelper(callback);
-        //helper.attachToRecyclerView(getRecyclerView());
     }
 
     @Override
