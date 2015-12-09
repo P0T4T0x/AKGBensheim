@@ -10,8 +10,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MarginLayoutParamsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -301,12 +303,15 @@ public class TabbedHostFragment extends ToolbarFragment {
                 ContextCompat.getColor(getActivity(), R.color.primaryTextInverse)
         );
 
+
         int padding = getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
-        ViewCompat.setPaddingRelative(tabLayout, padding, 0, padding, 0);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, tabHeight);
 
-        tabLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, tabHeight));
+        MarginLayoutParamsCompat.setMarginStart(params, padding);
+        MarginLayoutParamsCompat.setMarginEnd(params, padding);
 
+        tabLayout.setLayoutParams(params);
         return tabLayout;
     }
 

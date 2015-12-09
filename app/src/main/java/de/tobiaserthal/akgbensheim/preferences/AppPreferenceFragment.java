@@ -92,17 +92,17 @@ public class AppPreferenceFragment extends PreferenceFragment
     }
 
     private void setPreferenceValues() {
-        phaseSetting.setSummary(PreferenceProvider.getInstance(getActivity()).getSubstPhaseSummary());
-        formSetting.setSummary(PreferenceProvider.getInstance(getActivity()).getSubstFormSummary());
-        subjectSetting.setSummary(PreferenceProvider.getInstance(getActivity()).getSubstSubjectsSummary());
+        phaseSetting.setSummary(PreferenceProvider.getInstance().getSubstPhaseSummary());
+        formSetting.setSummary(PreferenceProvider.getInstance().getSubstFormSummary());
+        subjectSetting.setSummary(PreferenceProvider.getInstance().getSubstSubjectsSummary());
 
-        syncEnabledSetting.setChecked(PreferenceProvider.getInstance(getContext()).isAutoSyncEnabled());
+        syncEnabledSetting.setChecked(PreferenceProvider.getInstance().isAutoSyncEnabled());
         aboutPreference.setSummary(getString(R.string.pref_summary_about, BuildConfig.VERSION_NAME));
     }
 
     private void switchFormState() {
         formSetting.setShouldDisableView(true);
-        formSetting.setEnabled(PreferenceProvider.getInstance(getContext()).getSubstPhase()
+        formSetting.setEnabled(PreferenceProvider.getInstance().getSubstPhase()
                 < PreferenceProvider.getSubstPhaseSek2());
     }
 
@@ -116,7 +116,7 @@ public class AppPreferenceFragment extends PreferenceFragment
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if(preference.equals(syncEnabledSetting)) {
             boolean value = (Boolean) newValue;
-            PreferenceProvider.getInstance(getContext()).setAutoSyncEnabled(value);
+            PreferenceProvider.getInstance().setAutoSyncEnabled(value);
         }
 
         return true;
@@ -175,16 +175,16 @@ public class AppPreferenceFragment extends PreferenceFragment
     }
 
     private void showPhaseSetting() {
-        int current = PreferenceProvider.getInstance(getContext()).getSubstPhaseIndex();
+        int current = PreferenceProvider.getInstance().getSubstPhaseIndex();
         new MaterialDialog.Builder(getContext())
                 .title(R.string.pref_title_subst_phase)
                 .positiveText(android.R.string.ok)
                 .negativeText(android.R.string.cancel)
-                .items(PreferenceProvider.getInstance(getContext()).getSubsPhaseSummaries())
+                .items(PreferenceProvider.getInstance().getSubsPhaseSummaries())
                 .itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                        PreferenceProvider.getInstance(getContext())
+                        PreferenceProvider.getInstance()
                                 .setSubstPhaseIndex(which);
 
                         phaseSetting.setSummary(text);
@@ -197,16 +197,16 @@ public class AppPreferenceFragment extends PreferenceFragment
     }
 
     private void showFormSettings() {
-        int current = PreferenceProvider.getInstance(getContext()).getSubstFormIndex();
+        int current = PreferenceProvider.getInstance().getSubstFormIndex();
         new MaterialDialog.Builder(getContext())
                 .title(R.string.pref_title_subst_form)
                 .positiveText(android.R.string.ok)
                 .negativeText(android.R.string.cancel)
-                .items(PreferenceProvider.getInstance(getContext()).getSubstFormSummaries())
+                .items(PreferenceProvider.getInstance().getSubstFormSummaries())
                 .itemsCallbackSingleChoice(current, new MaterialDialog.ListCallbackSingleChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                        PreferenceProvider.getInstance(getContext())
+                        PreferenceProvider.getInstance()
                                 .setSubstFormIndex(which);
 
                         formSetting.setSummary(text);

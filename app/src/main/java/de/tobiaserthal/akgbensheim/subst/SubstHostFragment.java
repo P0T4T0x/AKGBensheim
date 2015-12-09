@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.NetworkManager;
+import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
 import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
 import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
 import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
@@ -54,9 +55,9 @@ public class SubstHostFragment extends TabbedHostFragment {
         public void onRefresh() {
             Log.d(TAG, "Force refresh triggered!");
 
-            boolean allowed = NetworkManager.getInstance(getActivity()).isAccessAllowed();
+            boolean allowed = NetworkManager.getInstance().isAccessAllowed();
             if(allowed) {
-                SyncUtils.forceRefresh(SyncAdapter.SYNC.SUBSTITUTIONS);
+                SyncUtils.forceRefresh(ModelUtils.SUBSTITUTIONS);
             } else {
                 refreshLayout.setRefreshing(false);
                 Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_SHORT)

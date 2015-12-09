@@ -85,9 +85,9 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
         public void onSubstPreferenceChange() {
             SubstFragment fragment = reference.get();
             if(fragment != null) {
-                fragment.phase = PreferenceProvider.getInstance(fragment.getActivity()).getSubstPhase();
-                fragment.form = PreferenceProvider.getInstance(fragment.getActivity()).getSubstForm();
-                fragment.subjects = PreferenceProvider.getInstance(fragment.getActivity()).getSubstSubjects();
+                fragment.phase = PreferenceProvider.getInstance().getSubstPhase();
+                fragment.form = PreferenceProvider.getInstance().getSubstForm();
+                fragment.subjects = PreferenceProvider.getInstance().getSubstSubjects();
 
                 fragment.getLoaderManager().restartLoader(fragment.viewFlag, Bundle.EMPTY, fragment);
             }
@@ -115,9 +115,9 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        phase = PreferenceProvider.getInstance(getActivity()).getSubstPhase();
-        form = PreferenceProvider.getInstance(getActivity()).getSubstForm();
-        subjects = PreferenceProvider.getInstance(getActivity()).getSubstSubjects();
+        phase = PreferenceProvider.getInstance().getSubstPhase();
+        form = PreferenceProvider.getInstance().getSubstForm();
+        subjects = PreferenceProvider.getInstance().getSubstSubjects();
 
         getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, this);
     }
@@ -221,7 +221,7 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
                         SubstitutionSelection.getPhaseWithQuery(phase, query);
                 break;
 
-            case FORM: //FIXME
+            case FORM:
                 selection = (query == null) ?
                         SubstitutionSelection.getForm(phase, form, subjects) :
                         SubstitutionSelection.getFormWithQuery(phase, form, subjects, query);

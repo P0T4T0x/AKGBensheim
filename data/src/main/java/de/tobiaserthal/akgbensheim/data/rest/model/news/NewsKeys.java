@@ -1,7 +1,9 @@
 package de.tobiaserthal.akgbensheim.data.rest.model.news;
 
 public class NewsKeys {
+    public static final int ITEMS_PER_PAGE = 10;
     public static final String ARG_START = "start";
+    public static final String ARG_COUNT = "count";
     public static final String DOMAIN = "/news";
 
     public static final String KEY_ID = "_id";

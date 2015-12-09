@@ -399,9 +399,9 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
             case FRAGMENT_SUBSTITUTION: {
                 String[] projection = {"count(" + SubstitutionColumns._ID + ")"};
                 SubstitutionSelection selection = SubstitutionSelection.getForm(
-                        PreferenceProvider.getInstance(getActivity()).getSubstPhase(),
-                        PreferenceProvider.getInstance(getActivity()).getSubstForm(),
-                        PreferenceProvider.getInstance(getActivity()).getSubstSubjects());
+                        PreferenceProvider.getInstance().getSubstPhase(),
+                        PreferenceProvider.getInstance().getSubstForm(),
+                        PreferenceProvider.getInstance().getSubstSubjects());
 
                 return selection.loader(getActivity(), projection);
             }

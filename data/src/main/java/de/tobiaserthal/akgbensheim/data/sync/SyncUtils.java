@@ -17,8 +17,7 @@ import java.util.Objects;
 
 import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.R;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceKey;
-import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter.SYNC;
+import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
 
 import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
 import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
@@ -29,10 +28,6 @@ public class SyncUtils {
     public static final String TAG = "SyncUtils";
 
     public static void createSyncAccount(Context context) {
-        createSyncAccount(context, true);
-    }
-
-    public static void createSyncAccount(Context context, boolean autoSync) {
         boolean newAccount = false;
         boolean setupComplete = PreferenceManager
                 .getDefaultSharedPreferences(context).getBoolean(PREF_SETUP_COMPLETE, false);
@@ -50,15 +45,15 @@ public class SyncUtils {
             ContentResolver.setIsSyncable(account, DataProvider.AUTHORITY, 1);
 
             // Inform the system that this account is eligible for auto sync when the network is up
-            ContentResolver.setSyncAutomatically(account, DataProvider.AUTHORITY, autoSync);
+            ContentResolver.setSyncAutomatically(account, DataProvider.AUTHORITY, true);
 
             // Recommend a schedule for automatic synchronization. The system may modify this based
             // on other scheduled syncs and network utilization.
             int[] values = context.getResources().getIntArray(R.array.pref_subst_sync_frequency_options_values);
-            requestPeriodic(account, SYNC.EVENTS, values[5]);
-            requestPeriodic(account, SYNC.NEWS, values[6]);
-            requestPeriodic(account, SYNC.SUBSTITUTIONS, values[1]);
-            requestPeriodic(account, SYNC.TEACHERS, values[8]);
+            requestPeriodic(account, ModelUtils.EVENTS, values[5]);
+            requestPeriodic(account, ModelUtils.NEWS, values[6]);
+            requestPeriodic(account, ModelUtils.SUBSTITUTIONS, values[1]);
+            requestPeriodic(account, ModelUtils.TEACHERS, values[8]);
 
             newAccount = true;
         }
@@ -69,12 +64,9 @@ public class SyncUtils {
         if (newAccount || !setupComplete) {
             Log.d(TAG, "Firing initial sync process...");
 
-            triggerRefresh(SYNC.ALL);
+            forceRefresh(ModelUtils.ALL);
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putBoolean(PREF_SETUP_COMPLETE, true).commit();
-        } else {
-            Log.d(TAG, "Canceling pending syncs...");
-            cancelCurrentSync();
         }
     }
 
@@ -104,7 +96,7 @@ public class SyncUtils {
         Bundle options = new Bundle();
         options.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         options.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        options.putInt(SYNC.ARG, which);
+        options.putInt(SyncAdapter.ARGS.ID, which);
 
         ContentResolver.requestSync(
                 AuthenticatorService.getAccount(ACCOUNT_TYPE),
@@ -113,12 +105,16 @@ public class SyncUtils {
         );
     }
 
-    public static void triggerRefresh(int which) {
-        Log.d(TAG, "Adding refresh to queue for id: %d", which);
+    public static void loadNews(int start, int count) {
+        Log.d(TAG, "Loading news starting from index: %d to index: %d", start, (start - 1) + count);
 
         Bundle options = new Bundle();
         options.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        options.putInt(SYNC.ARG, which);
+        options.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+        options.putInt(SyncAdapter.ARGS.ID, ModelUtils.NEWS);
+        options.putInt(SyncAdapter.ARGS.NEWS_START, start);
+        options.putInt(SyncAdapter.ARGS.NEWS_COUNT, count);
 
         ContentResolver.requestSync(
                 AuthenticatorService.getAccount(ACCOUNT_TYPE),
@@ -133,19 +129,19 @@ public class SyncUtils {
 
     public static void removePeriodic(Account account, int which) {
         Bundle options = new Bundle();
-        options.putInt(SYNC.ARG, which);
+        options.putInt(SyncAdapter.ARGS.ID, which);
 
         ContentResolver.removePeriodicSync(
                 account, DataProvider.AUTHORITY, options);
     }
 
-    public static void requestPeriodic(int which, long minutes) {
-        requestPeriodic(AuthenticatorService.getAccount(ACCOUNT_TYPE), which, minutes);
+    public static void requestPeriodic(int which, long seconds) {
+        requestPeriodic(AuthenticatorService.getAccount(ACCOUNT_TYPE), which, seconds);
     }
 
     public static void requestPeriodic(Account account, int which, long seconds) {
         Bundle options = new Bundle();
-        options.putInt(SYNC.ARG, which);
+        options.putInt(SyncAdapter.ARGS.ID, which);
 
         ContentResolver.addPeriodicSync(
                 account, DataProvider.AUTHORITY, options, seconds);

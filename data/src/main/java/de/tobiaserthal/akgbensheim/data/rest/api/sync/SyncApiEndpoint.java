@@ -17,7 +17,7 @@ public interface SyncApiEndpoint {
     BaseResponse<EventResponse> getEvents();
 
     @GET(NewsKeys.DOMAIN)
-    BaseResponse<NewsResponse> getNews(@Query(NewsKeys.ARG_START) int start);
+    BaseResponse<NewsResponse> getNews(@Query(NewsKeys.ARG_START) int start, @Query(NewsKeys.ARG_COUNT) int count);
 
     @GET(SubstitutionKeys.DOMAIN)
     BaseResponse<SubstitutionResponse> getSubstitutions();

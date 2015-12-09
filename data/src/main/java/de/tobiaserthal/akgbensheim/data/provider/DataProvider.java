@@ -91,7 +91,7 @@ public class DataProvider extends BaseContentProvider {
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         int match = URI_MATCHER.match(uri);
         switch (match) {
             case URI_TYPE_EVENT:
@@ -126,7 +126,7 @@ public class DataProvider extends BaseContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         if (hasDebug()) {
             Log.d(TAG, "insert uri: %s, values: %s", uri.toString(), values.toString());
         }
@@ -135,7 +135,7 @@ public class DataProvider extends BaseContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         if (hasDebug()) {
             Log.d(TAG, "bulkInsert uri: %s, values.length: %d", uri.toString(), values.length);
         }
@@ -144,7 +144,7 @@ public class DataProvider extends BaseContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         if (hasDebug()) {
             Log.d(TAG, "update with uri: %s, values: %s, selection: %s, selectionArgs: %s",
                     uri.toString(), values.toString(), selection, Arrays.toString(selectionArgs));
@@ -154,7 +154,7 @@ public class DataProvider extends BaseContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         if (hasDebug()) {
             Log.d(TAG, "delete with uri: %s, selection: %s, selectionArgs: %s", uri.toString(),
                     selection, Arrays.toString(selectionArgs));
@@ -164,11 +164,11 @@ public class DataProvider extends BaseContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         if (hasDebug()) {
-            Log.d(TAG, "query with uri: %s, selection: %s, selectionArgs: %s, sortOrder: %s, groupBy: %s, having: %s, limit: %s",
+            Log.d(TAG, "query with uri: %s, selection: %s, selectionArgs: %s, sortOrder: %s, groupBy: %s, having: %s, limit: %s, offset: %s",
                     uri.toString(), selection, Arrays.toString(selectionArgs), sortOrder, uri.getQueryParameter(QUERY_GROUP_BY),
-                    uri.getQueryParameter(QUERY_HAVING), uri.getQueryParameter(QUERY_LIMIT));
+                    uri.getQueryParameter(QUERY_HAVING), uri.getQueryParameter(QUERY_LIMIT), uri.getQueryParameter(QUERY_OFFSET));
         }
 
         return super.query(uri, projection, selection, selectionArgs, sortOrder);

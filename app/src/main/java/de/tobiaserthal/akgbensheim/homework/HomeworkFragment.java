@@ -135,7 +135,6 @@ public class HomeworkFragment extends TabbedListFragment<HomeworkAdapter>
                                 .update(getActivity().getContentResolver(), HomeworkSelection.get(viewHolder.getItemId()));
                         break;
                     case DONE:
-                        // TODO: maybe update ids of all other items
                         HomeworkSelection.get(viewHolder.getItemId())
                                 .delete(getActivity().getContentResolver());
                         break;

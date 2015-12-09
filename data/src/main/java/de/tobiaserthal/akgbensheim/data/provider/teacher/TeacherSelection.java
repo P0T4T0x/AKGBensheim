@@ -34,12 +34,16 @@ import de.tobiaserthal.akgbensheim.data.provider.base.AbstractSelection;
  */
 public class TeacherSelection extends AbstractSelection<TeacherSelection> {
 
+    public static TeacherSelection getAll() {
+        return new TeacherSelection();
+    }
+
     public static TeacherSelection get(long id) {
-        return new TeacherSelection().id(id);
+        return getAll().id(id);
     }
 
     public static TeacherSelection getTeachers() {
-        return new TeacherSelection()
+        return getAll()
                 .identifierNotEquals("x", "z");
     }
 
@@ -54,7 +58,7 @@ public class TeacherSelection extends AbstractSelection<TeacherSelection> {
     }
 
     public static TeacherSelection getStudentTeachers() {
-        return new TeacherSelection()
+        return getAll()
                 .identifierEquals("x", "z");
     }
 

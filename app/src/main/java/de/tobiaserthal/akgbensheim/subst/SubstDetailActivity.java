@@ -38,7 +38,6 @@ import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
 public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final boolean BELOW_V21 = Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     private static final float MAX_TEXT_SCALE_DELTA = 0.25f;
 
     private View headerView;
@@ -111,8 +110,12 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
         flexibleSpaceHeaderHeight = getResources().getDimensionPixelSize(R.dimen.subst_header_height);
         headerTitleVerticalMargin = getResources().getDimensionPixelSize(R.dimen.subst_header_title_margin);
 
-        setColorScheme(getIntent()
-                .getIntExtra(EXTRA_PARAM_COLOR, getResources().getColor(R.color.primary)));
+        setColorScheme(
+                getIntent().getIntExtra(
+                        EXTRA_PARAM_COLOR,
+                        ContextCompat.getColor(this, R.color.primary)
+                )
+        );
 
         txtForm         = setupRow(R.id.formRow, R.drawable.ic_account_multiple);
         txtDate         = setupRow(R.id.dateRow, R.drawable.ic_calendar_clock);
@@ -201,7 +204,7 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
             return;
         }
 
-        setColorScheme(PreferenceProvider.getInstance(this)
+        setColorScheme(PreferenceProvider.getInstance()
                 .getColorFromType(subst.getType()));
 
         headerTextView.setText(ModelUtils.summarize(subst));

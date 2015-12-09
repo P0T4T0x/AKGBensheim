@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import de.tobiaserthal.akgbensheim.data.Log;
+import de.tobiaserthal.akgbensheim.data.SimpleAsyncQueryHandler;
 import de.tobiaserthal.akgbensheim.data.provider.event.EventSelection;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkSelection;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsSelection;
@@ -90,11 +91,12 @@ public class FileUtils {
         clearDirectory(context.getExternalCacheDir());
 
         // clear database
-        new EventSelection().delete(context.getContentResolver());
-        new HomeworkSelection().delete(context.getContentResolver());
-        new NewsSelection().delete(context.getContentResolver());
-        new SubstitutionSelection().delete(context.getContentResolver());
-        new TeacherSelection().delete(context.getContentResolver());
+        SimpleAsyncQueryHandler handler = new SimpleAsyncQueryHandler(context.getContentResolver());
+        handler.startDelete(NewsSelection.getAll());
+        handler.startDelete(EventSelection.getAll());
+        handler.startDelete(TeacherSelection.getAll());
+        handler.startDelete(HomeworkSelection.getAll());
+        handler.startDelete(SubstitutionSelection.getAll());
     }
 
     public static void clearCache(Context context) {

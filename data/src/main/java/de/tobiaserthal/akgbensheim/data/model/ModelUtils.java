@@ -3,14 +3,18 @@ package de.tobiaserthal.akgbensheim.data.model;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.PeriodicSync;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.CalendarContract;
 import android.provider.ContactsContract;
+import android.support.annotation.IntDef;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,12 +28,40 @@ import de.tobiaserthal.akgbensheim.data.model.homework.HomeworkModel;
 import de.tobiaserthal.akgbensheim.data.model.news.NewsModel;
 import de.tobiaserthal.akgbensheim.data.model.substitution.SubstitutionModel;
 import de.tobiaserthal.akgbensheim.data.model.teacher.TeacherModel;
+import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkContentValues;
 import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherCursor;
 import de.tobiaserthal.akgbensheim.data.rest.model.foodplan.FoodPlanKeys;
 
 public class ModelUtils {
+    public static final int ALL = 0x1F;
+    public static final int NONE = 0x0;
+    public static final int NEWS = 0x2;
+    public static final int EVENTS = 0x1;
+    public static final int TEACHERS = 0x8;
+    public static final int HOMEWORK = 0x10;
+    public static final int SUBSTITUTIONS = 0x4;
+
+    @IntDef({ALL, NONE, NEWS, EVENTS, TEACHERS, HOMEWORK, SUBSTITUTIONS})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface ModelType {}
+
     private static final SimpleDateFormat COMPARE_DAY = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+
+    public static long getMergedId(@ModelType int type, long id) {
+        return ((id << 8) | type);
+    }
+
+    @ModelType
+    public static int getTypeFromMergedId(long mergedId) {
+        //noinspection ResourceType
+        return (int) (mergedId & 0xFF);
+    }
+
+    public static long getIdFromMergedId(long mergedId) {
+        return mergedId >> 8;
+    }
+
 
     public static boolean equal(EventModel model1, EventModel model2) {
         return model1.getId() == model2.getId()
@@ -76,6 +108,35 @@ public class ModelUtils {
                 && equal(model1.getShorthand(), model2.getShorthand())
                 && equal(model1.getSubjects(), model2.getSubjects())
                 && equal(model1.getEmail(), model2.getEmail());
+    }
+
+    public static boolean matchesUserSettings(SubstitutionModel model) {
+        int phase = PreferenceProvider.getInstance().getSubstPhase();
+        String form = PreferenceProvider.getInstance().getSubstForm();
+        String[] filter = PreferenceProvider.getInstance().getSubstSubjects();
+
+        if(phase < PreferenceProvider.getSubstPhaseSek2()) {
+            return model.getFormKey().startsWith(String.format("K%02d", phase))
+                    && model.getFormKey().contains(form)
+                    && arrayContains(filter, model.getLessonSubst());
+        } else {
+            return model.getFormKey().startsWith(String.format("K%02d", phase))
+                    && arrayContains(filter, model.getLessonSubst());
+        }
+    }
+
+    public static boolean arrayContains(String[] array, String query) {
+        if(array == null) {
+            return false;
+        }
+
+        for(int i = 0; i < array.length; i ++) {
+            if(equal(array[i], query)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static boolean equal(Date obj1, Date obj2) {

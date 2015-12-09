@@ -42,8 +42,8 @@ public class RestServer {
         return response.getData();
     }
 
-    public static List<NewsResponse> getNews(int start) throws ApiError {
-        BaseResponse<NewsResponse> response = getSynchronousAdapter().getNews(start);
+    public static List<NewsResponse> getNews(int start, int count) throws ApiError {
+        BaseResponse<NewsResponse> response = getSynchronousAdapter().getNews(start, count);
         ApiError.check(response);
 
         return response.getData();

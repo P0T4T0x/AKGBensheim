@@ -24,7 +24,7 @@ public class SyncPreferenceFragment extends RecyclerFragment<SyncPreferenceAdapt
         super.onCreate(savedInstanceState);
 
         // Create the adapter
-        ArrayList<PeriodicSyncPreference> dummies = PreferenceProvider.getInstance(getContext()).getAllSyncs();
+        ArrayList<PeriodicSyncPreference> dummies = PreferenceProvider.getInstance().getAllSyncs();
         setAdapter(new SyncPreferenceAdapter(getContext(), dummies));
     }
 
@@ -48,14 +48,14 @@ public class SyncPreferenceFragment extends RecyclerFragment<SyncPreferenceAdapt
                         .title(R.string.pref_prompt_sync_frequency)
                         .positiveText(android.R.string.ok)
                         .negativeText(android.R.string.cancel)
-                        .items(PreferenceProvider.getInstance(getContext()).getFrequencySummaries())
-                        .itemsCallbackSingleChoice(PreferenceProvider.getInstance(getContext())
+                        .items(PreferenceProvider.getInstance().getFrequencySummaries())
+                        .itemsCallbackSingleChoice(PreferenceProvider.getInstance()
                                         .getFrequencyIndex(dummy.getFrequency()),
                                 new MaterialDialog.ListCallbackSingleChoice() {
                                     @Override
                                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                                        dummy.setFrequency(PreferenceProvider.getInstance(getContext()).getFrequency(which));
-                                        dummy.setSubtitle(PreferenceProvider.getInstance(getContext()).getFrequencySummary(which));
+                                        dummy.setFrequency(PreferenceProvider.getInstance().getFrequency(which));
+                                        dummy.setSubtitle(PreferenceProvider.getInstance().getFrequencySummary(which));
 
                                         getAdapter().notifyItemChanged(position);
                                         return true;
@@ -72,7 +72,7 @@ public class SyncPreferenceFragment extends RecyclerFragment<SyncPreferenceAdapt
     @Override
     public void onPause() {
         super.onPause();
-        PreferenceProvider.getInstance(getContext())
+        PreferenceProvider.getInstance()
                 .dispatchAllSyncs(getAdapter().getItems());
     }
 }

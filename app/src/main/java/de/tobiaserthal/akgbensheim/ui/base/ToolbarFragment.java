@@ -28,7 +28,7 @@ import de.tobiaserthal.akgbensheim.tools.ViewUtils;
  * A simple fragment wrapper that helps you to create fragments with the ability to manage the
  * parent activity's toolbar by adding a header view or animating it.
  */
-// FIXME: header sometimes not animating in position
+// FIXME: header sometimes not animating in position / background color for header pre lollipop
 public abstract class ToolbarFragment extends Fragment {
     private static final int INTERNAL_CONTENT_VIEW_ID = 0x000000;
     private static final int INTERNAL_HEADER_VIEW_ID = 0x000001;
@@ -78,8 +78,9 @@ public abstract class ToolbarFragment extends Fragment {
 
         /* Add header content */
         View headerContent = onCreateHeaderView(inflater, headerFrame, savedInstanceState);
-        if(headerContent != null)
+        if(headerContent != null) {
             headerFrame.addView(headerContent);
+        }
 
         /* Add toolbar shadow */
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

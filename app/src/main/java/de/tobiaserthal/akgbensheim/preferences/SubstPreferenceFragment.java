@@ -47,7 +47,7 @@ public class SubstPreferenceFragment extends RecyclerFragment<SubstPreferenceAda
         setHasOptionsMenu(true);
 
         // Create the adapter
-        String[] subjects = PreferenceProvider.getInstance(getActivity()).getSubstSubjects();
+        String[] subjects = PreferenceProvider.getInstance().getSubstSubjects();
         setAdapter(new SubstPreferenceAdapter(subjects));
     }
 
@@ -176,7 +176,7 @@ public class SubstPreferenceFragment extends RecyclerFragment<SubstPreferenceAda
     }
 
     private void save() {
-        PreferenceProvider.getInstance(getActivity())
+        PreferenceProvider.getInstance()
                 .setSubstSubjects(getAdapter().toString());
     }
 

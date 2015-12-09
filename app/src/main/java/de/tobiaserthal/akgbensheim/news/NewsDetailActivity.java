@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -25,21 +26,21 @@ import android.widget.TextView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.squareup.picasso.Picasso;
 
 
 import de.tobiaserthal.akgbensheim.R;
+import de.tobiaserthal.akgbensheim.data.SimpleAsyncQueryHandler;
 import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsContentValues;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsSelection;
-import de.tobiaserthal.akgbensheim.tools.AnimatorAdapter;
 import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
 import de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView;
+
+import static de.tobiaserthal.akgbensheim.R.drawable.abc_ic_menu_share_mtrl_alpha;
 
 // TODO: maybe use CollapsingTextHelper to draw toolbar title
 public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
@@ -118,7 +119,7 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
         actionBarTitleMargin = getResources().getDimensionPixelSize(R.dimen.flexible_space_header_margin_left);
 
         actionButton = (FloatingActionButton) findViewById(R.id.actionButton);
-        actionButton.setImageResource(R.drawable.abc_ic_menu_share_mtrl_alpha);
+        actionButton.setImageResource(abc_ic_menu_share_mtrl_alpha);
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,8 +130,9 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             getWindow().setStatusBarColor(Color.TRANSPARENT);
 
-        imageView.setScrimColor(getResources().getColor(R.color.primary));
-        statusBarColor = getResources().getColor(R.color.primaryDark);
+        imageView.setFactor(0.25f);
+        imageView.setScrimColor(ContextCompat.getColor(this, R.color.primary));
+        statusBarColor = ContextCompat.getColor(this, R.color.primaryDark);
 
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -167,10 +169,9 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
                 return true;
 
             case R.id.action_bookmark:
-                //TODO: make operation asynchronous
                 NewsSelection selection = NewsSelection.get(news.getId());
                 NewsContentValues values = new NewsContentValues().putBookmarked(!news.getBookmarked());
-                values.update(getContentResolver(), selection);
+                new SimpleAsyncQueryHandler(getContentResolver()).startUpdate(selection, values);
 
                 return true;
 
@@ -230,6 +231,7 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
         headerSubtitle.setText(news.getTitle());
         imageDescView.setText(news.getImageDesc());
         articleView.setText(news.getArticle());
+
 
         Picasso.with(this)
                 .load(news.getImageUrl())

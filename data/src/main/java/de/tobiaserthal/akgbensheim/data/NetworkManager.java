@@ -46,9 +46,14 @@ public class NetworkManager {
         getContext().registerReceiver(networkReceiver, networkFilter);
     }
 
-    public static NetworkManager getInstance(Context context) {
+    public static synchronized NetworkManager initialize(Context context) {
+        instance = new NetworkManager(context);
+        return instance;
+    }
+
+    public static synchronized NetworkManager getInstance() {
         if(instance == null) {
-            instance = new NetworkManager(context);
+            throw new IllegalStateException("NetworkManager not initialized");
         }
 
         return instance;
@@ -68,7 +73,7 @@ public class NetworkManager {
             }
 
             boolean wifi = networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-            boolean onlyWifi = PreferenceProvider.getInstance(getContext()).isOnlyWifiEnabled();
+            boolean onlyWifi = PreferenceProvider.getInstance().isOnlyWifiEnabled();
 
             Log.d(TAG, "Network connected! OnlyWifi: %b, wifi: %b", onlyWifi, wifi);
             return !onlyWifi || wifi;
@@ -85,15 +90,6 @@ public class NetworkManager {
     }
 
     public static class NetworkChangeReceiver extends BroadcastReceiver {
-
-        public void registerOn(Context context) {
-            IntentFilter intent = new IntentFilter(ACTION_NETWORK);
-            context.registerReceiver(this, intent);
-        }
-
-        public void unregisterFrom(Context context) {
-            context.unregisterReceiver(this);
-        }
 
         @Override
         public final void onReceive(Context context, Intent intent) {

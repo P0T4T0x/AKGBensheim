@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 
+import de.tobiaserthal.akgbensheim.data.Log;
+
 public class BackdropImageView extends ImageView {
     private static final int MIN_SCRIM_ALPHA = 0x00;
     private static final int MAX_SCRIM_ALPHA = 0xFF;
@@ -21,7 +23,6 @@ public class BackdropImageView extends ImageView {
     private float mScrimDarkness;
     private float factor;
     private int mScrimColor = Color.BLACK;
-    private int mScrollOffset;
     private int mImageOffset;
 
     private final Paint mScrimPaint;
@@ -38,27 +39,8 @@ public class BackdropImageView extends ImageView {
         factor = 2;
     }
 
-    private void setScrollOffset(int offset) {
-        if (offset != mScrollOffset) {
-            mScrollOffset = offset;
-            mImageOffset = (int) (-offset / factor);
-            offsetTopAndBottom(offset - getTop());
-
-            ViewCompat.postInvalidateOnAnimation(this);
-        }
-    }
-
     public void setFactor(float factor) {
         this.factor = factor;
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-        if (mScrollOffset != 0) {
-            offsetTopAndBottom(mScrollOffset - getTop());
-        }
     }
 
     public void setScrimColor(int scrimColor) {
@@ -71,7 +53,9 @@ public class BackdropImageView extends ImageView {
 
     public void setProgress(int offset, float scrim) {
         mScrimDarkness = ScrollUtils.getFloat(scrim, 0, 1);
-        setScrollOffset(offset);
+        mImageOffset = (int) (offset * factor);
+
+        ViewCompat.postInvalidateOnAnimation(this);
     }
 
     @Override
@@ -83,10 +67,12 @@ public class BackdropImageView extends ImageView {
         if (mImageOffset != 0) {
             canvas.save();
             canvas.translate(0f, mImageOffset);
-            canvas.clipRect(0f, 0f, canvas.getWidth(), canvas.getHeight() + mImageOffset + 1);
+            canvas.clipRect(0, 0, canvas.getWidth(), canvas.getHeight() + mImageOffset + 1);
+
             super.onDraw(canvas);
-            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mScrimPaint);
+
             canvas.restore();
+            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mScrimPaint);
         } else {
             super.onDraw(canvas);
             canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mScrimPaint);

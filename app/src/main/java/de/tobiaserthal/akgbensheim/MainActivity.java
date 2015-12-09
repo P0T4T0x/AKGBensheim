@@ -31,14 +31,13 @@ import de.tobiaserthal.akgbensheim.ui.tabs.TabbedHostFragment;
 
 
 public class MainActivity extends ToolbarActivity implements MainNavigation {
+    public static final String ARG_GOTO = "arg_startWith";
     private DrawerFragment navigationDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SyncUtils.createSyncAccount(this);
 
         setToolbar((Toolbar) findViewById(R.id.toolbar));
 
@@ -85,6 +84,7 @@ public class MainActivity extends ToolbarActivity implements MainNavigation {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     private Fragment createFragment(@NavigationItem int item) {
         switch (item) {
             case FRAGMENT_HOME: {
@@ -141,6 +141,7 @@ public class MainActivity extends ToolbarActivity implements MainNavigation {
             }
         }
     }
+    */
 
     @Override
     public void switchToNavigationItem(@NavigationItem int item) {

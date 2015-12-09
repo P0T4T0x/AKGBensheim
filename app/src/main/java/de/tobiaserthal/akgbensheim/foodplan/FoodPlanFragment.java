@@ -250,7 +250,7 @@ public class FoodPlanFragment extends ToolbarFragment
     }
 
     private void refresh() {
-        boolean accessEnabled = NetworkManager.getInstance(getContext()).isAccessAllowed();
+        boolean accessEnabled = NetworkManager.getInstance().isAccessAllowed();
         if(accessEnabled) {
             displayStatus(true);
 

@@ -39,28 +39,28 @@ public class ColorPreferenceFragment extends Fragment implements View.OnClickLis
         int color;
         switch (rowId) {
             case R.id.rowSubst:
-                color = PreferenceProvider.getInstance(getContext()).getColorSubst();
+                color = PreferenceProvider.getInstance().getColorSubst();
                 break;
             case R.id.rowChange:
-                color = PreferenceProvider.getInstance(getContext()).getColorChange();
+                color = PreferenceProvider.getInstance().getColorChange();
                 break;
             case R.id.rowReserv:
-                color = PreferenceProvider.getInstance(getContext()).getColorReserv();
+                color = PreferenceProvider.getInstance().getColorReserv();
                 break;
             case R.id.rowCancel:
-                color = PreferenceProvider.getInstance(getContext()).getColorCancel();
+                color = PreferenceProvider.getInstance().getColorCancel();
                 break;
             case R.id.rowSpecial:
-                color = PreferenceProvider.getInstance(getContext()).getColorSpecial();
+                color = PreferenceProvider.getInstance().getColorSpecial();
                 break;
             case R.id.rowRoomSubst:
-                color = PreferenceProvider.getInstance(getContext()).getColorRoomSubst();
+                color = PreferenceProvider.getInstance().getColorRoomSubst();
                 break;
             case R.id.rowShift:
-                color = PreferenceProvider.getInstance(getContext()).getColorShift();
+                color = PreferenceProvider.getInstance().getColorShift();
                 break;
             default:
-                color = PreferenceProvider.getInstance(getContext()).getColorOther();
+                color = PreferenceProvider.getInstance().getColorOther();
                 break;
 
 
@@ -90,28 +90,28 @@ public class ColorPreferenceFragment extends Fragment implements View.OnClickLis
                 setRowIcon(v, color);
                 switch (v.getId()) {
                     case R.id.rowSubst:
-                        PreferenceProvider.getInstance(getContext()).setColorSubst(color);
+                        PreferenceProvider.getInstance().setColorSubst(color);
                         break;
                     case R.id.rowChange:
-                        PreferenceProvider.getInstance(getContext()).setColorChange(color);
+                        PreferenceProvider.getInstance().setColorChange(color);
                         break;
                     case R.id.rowReserv:
-                        PreferenceProvider.getInstance(getContext()).setColorReserv(color);
+                        PreferenceProvider.getInstance().setColorReserv(color);
                         break;
                     case R.id.rowCancel:
-                        PreferenceProvider.getInstance(getContext()).setColorCancel(color);
+                        PreferenceProvider.getInstance().setColorCancel(color);
                         break;
                     case R.id.rowSpecial:
-                        PreferenceProvider.getInstance(getContext()).setColorSpecial(color);
+                        PreferenceProvider.getInstance().setColorSpecial(color);
                         break;
                     case R.id.rowRoomSubst:
-                        PreferenceProvider.getInstance(getContext()).setColorRoomSubst(color);
+                        PreferenceProvider.getInstance().setColorRoomSubst(color);
                         break;
                     case R.id.rowShift:
-                        PreferenceProvider.getInstance(getContext()).setColorShift(color);
+                        PreferenceProvider.getInstance().setColorShift(color);
                         break;
                     default:
-                        PreferenceProvider.getInstance(getContext()).setColorOther(color);
+                        PreferenceProvider.getInstance().setColorOther(color);
                         break;
                 }
             }

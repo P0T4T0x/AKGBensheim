@@ -10,9 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.os.UserManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -21,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.tobiaserthal.akgbensheim.data.Log;
+import de.tobiaserthal.akgbensheim.data.NetworkManager;
 import de.tobiaserthal.akgbensheim.data.R;
 import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
 import de.tobiaserthal.akgbensheim.data.model.event.EventModel;
@@ -30,6 +33,7 @@ import de.tobiaserthal.akgbensheim.data.model.teacher.TeacherModel;
 import de.tobiaserthal.akgbensheim.data.provider.event.EventContentValues;
 import de.tobiaserthal.akgbensheim.data.provider.event.EventCursor;
 import de.tobiaserthal.akgbensheim.data.provider.event.EventSelection;
+import de.tobiaserthal.akgbensheim.data.provider.news.NewsColumns;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsContentValues;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsSelection;
@@ -42,6 +46,7 @@ import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherSelection;
 import de.tobiaserthal.akgbensheim.data.rest.api.ApiError;
 import de.tobiaserthal.akgbensheim.data.rest.api.RestServer;
 import de.tobiaserthal.akgbensheim.data.rest.model.event.EventResponse;
+import de.tobiaserthal.akgbensheim.data.rest.model.news.NewsKeys;
 import de.tobiaserthal.akgbensheim.data.rest.model.news.NewsResponse;
 import de.tobiaserthal.akgbensheim.data.rest.model.substitution.SubstitutionResponse;
 import de.tobiaserthal.akgbensheim.data.rest.model.teacher.TeacherResponse;
@@ -50,15 +55,10 @@ import retrofit.RetrofitError;
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
 
-    public static final class SYNC {
-        public static final String ARG = "sync_id";
-
-        public static final int EVENTS = 0x1;
-        public static final int NEWS = 0x2;
-        public static final int SUBSTITUTIONS = 0x4;
-        public static final int TEACHERS = 0x8;
-
-        public static final int ALL = 0xF;
+    public static final class ARGS {
+        public static final String ID = "sync_id";
+        public static final String NEWS_START = "sync_extra_newsStart";
+        public static final String NEWS_COUNT = "sync_extra_newsCount";
     }
 
     public SyncAdapter(Context context, boolean autoInitialize) {
@@ -72,15 +72,32 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+        if (!NetworkManager.getInstance().isAccessAllowed()) {
+            Log.w(TAG, "Not allowed to start sync due to network settings! Aborting...");
+            syncResult.stats.numIoExceptions ++;
+            return;
+        }
+
         Log.d(TAG, "Beginning sync with options: %s", extras.toString());
         try {
             ArrayList<ContentProviderOperation> batchList = new ArrayList<>();
 
-            int which = extras.getInt(SYNC.ARG, SYNC.ALL);
-            if((which & SYNC.NEWS) == SYNC.NEWS) { syncNews(provider, batchList, syncResult, 0, 1); }
-            if((which & SYNC.EVENTS) == SYNC.EVENTS) { syncEvents(provider, batchList, syncResult); }
-            if((which & SYNC.TEACHERS) == SYNC.TEACHERS) { syncTeachers(provider, batchList, syncResult); }
-            if((which & SYNC.SUBSTITUTIONS) == SYNC.SUBSTITUTIONS) { syncSubstitutions(provider, batchList, syncResult); }
+            int which = extras.getInt(ARGS.ID, ModelUtils.ALL);
+            if((which & ModelUtils.NEWS) == ModelUtils.NEWS) {
+                syncNews(provider, batchList, syncResult, extras);
+            }
+
+            if((which & ModelUtils.EVENTS) == ModelUtils.EVENTS) {
+                syncEvents(provider, batchList, syncResult);
+            }
+
+            if((which & ModelUtils.TEACHERS) == ModelUtils.TEACHERS) {
+                syncTeachers(provider, batchList, syncResult);
+            }
+
+            if((which & ModelUtils.SUBSTITUTIONS) == ModelUtils.SUBSTITUTIONS) {
+                syncSubstitutions(provider, batchList, syncResult);
+            }
 
             Log.i(TAG, "Merge solution ready. Applying batch update to database...");
             provider.applyBatch(batchList);
@@ -103,8 +120,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void syncEvents(ContentProviderClient provider, ArrayList<ContentProviderOperation> batch,
-                            SyncResult syncResult) throws ApiError, RemoteException, OperationApplicationException {
-        Log.i(TAG, "Computing update solution for events table...");
+                           SyncResult syncResult) throws ApiError, RemoteException, OperationApplicationException {
+        Log.d(TAG, "Computing update solution for events table...");
 
         Log.i(TAG, "Parsing results from rest server...");
         List<EventResponse> entries = RestServer.getEvents();
@@ -167,14 +184,37 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void syncNews(ContentProviderClient provider, ArrayList<ContentProviderOperation> batch,
-                          SyncResult syncResult, int start, int numOfSites) throws ApiError, RemoteException, OperationApplicationException {
-        Log.i(TAG, "Computing update solution for news table...");
+                         SyncResult syncResult, Bundle extras) throws ApiError, RemoteException, OperationApplicationException {
+        Log.d(TAG, "Computing update solution for news table...");
 
-        Log.i(TAG, "Parsing results from rest server...");
-        List<NewsResponse> entries = new ArrayList<>();
-        for(int i = 0; i < numOfSites; i ++) {
-            entries.addAll(RestServer.getNews(start + i * 10));
+        int start = Math.max(extras.getInt(ARGS.NEWS_START, 0), 0);
+        int count = Math.max(extras.getInt(ARGS.NEWS_COUNT, 0), 0);
+
+        // this means we should either refresh everything or fire up an initial sync
+        if(count == 0) {
+            NewsSelection selection = NewsSelection.getAll();
+            String[] projection = {"count(" + NewsColumns._ID + ")"};
+
+            Cursor cursor = provider.query(
+                    selection.uri(),
+                    projection,
+                    selection.sel(),
+                    selection.args(),
+                    selection.order()
+            );
+
+            if(cursor != null) {
+                if (cursor.moveToFirst()) {
+                    // refresh at least the first 10 entries
+                    count = Math.max(cursor.getInt(0), NewsKeys.ITEMS_PER_PAGE);
+                }
+
+                cursor.close();
+            }
         }
+
+        Log.i(TAG, "Parsing results from rest server with start: %d and count: %d...", start, count);
+        List<NewsResponse> entries = RestServer.getNews(start, count);
 
         Log.i(TAG, "Parsed %d entries. Mapping fetched data...", entries.size());
         HashMap<Long, NewsModel> entryMap = new HashMap<>();
@@ -182,10 +222,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             entryMap.put(response.getId(), response);
         }
 
-        Log.i(TAG, "Fetching local database...");
-        NewsSelection query = new NewsSelection();
+        Log.i(TAG, "Fetching local database with offset: %d and limit: %d...", start, count);
+        NewsSelection query = NewsSelection.getAll()
+                .limit(count)
+                .offset(start);
+
         NewsCursor cursor = NewsCursor.wrap(
-                provider.query(query.uri(), null, query.sel(), query.args(), query.order())); // TODO: maybe query a limit?
+                provider.query(query.uri(), null, query.sel(), query.args(), query.order()));
 
         Log.i(TAG, "Fetched %d entries from database. Computing merge solution...", cursor.getCount());
         while (cursor.moveToNext()) {
@@ -235,7 +278,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void syncSubstitutions(ContentProviderClient provider, ArrayList<ContentProviderOperation> batch,
                                    SyncResult syncResult) throws RemoteException, ApiError, OperationApplicationException {
-        Log.i(TAG, "Computing update solution for substitutions table...");
+        Log.d(TAG, "Computing update solution for substitutions table...");
 
 
         Log.i(TAG, "Parsing results from rest server...");
@@ -260,10 +303,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             SubstitutionModel match = entryMap.get(id);
             SubstitutionSelection entry = new SubstitutionSelection().id(id);
 
-            if(match != null) {
+            if (match != null) {
                 entryMap.remove(id);
 
-                if(!ModelUtils.equal(match, cursor)) {
+                if (!ModelUtils.equal(match, cursor)) {
                     Log.i(TAG, "Scheduling update for: %s/%s", entry.uri().toString(), String.valueOf(id));
                     batch.add(ContentProviderOperation.newUpdate(entry.uri())
                             .withSelection(entry.sel(), entry.args())
@@ -272,7 +315,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     syncResult.stats.numUpdates ++;
                 } else {
                     Log.i(TAG, "No action for: %s/%s", entry.uri().toString(), String.valueOf(id));
-                    syncResult.stats.numSkippedEntries ++;
+                    syncResult.stats.numSkippedEntries++;
                 }
 
             } else {
@@ -295,12 +338,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.stats.numInserts ++;
         }
 
-        Log.i(TAG, "Finished adding update solution for substitution table.");
+        Log.i(TAG, "Finished adding update solution for substitution table");
     }
 
     private void syncTeachers(ContentProviderClient provider, ArrayList<ContentProviderOperation> batch,
-                              SyncResult syncResult) throws RemoteException, ApiError, OperationApplicationException {
-        Log.i(TAG, "Computing update solution for teachers table...");
+                             SyncResult syncResult) throws RemoteException, ApiError, OperationApplicationException {
+        Log.d(TAG, "Computing update solution for teachers table...");
 
         Log.i(TAG, "Parsing results from rest server...");
         List<TeacherResponse> entries = RestServer.getTeachers();
@@ -359,32 +402,5 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         Log.i(TAG, "Finished adding update solution for teachers table.");
-    }
-
-    private void broadcastNotification(int changes) {
-        PendingIntent intent;
-        try {
-            Class<?> pendingClass = Class.forName("de.tobiaserthal.akgbensheim.MainActivity");
-            Intent activity = new Intent(getContext(), pendingClass);
-
-            intent = PendingIntent.getActivity(
-                    getContext(), 0, activity, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-
-            Intent activity = new Intent();
-            intent = PendingIntent.getActivity(
-                    getContext(), -1, activity, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
-
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(getContext())
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle(getContext().getString(R.string.notify_subst_changed_title))
-                        .setContentText(getContext().getString(R.string.notify_subst_changed_content, changes))
-                        .setContentIntent(intent);
-
-        NotificationManagerCompat.from(getContext()).notify(1, builder.build());
     }
 }

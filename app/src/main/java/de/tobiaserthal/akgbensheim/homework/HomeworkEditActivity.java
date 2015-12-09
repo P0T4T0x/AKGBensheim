@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 
 import java.text.DateFormat;
@@ -28,6 +31,7 @@ import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.Log;
+import de.tobiaserthal.akgbensheim.data.SimpleAsyncQueryHandler;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkContentValues;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkCursor;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkSelection;
@@ -128,6 +132,10 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
                 saveHomework();
                 return true;
 
+            case R.id.action_delete:
+                deleteHomework();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -162,6 +170,32 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
         super.onPause();
     }
 
+    public void deleteHomework() {
+        new MaterialDialog.Builder(this)
+                .title(getString(R.string.action_delete_homework_title, homework.getTitle()))
+                .content(R.string.action_delete_homework_content)
+                .negativeText(R.string.action_delete)
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        HomeworkSelection selection = HomeworkSelection.get(homework.getId());
+                        new SimpleAsyncQueryHandler(getContentResolver()).startDelete(selection);
+
+                        finish();
+                    }
+                })
+                .neutralText(android.R.string.cancel)
+                .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .build()
+                .show();
+
+    }
+
     public void saveHomework() {
         String title = txtTitle.getText().toString();
         String notes = txtNotes.getText().toString();
@@ -176,7 +210,7 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
 
         if(!values.valueSet().isEmpty()) {
             HomeworkSelection selection = HomeworkSelection.get(homework.getId());
-            values.update(getContentResolver(), selection);
+            new SimpleAsyncQueryHandler(getContentResolver()).startUpdate(selection, values);
         }
     }
 

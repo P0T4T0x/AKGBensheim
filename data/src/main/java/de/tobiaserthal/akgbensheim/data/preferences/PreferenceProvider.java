@@ -1,7 +1,6 @@
 package de.tobiaserthal.akgbensheim.data.preferences;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.PeriodicSync;
@@ -19,10 +18,9 @@ import java.util.List;
 
 import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.R;
-import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
+import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
 import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
 import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
-import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
 
 public class PreferenceProvider {
     public static final String TAG = "PreferenceProvider";
@@ -44,7 +42,7 @@ public class PreferenceProvider {
     private String[] formOptionValues;
 
     private String[] frequencyOptions;
-    private int[] frequencyoptionValues;
+    private int[] frequencyOptionValues;
 
     private final SharedPreferences.OnSharedPreferenceChangeListener changeListener
             = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -100,7 +98,7 @@ public class PreferenceProvider {
         this.formOptionValues = context.getResources().getStringArray(R.array.pref_subst_form_options_values);
 
         this.frequencyOptions = context.getResources().getStringArray(R.array.pref_subst_sync_frequency_options);
-        this.frequencyoptionValues = context.getResources().getIntArray(R.array.pref_subst_sync_frequency_options_values);
+        this.frequencyOptionValues = context.getResources().getIntArray(R.array.pref_subst_sync_frequency_options_values);
 
         ensureSubstPhase();
         ensureSubstForm();
@@ -125,9 +123,14 @@ public class PreferenceProvider {
         }
     }
 
-    public static synchronized PreferenceProvider getInstance(Context context) {
+    public static synchronized PreferenceProvider initialize(Context context) {
+        instance = new PreferenceProvider(context);
+        return instance;
+    }
+
+    public static synchronized PreferenceProvider getInstance() {
         if(instance == null) {
-            instance = new PreferenceProvider(context);
+            throw new IllegalStateException("PreferenceProvider not initialized!");
         }
 
         return instance;
@@ -145,7 +148,7 @@ public class PreferenceProvider {
             Arrays.fill(instance.formOptionValues, null);
 
             Arrays.fill(instance.frequencyOptions, null);
-            Arrays.fill(instance.frequencyoptionValues, 0);
+            Arrays.fill(instance.frequencyOptionValues, 0);
         }
     }
 
@@ -292,12 +295,12 @@ public class PreferenceProvider {
     }
 
     public int getFrequencyIndex(int frequency) {
-        int index = Arrays.binarySearch(frequencyoptionValues, frequency);
+        int index = Arrays.binarySearch(frequencyOptionValues, frequency);
         return index < 0 ? 0 : index;
     }
 
     public int getFrequency(int index) {
-        return frequencyoptionValues[Math.min(Math.max(index, 0), frequencyoptionValues.length)];
+        return frequencyOptionValues[Math.min(Math.max(index, 0), frequencyOptionValues.length)];
     }
 
     public String getFrequencySummary(int index) {
@@ -313,10 +316,10 @@ public class PreferenceProvider {
          * This is necessary since disabled syncs are not saved by the system,
          * so we need create the same static array as always by ourselves :( */
         ArrayList<PeriodicSyncPreference> periodicSyncDummies = new ArrayList<>();
-        periodicSyncDummies.add(new PeriodicSyncPreference(SyncAdapter.SYNC.NEWS, context.getString(R.string.model_title_news)));
-        periodicSyncDummies.add(new PeriodicSyncPreference(SyncAdapter.SYNC.EVENTS, context.getString(R.string.model_title_events)));
-        periodicSyncDummies.add(new PeriodicSyncPreference(SyncAdapter.SYNC.TEACHERS, context.getString(R.string.model_title_teachers)));
-        periodicSyncDummies.add(new PeriodicSyncPreference(SyncAdapter.SYNC.SUBSTITUTIONS, context.getString(R.string.model_title_subst)));
+        periodicSyncDummies.add(new PeriodicSyncPreference(ModelUtils.NEWS, context.getString(R.string.model_title_news)));
+        periodicSyncDummies.add(new PeriodicSyncPreference(ModelUtils.EVENTS, context.getString(R.string.model_title_events)));
+        periodicSyncDummies.add(new PeriodicSyncPreference(ModelUtils.TEACHERS, context.getString(R.string.model_title_teachers)));
+        periodicSyncDummies.add(new PeriodicSyncPreference(ModelUtils.SUBSTITUTIONS, context.getString(R.string.model_title_subst)));
 
         // get the current active periodic syncs from the system
         List<PeriodicSync> periodicSyncs = SyncUtils.getPeriodicSyncs();
@@ -327,8 +330,8 @@ public class PreferenceProvider {
             PeriodicSync sync = periodicSyncs.get(i);
 
             if(sync != null && sync.extras != null) {
-                int which = sync.extras.getInt(SyncAdapter.SYNC.ARG, -1);
-                Log.d(TAG, "Periodic sync #%d: typeFlag: %s, %s",
+                int which = sync.extras.getInt(SyncAdapter.ARGS.ID, -1);
+                Log.d(TAG, "Periodic sync #%d: typeFlag: %d, %s",
                         i, which, sync.toString());
 
                 syncHashMap.put(which, sync);

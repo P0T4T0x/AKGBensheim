@@ -66,6 +66,7 @@ public abstract class AbstractSelection<T extends AbstractSelection<?>> {
     String mHaving;
     String mOrderBy;
     Integer mLimit;
+    Integer mOffset;
 
     protected void addEquals(String column, Object[] value) {
         mSelection.append(column);
@@ -366,6 +367,7 @@ public abstract class AbstractSelection<T extends AbstractSelection<?>> {
         if (mGroupBy != null) uri = BaseContentProvider.groupBy(uri, mGroupBy);
         if (mHaving != null) uri = BaseContentProvider.having(uri, mHaving);
         if (mLimit != null) uri = BaseContentProvider.limit(uri, String.valueOf(mLimit));
+        if (mOffset != null) uri = BaseContentProvider.offset(uri, String.valueOf(mOffset));
         return uri;
     }
 
@@ -433,6 +435,12 @@ public abstract class AbstractSelection<T extends AbstractSelection<?>> {
     @SuppressWarnings("unchecked")
     public T limit(int limit) {
         mLimit = limit;
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T offset(int offset) {
+        mOffset = offset;
         return (T) this;
     }
 

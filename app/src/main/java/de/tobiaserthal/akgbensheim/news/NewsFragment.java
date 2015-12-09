@@ -28,6 +28,8 @@ import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsColumns;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
 import de.tobiaserthal.akgbensheim.data.provider.news.NewsSelection;
+import de.tobiaserthal.akgbensheim.data.rest.model.news.NewsKeys;
+import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
 import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
 
 /**
@@ -40,6 +42,7 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
 
     private static final String ARG_QUERY_FLAG = "query";
     private static final String ARG_VIEW_FLAG = "view";
+    private static final String ARG_LIMIT_FLAG = "limit";
 
     @IntDef({ALL, BOOKMARKED})
     @Retention(RetentionPolicy.SOURCE)
@@ -57,6 +60,7 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
         }
     };
 
+    private int page = 1;
     private int viewFlag;
     private String currentFilter;
 
@@ -155,15 +159,31 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
     }
 
     @Override
+    public void onLoadMore(int page) {
+        Log.d(TAG, "Requested to load page: %d", page);
+
+        if(viewFlag == ALL && TextUtils.isEmpty(currentFilter)) {
+            this.page = page;
+
+            Bundle bundle = new Bundle();
+            bundle.putString(ARG_QUERY_FLAG, null);
+            bundle.putInt(ARG_LIMIT_FLAG, page * NewsKeys.ITEMS_PER_PAGE);
+
+            getLoaderManager().restartLoader(ALL, bundle, this);
+        }
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "Creating cursor loader with id: %d and args: %s", id, args.toString());
 
+        int limit = args.getInt(ARG_LIMIT_FLAG, NewsKeys.ITEMS_PER_PAGE);
         String query = args.getString(ARG_QUERY_FLAG);
         NewsSelection selection;
         switch (id) {
             case ALL:
                 selection = (query == null) ?
-                        NewsSelection.getAll() :
+                        NewsSelection.getAll().limit(limit) :
                         NewsSelection.getAllWithQuery(query);
                 break;
 
@@ -191,6 +211,13 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "Loader finished with id: %d and %d items", loader.getId(), data.getCount());
         getAdapter().swapCursor(NewsCursor.wrap(data));
+
+        if(loader.getId() == ALL) {
+            if (page > data.getCount() / NewsKeys.ITEMS_PER_PAGE) {
+                Log.w(TAG, "Need to load new data!");
+                SyncUtils.loadNews(data.getCount(), NewsKeys.ITEMS_PER_PAGE);
+            }
+        }
     }
 
     @Override

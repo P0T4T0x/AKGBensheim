@@ -16,7 +16,7 @@ public interface ApiEndpoint {
     void getEvents(ApiCallback<EventResponse> response);
 
     @GET(NewsKeys.DOMAIN)
-    void getNews(@Query(NewsKeys.ARG_START) int start, ApiCallback<NewsResponse> response);
+    void getNews(@Query(NewsKeys.ARG_START) int start, @Query(NewsKeys.ARG_COUNT) int count, ApiCallback<NewsResponse> response);
 
     @GET(SubstitutionKeys.DOMAIN)
     void getSubstitutions(ApiCallback<SubstitutionResponse> response);

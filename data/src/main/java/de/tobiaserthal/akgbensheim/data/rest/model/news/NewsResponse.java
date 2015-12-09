@@ -41,7 +41,7 @@ public class NewsResponse implements NewsModel {
     @NonNull
     @Override
     public String getArticle() {
-        return article;
+        return article != null ? article : "";
     }
 
     @NonNull

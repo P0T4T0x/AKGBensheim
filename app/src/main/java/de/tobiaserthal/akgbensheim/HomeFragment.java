@@ -8,6 +8,7 @@ import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +25,7 @@ import java.lang.ref.WeakReference;
 import de.tobiaserthal.akgbensheim.adapter.HomeAdapter;
 import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.NetworkManager;
+import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
 import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
 import de.tobiaserthal.akgbensheim.data.provider.event.EventColumns;
@@ -127,8 +129,8 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setHasOptionsMenu(false);
+
         HomeAdapter adapter = new HomeAdapter(getActivity());
         adapter.setCallbacks(this);
 
@@ -170,6 +172,9 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // display the toolbar
+        showToolbar(false);
 
         // Create the layout manager
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(
@@ -233,9 +238,9 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
     public void onRefresh() {
         Log.d(TAG, "Force refresh triggered!");
 
-        boolean allowed = NetworkManager.getInstance(getActivity()).isAccessAllowed();
+        boolean allowed = NetworkManager.getInstance().isAccessAllowed();
         if(allowed) {
-            SyncUtils.forceRefresh(SyncAdapter.SYNC.NEWS | SyncAdapter.SYNC.EVENTS | SyncAdapter.SYNC.SUBSTITUTIONS);
+            SyncUtils.forceRefresh(ModelUtils.NEWS | ModelUtils.EVENTS | ModelUtils.SUBSTITUTIONS);
         } else {
             swipeRefreshLayout.setRefreshing(false);
             Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_SHORT)
@@ -256,9 +261,9 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
         switch (id) {
             case FRAGMENT_SUBSTITUTION: {
                 SubstitutionSelection selection = SubstitutionSelection.getForm(
-                        PreferenceProvider.getInstance(getActivity()).getSubstPhase(),
-                        PreferenceProvider.getInstance(getActivity()).getSubstForm(),
-                        PreferenceProvider.getInstance(getActivity()).getSubstSubjects())
+                        PreferenceProvider.getInstance().getSubstPhase(),
+                        PreferenceProvider.getInstance().getSubstForm(),
+                        PreferenceProvider.getInstance().getSubstSubjects())
                         .getToday();
 
                 String[] projection = {
@@ -327,14 +332,14 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
     }
 
     @Override
-    public void onItemClicked(@NavigationItem int type) {
+    public void onItemClicked(@NavigationItem int type, Bundle bundle) {
         if(mainNavigation != null) {
             mainNavigation.switchToNavigationItem(type);
         }
     }
 
     @Override
-    public void onSubItemClicked(@NavigationItem int type, long id) {
+    public void onSubItemClicked(@NavigationItem int type, long id, Bundle bundle) {
         switch(type) {
             case FRAGMENT_EVENT:
                 EventDetailActivity.startDetail(getActivity(), id);
@@ -349,7 +354,12 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
                 break;
 
             case FRAGMENT_SUBSTITUTION:
-                SubstDetailActivity.startDetail(getActivity(), id);
+                if(bundle.containsKey("color")) {
+                    SubstDetailActivity.startDetail(getActivity(), id, bundle.getInt("color"));
+                } else {
+                    SubstDetailActivity.startDetail(getActivity(), id);
+                }
+
                 break;
         }
     }

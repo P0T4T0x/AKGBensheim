@@ -167,7 +167,6 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
         if(data == null)
             return;
 
-        // TODO: check this and change in all other detail views if necessary
         TeacherCursor oldCursor = teacher;
         teacher = TeacherCursor.wrap(data);
 
@@ -179,8 +178,8 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
             return;
         }
 
-        headerTitle.setText(teacher.getFirstName() + " " + teacher.getLastName());
-        nameView.setText(teacher.getFirstName() + " " + teacher.getLastName());
+        headerTitle.setText(getString(R.string.teacher_detail_name_value, teacher.getFirstName(), teacher.getLastName()));
+        nameView.setText(getString(R.string.teacher_detail_name_value, teacher.getFirstName(), teacher.getLastName()));
 
         headerSubtitle.setText(teacher.getSubjects());
         subjectsView.setText(teacher.getSubjects());

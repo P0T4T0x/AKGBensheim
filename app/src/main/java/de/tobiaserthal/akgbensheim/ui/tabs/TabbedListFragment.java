@@ -54,7 +54,7 @@ public abstract class TabbedListFragment<A extends RecyclerView.Adapter>
     @Override
     public boolean isToolbarPreferred() {
         boolean canScrollUp = ViewCompat.canScrollVertically(getRecyclerView(), -1);
-        return !canScrollUp || getScrollY() < 0; // TODO: test this
+        return !canScrollUp || getScrollY() < 0;
     }
 
     @Override

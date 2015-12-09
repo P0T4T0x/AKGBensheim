@@ -1,15 +1,18 @@
 package de.tobiaserthal.akgbensheim.ui;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -31,14 +34,21 @@ import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.tools.ViewUtils;
 import de.tobiaserthal.akgbensheim.ui.base.ToolbarActivity;
 import de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView;
+
+import static de.tobiaserthal.akgbensheim.R.anim.abc_fade_out;
 
 public abstract class OverlayActivity<S extends View & Scrollable> extends ToolbarActivity
         implements TouchInterceptionFrameLayout.TouchInterceptionListener, ObservableScrollViewCallbacks {
@@ -91,13 +101,22 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
         }
         root.draw(canvas);
 
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+        try {
+            File file = new File(activity.getCacheDir(), "background.jpg");
+            FileOutputStream stream = new FileOutputStream(file);
 
-        byte[] data = stream.toByteArray();
-        startIntent.putExtra("bgBitmap", data);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+            stream.flush();
+            stream.close();
 
-        Log.d(TAG, "Rendered background image with size of %d bytes.", data.length);
+            bitmap.recycle();
+            startIntent.putExtra("bgBitmap", file.getPath());
+
+            Log.d(TAG, "Rendered background image.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return startIntent;
     }
 
@@ -164,9 +183,8 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
 
-        byte[] byteArray = getIntent().getByteArrayExtra("bgBitmap");
-        Bitmap screenshot = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-        if(screenshot == null) {
+        Bitmap screenshot = BitmapFactory.decodeFile(getIntent().getStringExtra("bgBitmap"));
+        if (screenshot == null) {
             throw new IllegalArgumentException("You have to provide a valid bitmap!");
         }
 
@@ -177,8 +195,9 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
         ));
 
         backdropImageView = new BackdropImageView(this);
+        backdropImageView.setId(android.R.id.background);
 
-        backdropImageView.setFactor(1.125f);
+        backdropImageView.setFactor(0.25f);
         backdropImageView.setScrimColor(Color.BLACK);
         backdropImageView.setImageBitmap(screenshot);
         backdropImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -208,7 +227,6 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
         final int pos = savedInstanceState.getInt("scroll_vertical", 0) + getToolbar().getHeight();
         ScrollUtils.addOnGlobalLayoutListener(scrollable, new Runnable() {
             @Override
@@ -222,9 +240,7 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
         if(scrollable != null) {
-            // TODO: test this -> might work
             outState.putInt("scroll_vertical", scrollable.getCurrentScrollY() - getToolbar().getHeight());
         }
     }
@@ -507,7 +523,7 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
                 onEndExitAnimation();
 
                 OverlayActivity.super.finish();
-                overridePendingTransition(0, R.anim.abc_fade_out);
+                overridePendingTransition(0, abc_fade_out);
             }
 
             @Override

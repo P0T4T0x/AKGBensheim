@@ -96,5 +96,20 @@
     <string name="pref_prompt_sync_frequency">Choose a frequency:</string>
     <string name="news_empty_text">No news!</string>
     <string name="foodplan_empty_text">Foodplan not available!</string>
+    <string name="teacher_detail_name_value">%1$s %2$s</string>
+
+    <string name="notify_title_teachersChanged">List of teachers changed</string>
+    <string name="notify_content_teachersChanged">{0, choice, 0#No changes have been made.|1#1 change has been made.|1&lt;{0} changes have been made.}</string>
+    <string name="notify_title_substChanged">Substitution plan changed</string>
+    <string name="notify_content_substChanged">{0, choice, 0#No changes have been made.|1#1 change has been made.|1&lt;{0} changes have been made.}</string>
+    <string name="pref_title_notify_subst">Notify substitution plan changes</string>
+    <string name="pref_title_notify_event">Remind me of events</string>
+    <string name="pref_title_notify_news">Notify me about new articles</string>
+    <string name="pref_title_notify_teacher">Notify changes in the teacher list</string>
+    <string name="pref_title_notify_homework">Remind me of undone homework</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_delete_homework_title">Delete \"%1$s\"</string>
+    <string name="action_delete_homework_content">You can\'t recover it afterwards!</string>
+
 
 </resources>

@@ -37,7 +37,7 @@
     <string name="pref_category_sync">Sync options</string>
     <string name="pref_title_clear_cache">Clear cache</string>
     <string name="pref_title_clear_data">Clear data</string>
-    <string name="pref_category_data">Daten</string>
+    <string name="pref_category_data">Data</string>
     <string name="pref_title_sync_enabled">Enable automatic sync</string>
     <string name="pref_title_sync_settings">Item settings</string>
     <string name="pref_category_sync_settings">pref_category_syncSettings</string>
@@ -93,8 +93,6 @@
     <string name="pref_subst_form_option_d">Form d</string>
     <string name="pref_subst_form_option_c">Form c</string>
     <string name="pref_subst_form_option_b">Form b</string>
-    <string name="notify_subst_changed_title">Substitution plan changed!</string>
-    <string name="notify_subst_changed_content">%1$d changes were made since the last update.</string>
 
     <string name="pref_subst_phase_option_5">Phase 5</string>
     <string name="pref_subst_phase_option_6">Phase 6</string>
@@ -124,4 +122,10 @@
     <string name="model_title_events">Events</string>
     <string name="model_title_news">News</string>
     <string name="model_title_teachers">Teachers</string>
+    <string name="pref_key_notify_subst">pref_notifySubst</string>
+    <string name="pref_key_notify_teacher">pref_notifyTeacher</string>
+
+    <string name="pref_key_notify_event">pref_notifyEvent</string>
+    <string name="pref_key_notify_news">pref_notifyNews</string>
+    <string name="pref_key_notify_homework">pref_notifyHomework</string>
 </resources>

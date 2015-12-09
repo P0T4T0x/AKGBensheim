@@ -130,7 +130,7 @@ public class SubstAdapter extends SectionCursorAdapter<SubstitutionCursor, Date,
             String type = cursor.getType();
             txtType.setText(type);
 
-            int color = PreferenceProvider.getInstance(getContext()).getColorFromType(type);
+            int color = PreferenceProvider.getInstance().getColorFromType(type);
 
             itemView.setTag(color);
             ((CardView) itemView).setCardBackgroundColor(color);

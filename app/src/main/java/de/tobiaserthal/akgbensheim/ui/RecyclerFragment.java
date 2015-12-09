@@ -48,7 +48,6 @@ import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.tools.EndlessRecyclerViewOnScrollListener;
 import de.tobiaserthal.akgbensheim.tools.ViewUtils;
 
-// FIXME: Reset scroll values to prevent wrong behaviour (e.g. when data set changed to 1 item and the recyclerview can't scroll anymore)
 public class RecyclerFragment<A extends RecyclerView.Adapter> extends Fragment {
 
     private static final int INTERNAL_LIST_VIEW_ID = android.R.id.list;
@@ -69,6 +68,18 @@ public class RecyclerFragment<A extends RecyclerView.Adapter> extends Fragment {
         @Override
         public void onChanged() {
             super.onChanged();
+            checkDataSet();
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            super.onItemRangeInserted(positionStart, itemCount);
+            checkDataSet();
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            super.onItemRangeRemoved(positionStart, itemCount);
             checkDataSet();
         }
     };
@@ -312,11 +323,13 @@ public class RecyclerFragment<A extends RecyclerView.Adapter> extends Fragment {
     }
 
     private void checkDataSet() {
-        if(emptyTextView != null)
+        Log.d("RecyclerFragment", "Checking dataset...");
+        if(emptyTextView != null) {
             emptyTextView.setVisibility(
                     treatAsEmpty(getItemCount()) ?
                             View.VISIBLE : View.GONE
             );
+        }
     }
 
     /**
