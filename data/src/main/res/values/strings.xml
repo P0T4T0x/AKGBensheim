@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="account_name">AKGBensheim</string>
-    <string name="address">Wilhelmstraße 62, 64625 Bensheim</string>
+    <string name="address">Wilhelmstraße 62, 64625 Bensheim, Hesse, Germany</string>
     <string name="sync_all_data">All data</string>
 
     <string name="subst_detail_form">Form %1$s</string>
@@ -12,7 +12,7 @@
     <string name="subst_share_text">, %1$s. period: %2$s in room %3$s instead of %4$s</string>
     <string name="subst_share_calendar">%1$s. period: %2$s in room %3$s instead of %4$s</string>
     <string name="action_share_chooser">Share via</string>
-    <string name="news_share_text">%1$s ( Read on: %2$s )</string>
+    <string name="news_share_text">%1$s (Read on: %2$s)</string>
     <string name="action_share_chooser_email">Send email with:</string>
     <string name="teacher_company">AKG Bensheim</string>
     <string name="teacher_insert_shorthand">Shorthand: %1$s</string>
@@ -22,15 +22,15 @@
     <string name="homework_dummy_title">New homework</string>
     <string name="homework_dummy_notes">Add your notes here</string>
     <string name="events_share_text">%1$s: %2$s, %3$s</string>
-    <string name="pref_key_only_wifi">pref_onlyWifi</string>
-    <string name="pref_key_clear_cache">pref_clearCache</string>
-    <string name="pref_key_clear_data">pref_clearData</string>
-    <string name="pref_key_licence">pref_licence</string>
-    <string name="pref_key_mail_dev">pref_mailDev</string>
-    <string name="pref_key_about">pref_about</string>
-    <string name="pref_key_sync_enabled">pref_syncEnabled</string>
+    <string name="pref_key_only_wifi" translatable="false">pref_onlyWifi</string>
+    <string name="pref_key_clear_cache" translatable="false">pref_clearCache</string>
+    <string name="pref_key_clear_data" translatable="false">pref_clearData</string>
+    <string name="pref_key_licence" translatable="false">pref_licence</string>
+    <string name="pref_key_mail_dev" translatable="false">pref_mailDev</string>
+    <string name="pref_key_about" translatable="false">pref_about</string>
+    <string name="pref_key_sync_enabled" translatable="false">pref_syncEnabled</string>
     <string name="pref_category_about">About</string>
-    <string name="pref_key_website">pref_website</string>
+    <string name="pref_key_website" translatable="false">pref_website</string>
     <string name="pref_summary_licence">Shows legal information and licence agreements.</string>
     <string name="pref_title_website">Website</string>
     <string name="pref_title_licence">Licence</string>
@@ -40,31 +40,27 @@
     <string name="pref_category_data">Data</string>
     <string name="pref_title_sync_enabled">Enable automatic sync</string>
     <string name="pref_title_sync_settings">Item settings</string>
-    <string name="pref_category_sync_settings">pref_category_syncSettings</string>
+    <string name="pref_category_sync_settings" translatable="false">pref_category_syncSettings</string>
     <string name="pref_title_event_sync_enabled">Sync events</string>
     <string name="pref_category_sync_news">News</string>
     <string name="pref_category_sync_subst">Substitutions</string>
     <string name="pref_category_sync_teacher">Teachers</string>
     <string name="pref_title_news_sync_enabled">Sync news</string>
-    <string name="pref_title_news_sync_period">Sync frequency</string>
     <string name="pref_title_subst_sync_enabled">Sync substitutions</string>
-    <string name="pref_title_subst_sync_period">Sync frequency</string>
     <string name="pref_title_teacher_sync_enabled">Sync teachers</string>
-    <string name="pref_title_teacher_sync_period">Sync frequency</string>
-    <string name="pref_title_event_sync_period">Sync frequency</string>
-    <string name="pref_key_sync_settings">pref_syncSettings</string>
-    <string name="pref_key_subst_list">pref_substList</string>
+    <string name="pref_key_sync_settings" translatable="false">pref_syncSettings</string>
+    <string name="pref_key_subst_list" translatable="false">pref_substList</string>
     <string name="pref_category_subst">Substitutions</string>
-    <string name="pref_key_subst_phase">pref_substPhase</string>
+    <string name="pref_key_subst_phase" translatable="false">pref_substPhase</string>
     <string name="pref_title_subst_phase">Phase</string>
-    <string name="pref_key_subst_form">pref_substForm</string>
+    <string name="pref_key_subst_form" translatable="false">pref_substForm</string>
     <string name="pref_title_subst_form">Your form</string>
-    <string name="pref_key_subst_subject_settings">pref_substSubjectSettings</string>
+    <string name="pref_key_subst_subject_settings" translatable="false">pref_substSubjectSettings</string>
     <string name="pref_title_subst_subject_settings">Subject filter</string>
     <string name="pref_summary_sync_enabled_on">Automatic background synchronization turned on.</string>
     <string name="pref_summary_sync_enabled_off">Data is not automatically updated in background.</string>
     <string name="pref_summary_about">Version %1$s</string>
-    <string name="pref_key_subst_color_settings">pref_substColorSettings</string>
+    <string name="pref_key_subst_color_settings" translatable="false">pref_substColorSettings</string>
     <string name="pref_title_subst_color_settings">Color Settings</string>
     <string name="pref_title_subst_color_subst">Substitution</string>
     <string name="pref_title_subst_color_trans">Change</string>
@@ -76,15 +72,15 @@
     <string name="pref_title_subst_color_shift">Shift</string>
     <string name="pref_title_subst_color_other">Other</string>
 
-    <string name="pref_key_subst_color_subst">pref_substColorSubst</string>
-    <string name="pref_key_subst_color_trans">pref_substColorTrans</string>
-    <string name="pref_key_subst_color_change">pref_substColorChange</string>
-    <string name="pref_key_subst_color_reserv">pref_substColorReserv</string>
-    <string name="pref_key_subst_color_cancel">pref_substColorCancel</string>
-    <string name="pref_key_subst_color_special">pref_substColorSpecial</string>
-    <string name="pref_key_subst_color_roomSubst">pref_substColorRoomSubst</string>
-    <string name="pref_key_subst_color_shift">pref_substColorShift</string>
-    <string name="pref_key_subst_color_other">pref_substColorOther</string>
+    <string name="pref_key_subst_color_subst" translatable="false">pref_substColorSubst</string>
+    <string name="pref_key_subst_color_trans" translatable="false">pref_substColorTrans</string>
+    <string name="pref_key_subst_color_change" translatable="false">pref_substColorChange</string>
+    <string name="pref_key_subst_color_reserv" translatable="false">pref_substColorReserv</string>
+    <string name="pref_key_subst_color_cancel" translatable="false">pref_substColorCancel</string>
+    <string name="pref_key_subst_color_special" translatable="false">pref_substColorSpecial</string>
+    <string name="pref_key_subst_color_roomSubst" translatable="false">pref_substColorRoomSubst</string>
+    <string name="pref_key_subst_color_shift" translatable="false">pref_substColorShift</string>
+    <string name="pref_key_subst_color_other" translatable="false">pref_substColorOther</string>
 
     <string name="option_none">none</string>
     <string name="pref_subst_form_option_a">Form a</string>
@@ -122,10 +118,10 @@
     <string name="model_title_events">Events</string>
     <string name="model_title_news">News</string>
     <string name="model_title_teachers">Teachers</string>
-    <string name="pref_key_notify_subst">pref_notifySubst</string>
-    <string name="pref_key_notify_teacher">pref_notifyTeacher</string>
+    <string name="pref_key_notify_subst" translatable="false">pref_notifySubst</string>
+    <string name="pref_key_notify_teacher" translatable="false">pref_notifyTeacher</string>
 
-    <string name="pref_key_notify_event">pref_notifyEvent</string>
-    <string name="pref_key_notify_news">pref_notifyNews</string>
-    <string name="pref_key_notify_homework">pref_notifyHomework</string>
+    <string name="pref_key_notify_event" translatable="false">pref_notifyEvent</string>
+    <string name="pref_key_notify_news" translatable="false">pref_notifyNews</string>
+    <string name="pref_key_notify_homework" translatable="false">pref_notifyHomework</string>
 </resources>

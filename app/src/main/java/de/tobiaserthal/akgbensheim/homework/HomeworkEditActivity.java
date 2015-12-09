@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +29,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.SimpleAsyncQueryHandler;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkContentValues;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkCursor;
