@@ -42,11 +42,9 @@ android:
 
     # Additional components
     - extra-android-m2repository
-    - extra-google-m2repository
     - extra-android-support
 
     # Android emulator images
-    - sys-img-x86-android-23
     - sys-img-armeabi-v7a-android-23
 
   licenses:
