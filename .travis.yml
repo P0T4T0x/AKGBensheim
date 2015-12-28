@@ -30,6 +30,10 @@ before_install:
 
 android:
   components:
+    # Use the latest tools
+    - platform-tools
+    - tools
+
     # The BuildTools version used by your project
     - build-tools-23.0.2
 
