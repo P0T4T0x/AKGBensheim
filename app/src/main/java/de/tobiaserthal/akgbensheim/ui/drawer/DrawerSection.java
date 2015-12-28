@@ -16,6 +16,11 @@ public class DrawerSection implements Item {
     }
 
     @Override
+    public int getId() {
+        return -1;
+    }
+
+    @Override
     public boolean isSection() {
         return true;
     }

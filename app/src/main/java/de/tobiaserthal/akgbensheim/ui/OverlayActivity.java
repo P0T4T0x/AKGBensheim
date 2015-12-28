@@ -13,7 +13,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -210,10 +212,16 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
         frameLayout = new TouchInterceptionFrameLayout(this);
         frameLayout.setScrollInterceptionListener(this);
 
-        containerView.addView(frameLayout, new FrameLayout.LayoutParams(
+        FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+        );
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            frameLayoutParams.gravity = Gravity.TOP;
+        }
+
+        containerView.addView(frameLayout, frameLayoutParams);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fromStatusBarColor = ViewUtils.getColor(this, R.attr.colorPrimaryDark);
@@ -227,7 +235,7 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        final int pos = savedInstanceState.getInt("scroll_vertical", 0) + getToolbar().getHeight();
+        final int pos = savedInstanceState.getInt("scroll_vertical", - getToolbar().getHeight()) + getToolbar().getHeight();
         ScrollUtils.addOnGlobalLayoutListener(scrollable, new Runnable() {
             @Override
             public void run() {
@@ -412,7 +420,15 @@ public abstract class OverlayActivity<S extends View & Scrollable> extends Toolb
 
     private void moveTo(float translationY) {
         float fixed = ScrollUtils.getFloat(translationY, 0, getScreenHeight());
-        ViewHelper.setTranslationY(frameLayout, fixed);
+        //ViewHelper.setTranslationY(frameLayout, fixed);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) frameLayout.getLayoutParams();
+            layoutParams.topMargin = (int) fixed;
+            frameLayout.requestLayout();
+        } else {
+            ViewHelper.setTranslationY(frameLayout, fixed);
+        }
     }
 
     private void setScrimTo(float fraction) {

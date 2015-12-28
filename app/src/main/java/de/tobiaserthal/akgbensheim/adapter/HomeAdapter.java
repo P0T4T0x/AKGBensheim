@@ -301,6 +301,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.CursorViewHold
                 TextView text1 = (TextView) listItem.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) listItem.findViewById(android.R.id.text2);
 
+
                 int color = PreferenceProvider.getInstance()
                         .getColorFromType(cursor.getType());
 

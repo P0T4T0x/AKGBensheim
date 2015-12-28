@@ -11,9 +11,4 @@ public interface DrawerCallbacks {
      * @param reselect Whether this item is reselected
      */
     void onNavigationItemSelected(int index, int position, boolean reselect);
-
-    /**
-     * Called when the header item registered a click event.
-     */
-    void onHeaderItemSelected();
 }

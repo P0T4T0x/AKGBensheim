@@ -12,7 +12,6 @@
     <string name="fragment_title_teachers" translatable="false">@string/model_title_teachers</string>
     <string name="activity_title_settings">Settings</string>
     <string name="activity_title_faq">FAQ</string>
-    <string name="options">Options</string>
     <string name="des_drawer_header_image">Picture of the school building</string>
     <string name="des_drawer_list_item_icon">Navigation symbol</string>
 

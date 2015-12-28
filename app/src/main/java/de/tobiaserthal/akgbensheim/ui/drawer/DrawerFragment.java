@@ -1,15 +1,19 @@
 package de.tobiaserthal.akgbensheim.ui.drawer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
@@ -26,14 +30,28 @@ import android.view.ViewGroup;
 
 import java.lang.ref.WeakReference;
 
+import de.tobiaserthal.akgbensheim.HomeFragment;
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.MainNavigation;
+import de.tobiaserthal.akgbensheim.contact.ContactActivity;
 import de.tobiaserthal.akgbensheim.data.Log;
 import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkColumns;
 import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkSelection;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionColumns;
 import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
+import de.tobiaserthal.akgbensheim.event.EventFragment;
+import de.tobiaserthal.akgbensheim.event.EventHostFragment;
+import de.tobiaserthal.akgbensheim.foodplan.FoodPlanFragment;
+import de.tobiaserthal.akgbensheim.homework.HomeworkFragment;
+import de.tobiaserthal.akgbensheim.homework.HomeworkHostFragment;
+import de.tobiaserthal.akgbensheim.news.NewsFragment;
+import de.tobiaserthal.akgbensheim.news.NewsHostFragment;
+import de.tobiaserthal.akgbensheim.preferences.SettingsActivity;
+import de.tobiaserthal.akgbensheim.subst.SubstFragment;
+import de.tobiaserthal.akgbensheim.subst.SubstHostFragment;
+import de.tobiaserthal.akgbensheim.teacher.TeacherFragment;
+import de.tobiaserthal.akgbensheim.teacher.TeacherHostFragment;
 
 import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_NEWS;
 import static de.tobiaserthal.akgbensheim.MainNavigation.FRAGMENT_HOME;
@@ -67,9 +85,9 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     private static final String TAG = "DrawerFragment";
 
     /**
-     * A pointer to the current navigation manager (parent activity).
+     * A pointer to the current fragment manager of the parent activity.
      */
-    private MainNavigation mainNavigation;
+    private FragmentManager fragmentManager;
 
     /**
      * The adapter that manages the navigation items.
@@ -113,9 +131,10 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mainNavigation = (MainNavigation) context;
+            fragmentManager = ((FragmentActivity) context)
+                    .getSupportFragmentManager();
         } catch (ClassCastException e) {
-            throw new ClassCastException("Parent context must implement NavigationDrawerCallbacks.");
+            throw new ClassCastException("Parent context must be of type FragmentActivity!");
         }
     }
 
@@ -137,26 +156,27 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
         TypedArray navMenuItemIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
 
         drawerAdapter = new DrawerAdapter(
+                ACTIVITY_CONTACT,
                 getResources().getString(R.string.app_name),
                 getResources().getString(R.string.address),
                 ContextCompat.getDrawable(getActivity(), R.drawable.akg)
         );
 
-        drawerAdapter.addItem(navMenuItemTitles[0], navMenuItemIcons.getResourceId(0, -1));
+        drawerAdapter.addItem(FRAGMENT_HOME, navMenuItemTitles[0], navMenuItemIcons.getResourceId(0, -1));
         drawerAdapter.addSection();
 
-        drawerAdapter.addItem(navMenuItemTitles[1], navMenuItemIcons.getResourceId(1, -1));
-        drawerAdapter.addItem(navMenuItemTitles[2], navMenuItemIcons.getResourceId(2, -1));
-        drawerAdapter.addItem(navMenuItemTitles[3], navMenuItemIcons.getResourceId(3, -1));
+        drawerAdapter.addItem(FRAGMENT_SUBSTITUTION, navMenuItemTitles[1], navMenuItemIcons.getResourceId(1, -1));
+        drawerAdapter.addItem(FRAGMENT_FOODPLAN, navMenuItemTitles[2], navMenuItemIcons.getResourceId(2, -1));
+        drawerAdapter.addItem(FRAGMENT_HOMEWORK, navMenuItemTitles[3], navMenuItemIcons.getResourceId(3, -1));
         drawerAdapter.addSection();
 
-        drawerAdapter.addItem(navMenuItemTitles[4], navMenuItemIcons.getResourceId(4, -1));
-        drawerAdapter.addItem(navMenuItemTitles[5], navMenuItemIcons.getResourceId(5, -1));
-        drawerAdapter.addItem(navMenuItemTitles[6], navMenuItemIcons.getResourceId(6, -1));
+        drawerAdapter.addItem(FRAGMENT_EVENT, navMenuItemTitles[4], navMenuItemIcons.getResourceId(4, -1));
+        drawerAdapter.addItem(FRAGMENT_NEWS, navMenuItemTitles[5], navMenuItemIcons.getResourceId(5, -1));
+        drawerAdapter.addItem(FRAGMENT_TEACHER, navMenuItemTitles[6], navMenuItemIcons.getResourceId(6, -1));
         drawerAdapter.addSection();
 
-        drawerAdapter.addSpecialItem(navMenuItemTitles[7], navMenuItemIcons.getResourceId(7, -1));
-        drawerAdapter.addSpecialItem(navMenuItemTitles[8], navMenuItemIcons.getResourceId(8, -1));
+        drawerAdapter.addSpecialItem(ACTIVITY_SETTINGS, navMenuItemTitles[7], navMenuItemIcons.getResourceId(7, -1));
+        drawerAdapter.addSpecialItem(ACTIVITY_FAQ, navMenuItemTitles[8], navMenuItemIcons.getResourceId(8, -1));
 
         navMenuItemIcons.recycle();
 
@@ -203,7 +223,9 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
         containerView = (View) getActivity().findViewById(fragmentId).getParent();
 
         this.drawerLayout = drawerLayout;
-        this.drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.primaryDark));
+        this.drawerLayout.setStatusBarBackgroundColor(
+                ContextCompat.getColor(getContext(), R.color.primaryDark)
+        );
 
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             this.drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -297,6 +319,10 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
         }, delay);
     }
 
+    public void selectItemId(@MainNavigation.NavigationItem int itemId) {
+        drawerAdapter.selectId(itemId);
+    }
+
     public ActionBarDrawerToggle getDrawerToggle() {
         return drawerToggle;
     }
@@ -321,7 +347,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     @Override
     public void onDetach() {
         super.onDetach();
-        mainNavigation = null;
+        fragmentManager = null;
     }
 
     @Override
@@ -339,56 +365,107 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
 
     @Override
     public void onNavigationItemSelected(int index, int position, boolean reselect) {
+        Log.d(TAG, "Navigation item of index: %d, position: %d selected; isReselect: %b.", index, position, reselect);
+
         currentSelectedPosition = index;
         if(drawerLayout != null) {
             closeDrawer(200);
         }
 
-        if(mainNavigation != null) {
-            switch (index) {
-                case 0:
-                    mainNavigation.switchToNavigationItem(FRAGMENT_HOME);
+        if(getActivity() != null) {
+            int id = (int) drawerAdapter.getItemId(position);
+            switch (id) {
+                case ACTIVITY_CONTACT:
+                    ContactActivity.startDetail(getActivity());
                     break;
 
-                case 1:
-                    mainNavigation.switchToNavigationItem(FRAGMENT_SUBSTITUTION);
+                case ACTIVITY_SETTINGS:
+                    Intent settings = new Intent(getActivity(), SettingsActivity.class);
+                    startActivity(settings);
                     break;
 
-                case 2:
-                    mainNavigation.switchToNavigationItem(FRAGMENT_FOODPLAN);
+                case ACTIVITY_FAQ:
+                    Intent faqBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.akgbensheim.de/android/faq"));
+                    startActivity(faqBrowser);
                     break;
 
-                case 3:
-                    mainNavigation.switchToNavigationItem(FRAGMENT_HOMEWORK);
-                    break;
+                default:
+                    if(fragmentManager != null) {
+                        String title = drawerAdapter.getItem(position).getTitle();
+                        Fragment fragment = fragmentManager.findFragmentByTag(String.valueOf(id));
 
-                case 4:
-                    mainNavigation.switchToNavigationItem(FRAGMENT_EVENT);
-                    break;
+                        if(fragment == null) {
+                            fragment = createFragment(id);
+                        }
 
-                case 5:
-                    mainNavigation.switchToNavigationItem(FRAGMENT_NEWS);
-                    break;
+                        if(fragment != null) {
+                            fragmentManager.beginTransaction()
+                                    .replace(android.R.id.widget_frame, fragment, String.valueOf(id))
+                                    .commit();
 
-                case 6:
-                    mainNavigation.switchToNavigationItem(FRAGMENT_TEACHER);
-                    break;
+                            getActivity().setTitle(title);
+                        }
+                    }
 
-                case 7:
-                    mainNavigation.callNavigationExtra(ACTIVITY_SETTINGS);
-                    break;
-
-                case 8:
-                    mainNavigation.callNavigationExtra(ACTIVITY_FAQ);
                     break;
             }
         }
     }
 
-    @Override
-    public void onHeaderItemSelected() {
-        if(mainNavigation != null) {
-            mainNavigation.callNavigationExtra(ACTIVITY_CONTACT);
+    private Fragment createFragment(int itemId) {
+        switch (itemId) {
+            case FRAGMENT_HOME: {
+                return HomeFragment.newInstance();
+            }
+
+            case FRAGMENT_SUBSTITUTION: {
+                return SubstHostFragment.Builder
+                        .withDefault()
+                        .addPage(getString(R.string.subst_tab_form), SubstFragment.createArgs(SubstFragment.FORM))
+                        .addPage(getString(R.string.subst_tab_phase), SubstFragment.createArgs(SubstFragment.PHASE))
+                        .addPage(getString(R.string.subst_tab_all), SubstFragment.createArgs(SubstFragment.ALL))
+                        .build();
+            }
+
+            case FRAGMENT_FOODPLAN: {
+                return FoodPlanFragment.newInstance();
+            }
+
+            case FRAGMENT_HOMEWORK: {
+                return HomeworkHostFragment.Builder
+                        .withDefault()
+                        .addPage(getString(R.string.homework_tab_todo), HomeworkFragment.createArgs(HomeworkFragment.TODO, true))
+                        .addPage(getString(R.string.homework_tab_done), HomeworkFragment.createArgs(HomeworkFragment.DONE, false))
+                        .build();
+            }
+
+            case FRAGMENT_EVENT: {
+                return EventHostFragment.Builder
+                        .withDefault()
+                        .addPage(getString(R.string.event_tab_coming), EventFragment.createArgs(EventFragment.COMING))
+                        .addPage(getString(R.string.event_tab_over), EventFragment.createArgs(EventFragment.OVER))
+                        .build();
+            }
+
+            case FRAGMENT_NEWS: {
+                return NewsHostFragment.Builder
+                        .withDefault()
+                        .addPage(getString(R.string.news_tab_all), NewsFragment.createArgs(NewsFragment.ALL))
+                        .addPage(getString(R.string.news_tab_bookmarks), NewsFragment.createArgs(NewsFragment.BOOKMARKED))
+                        .build();
+            }
+
+            case FRAGMENT_TEACHER: {
+                return TeacherHostFragment.Builder
+                        .withDefault()
+                        .addPage(getString(R.string.teacher_tab_teachers), TeacherFragment.createArgs(TeacherFragment.TEACHER))
+                        .addPage(getString(R.string.teacher_tab_student_teachers), TeacherFragment.createArgs(TeacherFragment.STUDENT_TEACHER))
+                        .build();
+            }
+
+            default: {
+                return null;
+            }
         }
     }
 

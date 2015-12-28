@@ -289,12 +289,12 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
         ViewHelper.setAlpha(headerSubtitle, fadingFraction);
 
         // translate action button
-        int halfHeight = actionButton.getHeight() / 2;
-        int translationY = (int) flexibleRange + halfHeight - (int) offset;
+        int halfHeight = actionButton.getMeasuredHeight() / 2;
+        int translationY = flexibleSpaceImageHeight - halfHeight - (int) offset;
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) actionButton.getLayoutParams();
-            layoutParams.topMargin = translationY;
+            //layoutParams.topMargin = translationY;
             actionButton.requestLayout();
         } else {
             ViewHelper.setTranslationY(actionButton, translationY);

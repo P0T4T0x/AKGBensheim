@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -78,9 +79,6 @@ public abstract class ToolbarFragment extends Fragment {
 
         /* Add header content */
         View headerContent = onCreateHeaderView(inflater, headerFrame, savedInstanceState);
-        if(headerContent != null) {
-            headerFrame.addView(headerContent);
-        }
 
         /* Add toolbar shadow */
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -89,11 +87,23 @@ public abstract class ToolbarFragment extends Fragment {
             toolBarShadow.setMinimumHeight(toolBarShadowSize);
             toolBarShadow.setBackgroundResource(R.drawable.toolbar_shadow);
 
+            FrameLayout headerContentWrapper = new FrameLayout(getContext());
+            headerContentWrapper.setBackgroundColor(ViewUtils.getColor(context, R.attr.colorPrimary));
+
+            if(headerContent != null) {
+                headerContentWrapper.addView(headerContent);
+            }
+
             headerFrame.setBackgroundColor(Color.TRANSPARENT);
+            headerFrame.addView(headerContentWrapper, new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             headerFrame.addView(toolBarShadow, new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, toolBarShadowSize
-            ));
+                    ViewGroup.LayoutParams.MATCH_PARENT, toolBarShadowSize));
         } else {
+            if(headerContent != null) {
+                headerFrame.addView(headerContent);
+            }
+
             headerFrame.setBackgroundColor(ViewUtils.getColor(context, R.attr.colorPrimary));
             ViewCompat.setElevation(headerFrame, getResources().getDimension(R.dimen.toolbar_default_elevation));
         }
@@ -169,7 +179,7 @@ public abstract class ToolbarFragment extends Fragment {
 
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             if (headerView.getChildCount() == 3)
-                return headerView.getChildAt(1);
+                return ((ViewGroup) headerView.getChildAt(1)).getChildAt(0);
             else
                 return null;
         } else {

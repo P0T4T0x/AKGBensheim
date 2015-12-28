@@ -33,7 +33,7 @@ public class NetworkManager {
 
             Intent intent = new Intent(ACTION_NETWORK);
             intent.putExtra("allowed", allowed);
-            ///context.sendBroadcast(intent);
+            context.sendBroadcast(intent);
         }
     };
 

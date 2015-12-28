@@ -5,6 +5,12 @@ package de.tobiaserthal.akgbensheim.ui.drawer;
  * @author tobiaserthal
  */
 public interface Item {
+    /**
+     * Get the id used to identify the application component
+     * represented by this item.
+     * @return The id as an integer.
+     */
+    int getId();
 
     /**
      * Get whether this item is a section or a regular item

@@ -17,4 +17,5 @@
     <color name="pressed_gray">#0c000000</color>
     <color name="selected_gray">#2c000000</color>
     <color name="background_light">#eeeeee</color>
+    <color name="windowBackground">#EEEEEE</color>
 </resources>

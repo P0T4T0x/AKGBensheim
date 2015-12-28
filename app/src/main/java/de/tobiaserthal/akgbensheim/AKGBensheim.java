@@ -25,7 +25,7 @@ public class AKGBensheim extends Application {
         public void onNetworkAccessibilityChanged(boolean allowed) {
             if(!allowed) {
                 Log.d("AKGBensheim", "Canceling syncs due to network change.");
-                SyncUtils.cancelCurrentSync();
+                //SyncUtils.cancelCurrentSync();
             }
         }
     };

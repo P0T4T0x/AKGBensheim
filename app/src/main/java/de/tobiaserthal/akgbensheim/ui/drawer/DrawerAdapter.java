@@ -27,6 +27,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int VIEW_TYPE_ITEM_VIEW = 0x2;
     private List<Item> navigationDrawerItems;
 
+    private int headerId;
     private String heading;
     private String description;
     private Drawable backgroundResource;
@@ -38,9 +39,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * Creates a new NavDrawerAdapter
      * @param heading The string to display as the
      */
-    public DrawerAdapter(String heading, String description, Drawable backgroundResource) {
+    public DrawerAdapter(int headerId, String heading, String description, Drawable backgroundResource) {
         this.selectionMap = new SparseBooleanArray();
         this.navigationDrawerItems = new ArrayList<>();
+
+        this.headerId = headerId;
         this.heading = heading;
         this.description = description;
         this.backgroundResource = backgroundResource;
@@ -48,13 +51,17 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     /**
      * Add a new drawer item to the navigation stack
+     * @param id the item's id
      * @param title The title of the drawer object
      * @param count The counter string to display or {@code null}
      * @param icon The icon resource
      * @return The index this item was inserted
      */
-    public int addItem(String title, int icon, String count) {
-        this.navigationDrawerItems.add(new DrawerItem(title, icon, count != null, count));
+    public int addItem(int id, String title, int icon, String count) {
+        this.navigationDrawerItems.add(
+                new DrawerItem(id, title, icon, count != null, count)
+        );
+
         return this.navigationDrawerItems.size() - 1;
     }
 
@@ -64,30 +71,35 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * @param icon The icon resource
      * @return The index this item was inserted
      */
-    public int addItem(String title, int icon) {
-        return this.addItem(title, icon, null);
+    public int addItem(int id, String title, int icon) {
+        return this.addItem(id, title, icon, null);
     }
 
     /**
      * Add a new special drawer item to the navigation stack
+     * @param id the item's id
      * @param title The title of the drawer object
      * @param count The counter string to display or {@code null}
      * @param icon The icon resource
      * @return The index this item was inserted
      */
-    public int addSpecialItem(String title, int icon, String count) {
-        this.navigationDrawerItems.add(new DrawerItem(title, icon, count != null, count, false));
+    public int addSpecialItem(int id, String title, int icon, String count) {
+        this.navigationDrawerItems.add(
+                new DrawerItem(id, title, icon, count != null, count, false)
+        );
+
         return this.navigationDrawerItems.size() - 1;
     }
 
     /**
      * Add a new special drawer item to the navigation stack
+     * @param id The item's id
      * @param title The title of the drawer object
      * @param icon The icon resource
      * @return The index this item was inserted
      */
-    public int addSpecialItem(String title, int icon) {
-        return this.addSpecialItem(title, icon, null);
+    public int addSpecialItem(int id, String title, int icon) {
+        return this.addSpecialItem(id, title, icon, null);
     }
 
     /**
@@ -125,8 +137,9 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         int oldPos = getFirstSelectedPosition();
         int newPos = itemIndexToAdapterIndex(index, 1);
 
-        if(oldPos > -1)
+        if(oldPos > -1) {
             deselect(oldPos);
+        }
 
         select(newPos);
 
@@ -145,6 +158,34 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return index;
 
         return selectionMap.keyAt(index);
+    }
+
+    public void selectId(int id) {
+        int newPos = -1;
+
+        for(int i = 1; i < navigationDrawerItems.size() + 1; i++) {
+            if(getItem(i).isCheckable()
+                    && getItem(i).getId() == id) {
+                newPos = i;
+                break;
+            }
+        }
+
+        if(newPos < 1) {
+            return;
+        }
+
+        int index = adapterIndexToItemIndex(newPos);
+        int oldPos = getFirstSelectedPosition();
+        if(oldPos > -1) {
+            deselect(oldPos);
+        }
+
+        select(newPos);
+
+        if(callbacks != null) {
+            callbacks.onNavigationItemSelected(index, newPos, newPos == oldPos);
+        }
     }
 
     /**
@@ -306,6 +347,15 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
+    public long getItemId(int position) {
+        if(position == 0) {
+            return headerId;
+        }
+
+        return navigationDrawerItems.get(position - 1).getId();
+    }
+
+    @Override
     public int getItemViewType(int index) {
         if(index == 0)
             return VIEW_TYPE_HEADER_VIEW;
@@ -338,7 +388,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Log.i(TAG, "Header item in recycler view clicked!");
 
             if(callbacks != null) {
-                callbacks.onHeaderItemSelected();
+                callbacks.onNavigationItemSelected(-1, 0, false);
             }
         }
     }

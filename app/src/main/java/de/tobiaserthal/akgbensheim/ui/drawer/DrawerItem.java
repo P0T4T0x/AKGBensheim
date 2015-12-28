@@ -9,6 +9,7 @@ public class DrawerItem implements Item {
     private String title;
     private String count;
     private int icon;
+    private int id;
 
     private boolean counterVisible;
     private boolean checkable;
@@ -19,6 +20,7 @@ public class DrawerItem implements Item {
     public DrawerItem() {
         this.title = "";
         this.icon = -1;
+        this.id = 0;
         this.count = "0";
         this.counterVisible = false;
         this.checkable = true;
@@ -26,12 +28,14 @@ public class DrawerItem implements Item {
 
     /**
      * Creates a new model for a nav drawer item
+     * @param id the id of this item
      * @param title the title of the item
      * @param icon the icon to be displayed
      */
-    public DrawerItem(String title, int icon) {
+    public DrawerItem(int id, String title, int icon) {
         this.title = title;
         this.icon = icon;
+        this.id = id;
         this.count = "0";
         this.counterVisible = false;
         this.checkable = true;
@@ -39,14 +43,16 @@ public class DrawerItem implements Item {
 
     /**
      * Creates a new model for a nav drawer item
+     * @param id the id of this item
      * @param title the title of the item
      * @param icon the icon to be displayed
      * @param counterVisible the visibility of the counter item
      * @param count the count to be displayed on the counter item (String)
      */
-    public DrawerItem(String title, int icon, boolean counterVisible, String count) {
+    public DrawerItem(int id, String title, int icon, boolean counterVisible, String count) {
         this.title = title;
         this.icon = icon;
+        this.id = id;
         this.counterVisible = counterVisible;
         this.checkable = true;
         this.count = count;
@@ -55,6 +61,7 @@ public class DrawerItem implements Item {
 
     /**
      * Creates a new model for a nav drawer item
+     * @param id the id of this item
      * @param title the title of the item
      * @param icon the icon to be displayed
      * @param counterVisible the visibility of the counter item
@@ -62,12 +69,18 @@ public class DrawerItem implements Item {
      * @param checkable Whether this item should be treated as a normal func and therefore
      *                      should be a checkable item of the drawer view.
      */
-    public DrawerItem(String title, int icon, boolean counterVisible, String count, boolean checkable) {
+    public DrawerItem(int id, String title, int icon, boolean counterVisible, String count, boolean checkable) {
         this.title = title;
         this.icon = icon;
+        this.id = id;
         this.counterVisible = counterVisible;
         this.checkable = checkable;
         this.count = count;
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     @Override

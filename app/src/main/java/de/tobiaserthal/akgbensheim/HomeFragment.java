@@ -334,7 +334,7 @@ public class HomeFragment extends ToolbarListFragment<HomeAdapter>
     @Override
     public void onItemClicked(@NavigationItem int type, Bundle bundle) {
         if(mainNavigation != null) {
-            mainNavigation.switchToNavigationItem(type);
+            mainNavigation.callNavigationItem(type);
         }
     }
 

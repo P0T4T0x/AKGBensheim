@@ -77,7 +77,7 @@
     <string name="pref_title_teacher_sync_enabled">Lehrerliste aktualisieren</string>
     <string name="pref_title_website">Webseite</string>
     <string name="subst_detail_form">Klasse %1$s</string>
-    <string name="subst_detail_date">EEEE, d, MMMM, %1$s. Stunde</string>
+    <string name="subst_detail_date">EEEE, d. MMMM\', %1$s. Stunde\'</string>
     <string name="subst_detail_room">In %1$s statt in %2$s</string>
     <string name="subst_no_annotation">Keine Anmerkungen</string>
     <string name="subst_share_calendar">%1$s. Stunde: %2$s in Raum %3$s anstelle von %4$s</string>

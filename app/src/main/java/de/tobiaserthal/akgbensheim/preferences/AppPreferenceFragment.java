@@ -3,9 +3,9 @@ package de.tobiaserthal.akgbensheim.preferences;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.TwoStatePreference;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -19,12 +19,13 @@ import de.tobiaserthal.akgbensheim.BuildConfig;
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.data.preferences.PreferenceKey;
 import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
 import de.tobiaserthal.akgbensheim.tools.FileUtils;
 
 /**
  * Created by tobiaserthal on 19.07.15.
  */
+
+//FIXME: Crash on devices with api level <14 because of TwoStatePreference not in the framework
 public class AppPreferenceFragment extends PreferenceFragment
         implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
@@ -35,7 +36,7 @@ public class AppPreferenceFragment extends PreferenceFragment
     private Preference subjectSetting;
     private Preference colorSettings;
 
-    private TwoStatePreference syncEnabledSetting;
+    private CheckBoxPreference syncEnabledSetting;
     private Preference syncSettings;
 
     private Preference clearCacheSetting;
@@ -67,7 +68,7 @@ public class AppPreferenceFragment extends PreferenceFragment
         subjectSetting = findPreference(keys.getKeySubjectFilter());
         colorSettings = findPreference(keys.getKeySubstColorSettings());
 
-        syncEnabledSetting = (TwoStatePreference) findPreference(keys.getKeySyncEnabled());
+        syncEnabledSetting = (CheckBoxPreference) findPreference(keys.getKeySyncEnabled());
         syncSettings = findPreference(keys.getKeySyncSettings());
 
         clearCacheSetting = findPreference(keys.getKeyClearCache());
