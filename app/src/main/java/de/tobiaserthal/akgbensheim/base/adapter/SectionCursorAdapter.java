@@ -13,7 +13,6 @@ import java.util.List;
 import de.tobiaserthal.akgbensheim.backend.provider.base.AbstractCursor;
 import de.tobiaserthal.akgbensheim.backend.utils.Log;
 
-
 /**
  * @param <T> section type.
  * @param <VH> the view holder extending {@code BaseViewHolder<Cursor>} that is bound to the cursor data.
@@ -44,21 +43,6 @@ public abstract class SectionCursorAdapter<CS extends AbstractCursor, T, VH exte
 
     public SectionCursorAdapter(Context context, CS cursor, int flags, Comparator<T> comparator) {
         super(context, cursor, flags);
-        /*
-        registerAdapterDataObserver(new AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                if (hasValidData()) {
-                    buildSections();
-                } else {
-                    sectionMap.clear();
-                    sectionIndexList.clear();
-                    fastScrollItems = null;
-                }
-            }
-        });
-
-        */
         setSectionComparator(comparator);
     }
 
