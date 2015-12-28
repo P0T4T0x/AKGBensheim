@@ -16,7 +16,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + plugpdf_api_key + "\"")
+            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + System.getenv('plugpdf_api_key') + "\"")
         }
         release {
             debuggable false
@@ -24,7 +24,7 @@ android {
             zipAlignEnabled true
             shrinkResources true
             proguardFiles '../optimization-rules.pro', 'proguard-rules.pro'
-            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + plugpdf_api_key + "\"")
+            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + System.getenv('plugpdf_api_key') + "\"")
         }
     }
 
