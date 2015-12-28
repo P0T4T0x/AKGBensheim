@@ -1,6 +1,6 @@
 # Turn off email notifications
 notifications:
-  email: false
+  email:  false
 
 # Language setup
 language: android
@@ -10,9 +10,9 @@ jdk:  oraclejdk7
 
 # Emulator vars
 env:
-    global:
-        - TERM=dumb
-        - GRADLE_OPTS="-Xmx512m -XX:MaxPermSize=512m"
+  global:
+    - TERM=dumb
+    - GRADLE_OPTS="-Xmx512m -XX:MaxPermSize=512m"
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -24,13 +24,13 @@ cache:
 
 # Environment info
 before_install:
-    - chmod +x gradlew
-    - ./gradlew -v
-    - uname -a
+  - chmod +x gradlew
+  - ./gradlew -v
+  - uname -a
 
 android:
   components:
-    # Use the Android BuildTools
+    # The BuildTools version used by your project
     - build-tools-23.0.2
 
     # Use the given SDK version
@@ -46,13 +46,13 @@ android:
     - sys-img-armeabi-v7a-android-23
 
     licenses:
-        - 'android-sdk-license-.+'
+      - 'android-sdk-license-.+'
 
 before_script:
-    # Create and start emulator
-    - echo no | android create avd --force -n test -t android-23 --abi armeabi-v7a
-    - emulator -avd test -no-skin -no-audio -no-window &
-    - android-wait-for-emulator
-    - adb shell input keyevent 82 &
+  # Create and start emulator
+  - echo no | android create avd --force -n test -t android-23 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 
 script: ./gradlew clean build connectedCheck --info
