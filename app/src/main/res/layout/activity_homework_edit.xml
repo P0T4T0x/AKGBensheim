@@ -29,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:text="12. Juni 2015 23:50"
                 style="?attr/borderlessButtonStyle"/>
 
             <android.support.design.widget.TextInputLayout
@@ -43,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords"
-                    android:hint="@string/homework_edit_title_hint"/>
+                    android:hint="@string/detail_hint_homeworkTitle"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -57,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:hint="@string/homework_edit_notes_hint"/>
+                    android:hint="@string/detail_hint_homeworkNotes"/>
             </android.support.design.widget.TextInputLayout>
 
         </RelativeLayout>

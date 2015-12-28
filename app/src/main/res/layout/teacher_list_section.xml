@@ -13,5 +13,4 @@
     app:slm_section_headerMarginStart="48dp"
 
     android:textSize="24sp"
-    android:textColor="@color/secondaryText"
-    android:text="A"/>
+    android:textColor="@color/secondaryText"/>

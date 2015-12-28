@@ -23,17 +23,16 @@ import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.nineoldandroids.view.ViewHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
-import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
+import de.tobiaserthal.akgbensheim.backend.model.ModelUtils;
+import de.tobiaserthal.akgbensheim.backend.preferences.PreferenceProvider;
+import de.tobiaserthal.akgbensheim.backend.provider.substitution.SubstitutionCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.substitution.SubstitutionSelection;
+import de.tobiaserthal.akgbensheim.base.OverlayActivity;
 
 public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -75,13 +74,13 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
 
     @Override
     public void onStartEnterAnimation() {
-        ViewHelper.setTranslationY(headerTextView, - headerTitleVerticalMargin);
+        headerTextView.setTranslationY(-headerTitleVerticalMargin);
 
         float scale = 1 + MAX_TEXT_SCALE_DELTA;
-        ViewHelper.setPivotX(headerTextView, 0);
-        ViewHelper.setPivotY(headerTextView, headerTextView.getHeight());
-        ViewHelper.setScaleX(headerTextView, scale);
-        ViewHelper.setScaleY(headerTextView, scale);
+        headerTextView.setPivotX(0);
+        headerTextView.setPivotY(headerTextView.getHeight());
+        headerTextView.setScaleX(scale);
+        headerTextView.setScaleY(scale);
 
         getScrollable().scrollVerticallyTo(0);
     }
@@ -208,20 +207,20 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
                 .getColorFromType(subst.getType()));
 
         headerTextView.setText(ModelUtils.summarize(subst));
-        txtForm.setText(getResources().getString(R.string.subst_detail_form, subst.getFormKey()));
+        txtForm.setText(getResources().getString(R.string.detail_subst_form, subst.getFormKey()));
         txtDate.setText(
                 new SimpleDateFormat(
-                        getResources().getString(R.string.subst_detail_date, subst.getPeriod()),
+                        getResources().getString(R.string.detail_subst_date, subst.getPeriod()),
                         Locale.getDefault()
                 ).format(subst.getSubstDate())
         );
 
         txtType.setText(subst.getType());
-        txtLesson.setText(getResources().getString(R.string.subst_detail_lesson, subst.getLessonSubst(), subst.getLesson()));
-        txtRoom.setText(getResources().getString(R.string.subst_detail_room, subst.getRoomSubst(), subst.getRoom()));
+        txtLesson.setText(getResources().getString(R.string.detail_subst_lesson, subst.getLessonSubst(), subst.getLesson()));
+        txtRoom.setText(getResources().getString(R.string.detail_subst_room, subst.getRoomSubst(), subst.getRoom()));
         txtAnnotation.setText(
                 TextUtils.isEmpty(subst.getAnnotation()) ?
-                        getResources().getString(R.string.subst_no_annotation) : subst.getAnnotation()
+                        getResources().getString(R.string.detail_subst_no_annotation) : subst.getAnnotation()
         );
     }
 
@@ -238,16 +237,16 @@ public class SubstDetailActivity extends OverlayActivity<ObservableScrollView>
         float fraction = interpolator.getInterpolation(offset / flexibleRange);
 
         // translate the header view
-        ViewHelper.setTranslationY(headerView, -offset);
+        headerView.setTranslationY(-offset);
 
         // translate the title
-        ViewHelper.setTranslationY(headerTextView, (fraction - 1) * headerTitleVerticalMargin);
+        headerTextView.setTranslationY((fraction - 1) * headerTitleVerticalMargin);
 
         // scale the header title
         float scale = 1 + (1 - fraction) * MAX_TEXT_SCALE_DELTA;
-        ViewHelper.setPivotX(headerTextView, 0);
-        ViewHelper.setPivotY(headerTextView, headerTextView.getHeight());
-        ViewHelper.setScaleX(headerTextView, scale);
-        ViewHelper.setScaleY(headerTextView, scale);
+        headerTextView.setPivotX(0);
+        headerTextView.setPivotY(headerTextView.getHeight());
+        headerTextView.setScaleX(scale);
+        headerTextView.setScaleY(scale);
     }
 }

@@ -77,7 +77,7 @@
         android:background="@android:color/white"
         android:elevation="4dp">
 
-        <de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView
+        <de.tobiaserthal.akgbensheim.utils.widget.BackdropImageView
             android:id="@+id/contact_header_imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -95,7 +95,7 @@
             android:gravity="center_vertical"
 
             android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
-            android:text="@string/title_activity_contact"/>
+            android:text="@string/activity_title_contact"/>
 
         <TextView
             android:id="@+id/contact_header_subtitle"

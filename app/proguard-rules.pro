@@ -6,12 +6,31 @@
 #
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
-
+#
 # Add any project specific keep options here:
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# print config
+-printconfiguration build/outputs/mapping/release/config.txt
+
+# com.android.support.appcompat-v7
+-keep public class android.support.v7.widget.SearchView {
+    <init>(...);
+ }
+
+-keep public class android.support.v7.internal.widget.** {
+    <init>(...);
+ }
+
+-keep public class android.support.v7.internal.view.menu.** {
+    <init>(...);
+ }
+
+# com.android.support:cardview-v7
+-keep class android.support.v7.widget.RoundRectDrawable {
+    <init>(int, float);
+ }
+
+# com.android.support:support-v4
+-keep public class * extends android.support.v4.view.ActionProvider {
+    <init>(android.content.Context);
+ }

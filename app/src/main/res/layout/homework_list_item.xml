@@ -23,21 +23,18 @@
             android:id="@+id/txtDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Montag, 14. Juli 2015"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
 
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mathe"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
         <TextView
             android:id="@+id/txtNotes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hausaufgabejhfkjösdhfökajsdfhaöädsfjhjasfdsf"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     </LinearLayout>

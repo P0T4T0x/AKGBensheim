@@ -2,22 +2,17 @@ package de.tobiaserthal.akgbensheim;
 
 import android.app.Application;
 import android.content.IntentFilter;
-import android.database.ContentObserver;
-import android.net.Uri;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 
 import com.epapyrus.plugpdf.core.PlugPDF;
 import com.epapyrus.plugpdf.core.PlugPDFException;
 
-import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.NetworkManager;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionColumns;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
+import de.tobiaserthal.akgbensheim.backend.preferences.PreferenceProvider;
+import de.tobiaserthal.akgbensheim.backend.sync.SyncUtils;
+import de.tobiaserthal.akgbensheim.backend.utils.Log;
+import de.tobiaserthal.akgbensheim.backend.utils.NetworkManager;
 
 public class AKGBensheim extends Application {
+
     private final NetworkManager.NetworkChangeReceiver networkChangeReceiver
             = new NetworkManager.NetworkChangeReceiver() {
 
@@ -25,36 +20,35 @@ public class AKGBensheim extends Application {
         public void onNetworkAccessibilityChanged(boolean allowed) {
             if(!allowed) {
                 Log.d("AKGBensheim", "Canceling syncs due to network change.");
-                //SyncUtils.cancelCurrentSync();
+                SyncUtils.cancelCurrentSync();
             }
         }
     };
+
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         // Create sync account to bind pending syncs to
-        // Perform initial sync if necessary
+        // Perform initial sync if necessary and initialize preferences
         SyncUtils.createSyncAccount(this);
+        PreferenceProvider.initialize(this);
 
         // Listen to network changes by subscribing a listener
         NetworkManager.initialize(this);
-        PreferenceProvider.initialize(this);
 
         IntentFilter intent = new IntentFilter(NetworkManager.ACTION_NETWORK);
         registerReceiver(networkChangeReceiver, intent);
 
-        // Initialize PlugPDF
         try {
             PlugPDF.init(this, BuildConfig.PLUGPDF_API_KEY);
             if(BuildConfig.DEBUG) {
-                PlugPDF.setUpdateCheckEnabled(false);
+                PlugPDF.setUpdateCheckEnabled(true);
                 PlugPDF.enableUncaughtExceptionHandler();
             } else {
                 PlugPDF.setUpdateCheckEnabled(false);
             }
-
         } catch (PlugPDFException.InvalidLicense invalidLicense) {
             invalidLicense.printStackTrace();
         }

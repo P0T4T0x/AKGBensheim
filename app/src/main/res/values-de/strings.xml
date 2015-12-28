@@ -1,87 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AKGBensheim</string>
-    <string name="action_add_to_calendar">Zum Kalender hinzufügen</string>
-    <string name="action_add_to_contacts">Zu Kontakten hinzufügen</string>
-    <string name="action_bookmark">Lesezeichen hinzufügen</string>
-    <string name="action_delete">Löschen</string>
-    <string name="action_delete_homework_content">Diese Aktion kann nicht rückgängig gemacht werden!</string>
-    <string name="action_delete_homework_title">\"%1$s\" löschen</string>
-    <string name="action_mark_as_done">Als erledigt markieren</string>
-    <string name="action_open_in_browser">Im Browser öffnen</string>
-    <string name="action_refresh">Aktualisieren</string>
-    <string name="action_settings">Einstellungen</string>
-    <string name="action_share">Teilen</string>
-    <string name="activity_title_faq">FAQ</string>
-    <string name="activity_title_settings">Einstellungen</string>
-    <string name="color_chooser">Eine Farbe auswählen:</string>
-    <string name="des_drawer_header_image">Ein Bild vom Schulgebäude</string>
-    <string name="des_drawer_list_item_icon">Navigationssymbol</string>
-    <string name="des_news_header_image">Titelbild für Artikel</string>
-    <string name="dev_email_subject"><![CDATA[Support & Feedback]]></string>
-    <string name="drawer_close">Hauptmenü schließen</string>
-    <string name="drawer_open">Hauptmenü öffnen</string>
-    <string name="email"></string>
-    <string name="empty_text_news_bookmarked">Keine Lesezeichen gesetzt!</string>
-    <string name="event_tab_coming">Anstehend</string>
-    <string name="event_tab_over">Stattgefunden</string>
-    <string name="events_empty_text">Keine Termine!</string>
-    <string name="foodplan_empty_text">Speiseplan nicht verfügbar!</string>
-    <string name="foodplan_share">Speiseplan der AKG Mensa</string>
-    <string name="foodplan_tab_titles">{0, choice, 0#Diese Woche|1#Nächste Woche|1&lt;In {0} Wochen}</string>
+
     <string name="fragment_title_home">Startseite</string>
-    <string name="home_empty_text">Heute steht nichts an!</string>
-    <string name="home_summary_subst">%1$s. Stunde: %2$s in Raum %3$s</string>
-    <string name="homework_edit_notes_hint">Notizen</string>
-    <string name="homework_edit_title_hint">Titel / Fach</string>
-    <string name="homework_empty_query_text">Nichts gefunden für: \"%1$s\"</string>
-    <string name="homework_empty_text">Keine Hausaufgaben :)</string>
-    <string name="homework_tab_done">Erledigt</string>
-    <string name="homework_tab_todo">Anstehend</string>
-    <string name="insert_subject">Neuer Kurs</string>
-    <string name="insert_subject_content">Bitte gib das entsperechende Kürzel für den zu filternden Kurs an.</string>
-    <string name="insert_subject_hint">Kurskürzel hier eingeben…</string>
-    <string name="news_empty_text">Keine Artikel!</string>
-    <string name="news_tab_all">Alle Artikel</string>
-    <string name="news_tab_bookmarks">Lesezeichen</string>
-    <string name="title_activity_teacher_detail">Lehrerliste</string>
-    <string name="title_activity_subst_detail">Vertretungsplan</string>
-    <string name="title_activity_settings">Einstellungen</string>
-    <string name="title_activity_news_detail">Artikel</string>
-    <string name="subst_tab_all">Alle</string>
-    <string name="subst_tab_form">Meine Kurse</string>
-    <string name="teacher_detail_name">Name</string>
-    <string name="subst_tab_phase">Meine Stufe</string>
-    <string name="teacher_detail_name_value">%1$s %2$s</string>
-    <string name="teacher_detail_shorthand">Kürzel</string>
-    <string name="teacher_detail_subjects">Fächer</string>
-    <string name="teacher_empty_query_text">Keine Lehrer gefunden für: \"%1$s\"</string>
-    <string name="teacher_empty_text">Keine Einträge</string>
-    <string name="teacher_tab_student_teachers">Referendare</string>
-    <string name="teacher_tab_teachers">Lehrer</string>
-    <string name="title_activity_contact">AKG Bensheim</string>
-    <string name="title_activity_event_detail"></string>
-    <string name="title_activity_homework">Hausaufgaben</string>
-    <string name="notify_foodplan_failed">Speiseplan konnte nicht gefunden werden!</string>
-    <string name="notify_network_unavailable">Verbindung fehlgeschlagen! Überprüfe deine Netzwerkvebindung und versuche es erneut!</string>
-    <string name="options">Optionen</string>
-    <string name="pref_category_support">Support</string>
-    <string name="pref_category_sync_events">Terminliste</string>
-    <string name="pref_prompt_clear_cache">Du kannst den Cache säubern, um ein wenig Speicherplatz freizuräumen, es kann jedoch auch zu merkwürdigem Verhalten der App führen.</string>
-    <string name="pref_prompt_clear_data">Du kannst alle Daten löschen, um Speicherplatz zu sparen. Danach musst du jedoch alles wieder laden, wenn du z.B. den Vertretungsplan ansehen willst.</string>
-    <string name="pref_prompt_sync_frequency">Die Häufigkeit auswählen:</string>
-    <string name="pref_summary_mail_dev">Dem Entwickler eine Mail senden</string>
-    <string name="pref_summary_only_wifi">Daten nur dann synchronisieren, wenn du mit einem WLan Netzwerk verbunden bist.</string>
-    <string name="pref_summary_website">Öffnet die AKG Webseite in deinem Standartbrowser.</string>
-    <string name="pref_title_about">AKG Bensheim</string>
-    <string name="pref_title_mail_dev">Mail senden.</string>
-    <string name="pref_title_only_wifi">Nur Wlan</string>
-    <string name="pref_title_subst_sync_item_frequency">Häufigkeit: %1$s</string>
-    <string name="pref_title_subst_sync_item_title">%1$s aktualisieren</string>
-    <string name="retry">Erneut versuchen</string>
-    <string name="subst_detail_icon">Ein Symbolbild</string>
-    <string name="subst_empty_query_text">Nichts gefunden für: \"%1$s\"</string>
-    <string name="subst_empty_text">Keine Vertretungen :(</string>
-    <string name="subst_list_period">%1$s. Stunde</string>
-    <string name="home_list_subtitle_generic">{0, choice, 0#Nichts gefunden.|1#1 Eintrag verfügbar|1&lt;{0} Einträge verfügbar}</string>
+    <string name="fragment_title_subst">Vertretungsplan</string>
+    <string name="fragment_title_food">Speisepläne</string>
+    <string name="fragment_title_homework">Hausaufgaben</string>
+    <string name="fragment_title_events">Terminliste</string>
+    <string name="fragment_title_news">Aktuelles</string>
+    <string name="fragment_title_teachers">Lehrerliste</string>
+
+    <string name="activity_title_main">@string/app_name</string>
+    <string name="activity_title_substDetail">Vertretung</string>
+    <string name="activity_title_homeworkDetail">Hausaufgabe</string>
+    <string name="activity_title_newsDetail">Artikel</string>
+    <string name="activity_title_eventsDetail">Termin</string>
+    <string name="activity_title_teachersDetail">Lehrer</string>
+    <string name="activity_title_contact">Kontakt</string>
+    <string name="activity_title_settings">Einstellungen</string>
+    <string name="activity_title_faq">FAQ</string>
+
+
+    <string name="image_desc_drawerHeaderImage">Ein Bild vom Altbau des AKG Bensheims</string>
+    <string name="image_desc_drawerItemIcon">Ein Navigationssymbol</string>
+    <string name="image_desc_substDetailIcon">Ein Symbol für die Eigenschaft eines lLehrers</string>
+    <string name="image_desc_newsHeaderImage">Das Bild zu dem Artikel</string>
+
+    <string name="action_desc_drawerOpen">Hauptmenü öffnen</string>
+    <string name="action_desc_drawerClose">Hauptemü schließen</string>
+
+    <string name="action_title_share">Teilen</string>
+    <string name="action_title_addToCalendar">Zum Kalender hinzufügen</string>
+    <string name="action_title_openInBrowser">Im Browser öffnen</string>
+    <string name="action_title_addToBookmarks">Lesezeichen setzen</string>
+    <string name="action_title_addToContacts">ZU Kontakten hinzufügen</string>
+    <string name="action_title_markAsDone">Als erledigt markieren</string>
+    <string name="action_title_refresh">Aktualisieren</string>
+    <string name="action_title_retry">Erneut versuchen</string>
+    <string name="action_title_delete">Löschen</string>
+
+    <string name="action_prompt_title_clearCache">Cache leeren</string>
+    <string name="action_prompt_title_deleteData">Daten löschen</string>
+    <string name="action_prompt_title_colorChooser">Wähle eine Farbe aus:</string>
+    <string name="action_prompt_title_deleteHomework">\"%1$s\" löschen?</string>
+    <string name="action_prompt_title_settingsSelectFrequency">Intervall festlegen:</string>
+    <string name="action_prompt_title_settingsAddSubjectFilter">Neuen Kurs hinzufügen</string>
+
+    <string name="action_prompt_body_settingsAddSubjectFilter">Trage hier das Kürzel für den Kurs ein, den du zum Filter hinzufügen möchtest.</string>
+    <string name="action_prompt_body_clearCache">Du kannst den Cache säubern, um ein wenig Speicherplatz freizuräumen, es kann jedoch auch zu merkwürdigem Verhalten der App führen.</string>
+    <string name="action_prompt_body_deleteHomework">Danach kannst du sie nicht wieder einsehen.</string>
+    <string name="action_prompt_body_deleteData">Du kannst alle Daten löschen, um Speicherplatz zu sparen. Danach musst du jedoch alles wieder laden, wenn du z.B. den Vertretungsplan ansehen willst.</string>
+    <string name="action_prompt_body_networkUnavailable">Verbindung fehlgeschlagen! Überprüfe deine Netzwerkvebindung und versuche es erneut!</string>
+    <string name="action_prompt_body_foodplanUnavailable">Kein Speiseplan verfügbar! Versuche es später bitte noch einmal.</string>
+
+    <string name="action_prompt_hint_settingsAddSubjectFilter">Kurskürzel hinzufügen…</string>
+
+    <string name="tab_title_substForm">Deine Kurse</string>
+    <string name="tab_title_substPhase">Deine Stufe</string>
+    <string name="tab_title_substAll">Alle</string>
+    <string name="tab_title_foodGeneric">{0, choice, 0#Diese Woche|1#Nächste Woche|1&lt;In {0} Wochen}</string>
+    <string name="tab_title_homeworkTodo">Ausstehend</string>
+    <string name="tab_title_homeworkDone">Erledigt</string>
+    <string name="tab_title_eventsComing">Anstehend</string>
+    <string name="tab_title_eventsOver">Verstrichen</string>
+    <string name="tab_title_newsAll">Alle Artikel</string>
+    <string name="tab_title_newsBookmarks">Lesezeichen</string>
+    <string name="tab_title_teachersTeacher">Lehrer</string>
+    <string name="tab_title_teachersStudentTeacher">Referendare</string>
+
+    <string name="empty_title_home">Für heute steht nichts an.</string>
+    <string name="empty_title_subst">Keine Vertretungen :(</string>
+    <string name="empty_title_food">Speiseplan nicht verfügbar.</string>
+    <string name="empty_title_homeworkTodo">Keine Hausaufgaben! Yey :)</string>
+    <string name="empty_title_homeworkDone">Noch nichts erledigt :(</string>
+    <string name="empty_title_events">Keine Termine vorhanden</string>
+    <string name="empty_title_news">Keine Artikel vorhanden!</string>
+    <string name="empty_title_newsBookmarked">Du hast noch keine Lesezeichen gesetzt.</string>
+    <string name="empty_title_teachers">Keine Einträge.</string>
+
+    <string name="empty_query_subst">Keine Vertretungen für \"%1$s\" gefunden.</string>
+    <string name="empty_query_homework">Keine Hausaufgaben für \"%1$s\" eingetragen.</string>
+    <string name="empty_query_events">Keine Termine für \"%1$s\" gelistet.</string>
+    <string name="empty_query_news">Keine Artikel mit \"%1$s\" gefunden.</string>
+    <string name="empty_query_newsBookmarked">Du hast noch keine Lesezeichen für \"%1$s\" gesetzt.</string>
+    <string name="empty_query_teachers">Niemand gefunden für \"%1$s\"</string>
+
+    <string name="detail_title_teacherName">Name</string>
+    <string name="detail_title_teacherShorthand">Kürzel</string>
+    <string name="detail_title_teacherSubjects">Fächer</string>
+    <string name="detail_subtitle_homeItem">{0, choice, 0#Nichts zu zeigen|1#1 Eintrag|1&lt;{0} Einträge}</string>
+
+    <string name="detail_body_contactEmail">info@akg-bensheim.de</string>
+    <string name="detail_body_contactPhone">+49625184320</string>
+    <string name="detail_body_contactFax">+496251843250</string>
+
+    <string name="detail_body_emailDevSubject">Feedback &amp; Support</string>
+    <string name="detail_body_emailDevAddress">mailto:android@akgbensheim.de</string>
+
+    <string name="detail_hint_homeworkTitle">Fach / Aufgabe</string>
+    <string name="detail_hint_homeworkNotes">Notizen</string>
 </resources>

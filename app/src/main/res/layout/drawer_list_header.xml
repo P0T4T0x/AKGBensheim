@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/akg"
-        android:contentDescription="@string/des_drawer_header_image" />
+        android:contentDescription="@string/image_desc_drawerHeaderImage" />
 
     <LinearLayout
         android:layout_width="match_parent"

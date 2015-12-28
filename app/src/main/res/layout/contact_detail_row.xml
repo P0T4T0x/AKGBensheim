@@ -9,4 +9,5 @@
     android:drawablePadding="14dp"
 
     android:textSize="16sp"
-    android:textColor="@color/primaryText" />
+    android:textColor="@color/primaryText"
+    android:background="?attr/selectableItemBackground"/>

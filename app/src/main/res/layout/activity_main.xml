@@ -43,7 +43,7 @@
          android:layout_gravity="left" instead. -->
     <!-- The drawer is given a fixed width in dp and extends the full height of
          the container. -->
-    <de.tobiaserthal.akgbensheim.ui.widget.ScrimInsetsFrameLayout
+    <de.tobiaserthal.akgbensheim.utils.widget.ScrimInsetsFrameLayout
         android:id="@+id/navigation_drawer_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -56,11 +56,11 @@
         <!-- fragment containing the drawer recycler view -->
         <fragment
             android:id="@+id/drawerFragment"
-            android:name="de.tobiaserthal.akgbensheim.ui.drawer.DrawerFragment"
+            android:name="de.tobiaserthal.akgbensheim.drawer.DrawerFragment"
             android:layout_width="@dimen/navigation_drawer_width"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             tools:layout="@layout/fragment_navigation_drawer" />
-    </de.tobiaserthal.akgbensheim.ui.widget.ScrimInsetsFrameLayout>
+    </de.tobiaserthal.akgbensheim.utils.widget.ScrimInsetsFrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

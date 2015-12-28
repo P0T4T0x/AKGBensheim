@@ -15,7 +15,6 @@
         android:layout_gravity="center_vertical"
         android:textSize="18sp"
         android:textColor="@color/primaryTextInverse"
-        android:text="Dtz"
         android:gravity="center"
         android:background="@drawable/drawer_list_counter_bg"/>
 
@@ -34,16 +33,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/primaryText"
-            android:text="Hendrick Dietz"/>
+            android:textColor="@color/primaryText"/>
 
         <TextView
             android:id="@+id/txtSubjects"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="@color/secondaryText"
-            android:text="Deutsch, Latein" />
+            android:textColor="@color/secondaryText"/>
     </LinearLayout>
 
 </LinearLayout>

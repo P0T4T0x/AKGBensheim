@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.ui.ColorChooser;
+import de.tobiaserthal.akgbensheim.backend.preferences.PreferenceProvider;
+import de.tobiaserthal.akgbensheim.utils.widget.ColorChooser;
 
 public class ColorPreferenceFragment extends Fragment implements View.OnClickListener {
 

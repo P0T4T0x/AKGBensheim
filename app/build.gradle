@@ -3,41 +3,87 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "de.tobiaserthal.akgbensheim"
-        minSdkVersion 9
+        versionCode 204
+        versionName "2.0.4"
+
+        minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+
+        resConfigs "en", "de"
     }
     buildTypes {
         debug {
+            debuggable true
             buildConfigField("String", "PLUGPDF_API_KEY", "\"" + plugpdf_api_key + "\"")
         }
-
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles '../optimization-rules.pro', 'proguard-rules.pro'
+            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + plugpdf_api_key + "\"")
+        }
+    }
+
+    splits {
+        abi {
+            universalApk true
+            enable project.splitAPKs
+            exclude "arm64-v8a", "mips", "mips64"
+        }
+
+        density {
+            enable project.splitAPKs
+            exclude "ldpi", "tvdpi", "400dpi", "560dpi"
+            compatibleScreens 'small', 'normal', 'large', 'xlarge'
+        }
+    }
+
+    applicationVariants.all { variant ->
+        // assign different version code for each output
+        variant.outputs.each { output ->
+            def abi = output.getFilter(com.android.build.OutputFile.ABI);
+            def density = output.getFilter(com.android.build.OutputFile.DENSITY);
+
+            def apiCode = android.defaultConfig.minSdkVersion.getApiLevel() ;
+            def abiCode = project.versionCodesAbi.get(abi, 0);
+            def densityCode = project.versionCodesDensity.get(density, 0);
+
+            output.versionCodeOverride = (apiCode * 100000
+                + densityCode * 10000
+                + abiCode  * 1000
+                + android.defaultConfig.versionCode
+            );
+
+            println(":app:buildVersionCodes apiCode: " + apiCode
+                + ", densityCode: " + densityCode
+                + ", abiCode: " + abiCode
+                + ", output: " + output.versionCodeOverride
+            );
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':data')
-    compile 'com.github.machinarius:preferencefragment:0.1.1'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:gridlayout-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:cardview-v7:23.1.1'
-    compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
-    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.android.support:customtabs:23.1.1'
+
     compile 'com.tonicartos:superslim:0.4.13'
     compile 'com.squareup.picasso:picasso:2.5.2'
-
+    compile 'com.github.machinarius:preferencefragment:0.1.1'
+    compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     compile('com.github.afollestad.material-dialogs:core:0.8.5.1@aar') {
         transitive = true
     }
+
+    compile project(':backend')
 }

@@ -6,10 +6,8 @@ import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +17,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.adapter.HomeworkAdapter;
-import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
-import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkColumns;
-import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkContentValues;
-import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkCursor;
-import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkSelection;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
-import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.backend.provider.homework.HomeworkColumns;
+import de.tobiaserthal.akgbensheim.backend.provider.homework.HomeworkCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.homework.HomeworkSelection;
+import de.tobiaserthal.akgbensheim.backend.utils.Log;
+import de.tobiaserthal.akgbensheim.base.adapter.AdapterClickHandler;
+import de.tobiaserthal.akgbensheim.base.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.homework.adapter.HomeworkAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,9 +83,17 @@ public class HomeworkFragment extends TabbedListFragment<HomeworkAdapter>
             viewFlag = getArguments().getInt(ARG_VIEW_FLAG, TODO);
         }
 
-        emptyText = getString(R.string.homework_empty_text);
-        emptyQueryText = getString(R.string.homework_empty_query_text);
+        switch (viewFlag) {
+            case TODO:
+                emptyText = getString(R.string.empty_title_homeworkTodo);
+                break;
 
+            case DONE:
+                emptyText = getString(R.string.empty_title_homeworkDone);
+                break;
+        }
+
+        emptyQueryText = getString(R.string.empty_query_homework);
         setAdapter(new HomeworkAdapter(getActivity(), null));
     }
 
@@ -114,9 +118,10 @@ public class HomeworkFragment extends TabbedListFragment<HomeworkAdapter>
         super.onViewCreated(view, savedInstanceState);
 
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(
-                getResources().getInteger(R.integer.news_list_columns),
+                getResources().getInteger(R.integer.column_count_news),
                 StaggeredGridLayoutManager.VERTICAL);
 
+        setEmptyText(emptyText);
         setLayoutManager(manager);
     }
 
@@ -202,7 +207,11 @@ public class HomeworkFragment extends TabbedListFragment<HomeworkAdapter>
             return true;
 
         currentFilter = newFilter;
-        setEmptyText(String.format(emptyQueryText, newFilter));
+        if(newFilter != null) {
+            setEmptyText(String.format(emptyQueryText, newFilter));
+        } else {
+            setEmptyText(emptyText);
+        }
 
         Bundle args = new Bundle();
         args.putString(ARG_QUERY_FLAG, currentFilter);

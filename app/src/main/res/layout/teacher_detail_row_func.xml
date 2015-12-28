@@ -12,7 +12,7 @@
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
 
-        android:contentDescription="@string/subst_detail_icon" />
+        android:contentDescription="@string/image_desc_substDetailIcon" />
 
     <TextView
         android:id="@android:id/text1"

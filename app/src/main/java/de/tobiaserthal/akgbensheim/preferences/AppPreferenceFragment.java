@@ -1,31 +1,27 @@
 package de.tobiaserthal.akgbensheim.preferences;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.machinarius.preferencefragment.PreferenceFragment;
 
-import java.util.Arrays;
-
 import de.tobiaserthal.akgbensheim.BuildConfig;
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceKey;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.tools.FileUtils;
+import de.tobiaserthal.akgbensheim.backend.preferences.PreferenceProvider;
+import de.tobiaserthal.akgbensheim.utils.FileHelper;
 
-/**
- * Created by tobiaserthal on 19.07.15.
- */
+import static de.tobiaserthal.akgbensheim.backend.preferences.PreferenceKeychain.*;
 
-//FIXME: Crash on devices with api level <14 because of TwoStatePreference not in the framework
 public class AppPreferenceFragment extends PreferenceFragment
         implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
@@ -43,6 +39,7 @@ public class AppPreferenceFragment extends PreferenceFragment
     private Preference clearDataSetting;
 
     private Preference aboutPreference;
+    private Preference licencePreference;
 
     @Override
     public void onAttach(Context context) {
@@ -60,21 +57,20 @@ public class AppPreferenceFragment extends PreferenceFragment
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preference_screen);
 
-        PreferenceKey keys = PreferenceKey.getInstance(getActivity());
-
         // get preferences
-        phaseSetting = findPreference(keys.getKeyPhase());
-        formSetting = findPreference(keys.getKeyForm());
-        subjectSetting = findPreference(keys.getKeySubjectFilter());
-        colorSettings = findPreference(keys.getKeySubstColorSettings());
+        phaseSetting = findPreference(getKeySubstPhase(getContext()));
+        formSetting = findPreference(getKeySubstForm(getContext()));
+        subjectSetting = findPreference(getKeySubstFilterSettings(getContext()));
+        colorSettings = findPreference(getKeySubstColorSettings(getContext()));
 
-        syncEnabledSetting = (CheckBoxPreference) findPreference(keys.getKeySyncEnabled());
-        syncSettings = findPreference(keys.getKeySyncSettings());
+        syncEnabledSetting = (CheckBoxPreference) findPreference(getKeySyncBackgroundEnabled(getContext()));
+        syncSettings = findPreference(getKeySyncAdvancedSettings(getContext()));
 
-        clearCacheSetting = findPreference(keys.getKeyClearCache());
-        clearDataSetting = findPreference(keys.getKeyClearData());
+        clearCacheSetting = findPreference(getKeyDataClearCache(getContext()));
+        clearDataSetting = findPreference(getKeyDataClearData(getContext()));
 
-        aboutPreference = findPreference(keys.getKeyAbout());
+        aboutPreference = findPreference(getKeyAboutVersion(getContext()));
+        licencePreference = findPreference(getKeyAboutLicence(getContext()));
 
         // set listener
         phaseSetting.setOnPreferenceClickListener(this);
@@ -88,6 +84,8 @@ public class AppPreferenceFragment extends PreferenceFragment
         clearCacheSetting.setOnPreferenceClickListener(this);
         clearDataSetting.setOnPreferenceClickListener(this);
 
+        licencePreference.setOnPreferenceClickListener(this);
+
         setPreferenceValues();
         switchFormState();
     }
@@ -98,7 +96,7 @@ public class AppPreferenceFragment extends PreferenceFragment
         subjectSetting.setSummary(PreferenceProvider.getInstance().getSubstSubjectsSummary());
 
         syncEnabledSetting.setChecked(PreferenceProvider.getInstance().isAutoSyncEnabled());
-        aboutPreference.setSummary(getString(R.string.pref_summary_about, BuildConfig.VERSION_NAME));
+        aboutPreference.setSummary(getString(R.string.pref_summary_about_version, BuildConfig.VERSION_NAME));
     }
 
     private void switchFormState() {
@@ -172,6 +170,11 @@ public class AppPreferenceFragment extends PreferenceFragment
             return true;
         }
 
+        if(preference.equals(licencePreference)) {
+            showLicence();
+            return true;
+        }
+
         return false;
     }
 
@@ -220,15 +223,15 @@ public class AppPreferenceFragment extends PreferenceFragment
 
     private void showClearCache() {
         new MaterialDialog.Builder(getContext())
-                .title(R.string.pref_title_clear_cache)
-                .content(R.string.pref_prompt_clear_cache)
+                .title(R.string.action_prompt_title_clearCache)
+                .content(R.string.action_prompt_body_clearCache)
                 .positiveText(android.R.string.ok)
                 .negativeText(android.R.string.cancel)
                 .autoDismiss(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        FileUtils.clearCache(getContext());
+                        FileHelper.clearCache(getContext());
                         dialog.dismiss();
                     }
                 })
@@ -244,15 +247,15 @@ public class AppPreferenceFragment extends PreferenceFragment
 
     private void showClearData() {
         new MaterialDialog.Builder(getContext())
-                .title(R.string.pref_title_clear_data)
-                .content(R.string.pref_prompt_clear_data)
+                .title(R.string.action_prompt_title_deleteData)
+                .content(R.string.action_prompt_body_deleteData)
                 .positiveText(android.R.string.ok)
                 .negativeText(android.R.string.cancel)
                 .autoDismiss(false)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        FileUtils.clearData(getContext());
+                        FileHelper.clearData(getContext());
                         dialog.dismiss();
 
                     }
@@ -263,6 +266,18 @@ public class AppPreferenceFragment extends PreferenceFragment
                         dialog.dismiss();
                     }
                 })
+                .build()
+                .show();
+    }
+
+    private void showLicence() {
+        new MaterialDialog.Builder(getContext())
+                .title(R.string.pref_title_about_licence)
+                .iconRes(R.mipmap.ic_launcher)
+                .content(Html.fromHtml(
+                        FileHelper.readRawTextFile(getContext(), R.raw.licence))
+                )
+                .positiveText(android.R.string.ok)
                 .build()
                 .show();
     }

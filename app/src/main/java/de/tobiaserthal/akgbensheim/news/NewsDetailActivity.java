@@ -1,5 +1,6 @@
 package de.tobiaserthal.akgbensheim.news;
 
+import android.animation.ArgbEvaluator;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -20,25 +21,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.nineoldandroids.animation.ArgbEvaluator;
-import com.nineoldandroids.view.ViewHelper;
 import com.squareup.picasso.Picasso;
 
-
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.SimpleAsyncQueryHandler;
-import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
-import de.tobiaserthal.akgbensheim.data.provider.news.NewsContentValues;
-import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
-import de.tobiaserthal.akgbensheim.data.provider.news.NewsSelection;
-import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
-import de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView;
+import de.tobiaserthal.akgbensheim.backend.model.ModelUtils;
+import de.tobiaserthal.akgbensheim.backend.provider.SimpleAsyncQueryHandler;
+import de.tobiaserthal.akgbensheim.backend.provider.news.NewsContentValues;
+import de.tobiaserthal.akgbensheim.backend.provider.news.NewsCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.news.NewsSelection;
+import de.tobiaserthal.akgbensheim.base.OverlayActivity;
+import de.tobiaserthal.akgbensheim.utils.ContextHelper;
+import de.tobiaserthal.akgbensheim.utils.widget.BackdropImageView;
 
 import static de.tobiaserthal.akgbensheim.R.drawable.abc_ic_menu_share_mtrl_alpha;
 
@@ -164,7 +162,7 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
                 return true;
 
             case R.id.action_open_in_browser:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(news.getArticleUrl())));
+                ContextHelper.startBrowserIntent(this, news.getArticleUrl());
                 return true;
 
             case R.id.action_bookmark:
@@ -257,7 +255,7 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
         float fraction = materialInterpolator.getInterpolation(offset / flexibleRange);
 
         // translate the whole header view
-        ViewHelper.setTranslationY(headerView, -offset);
+        headerView.setTranslationY(-offset);
 
         // translate imageView content and scrim darkness
         imageView.setProgress((int) offset, fraction);
@@ -271,34 +269,28 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
 
         // translate the title and the subtitle in x direction
         float titleMargin = fraction * actionBarTitleMargin;
-        ViewHelper.setTranslationX(headerTitle, titleMargin);
-        ViewHelper.setTranslationX(headerSubtitle, titleMargin);
+        headerTitle.setTranslationX(titleMargin);
+        headerSubtitle.setTranslationX(titleMargin);
 
         // scale the header title
         float scale = 1 + (1 - fraction) * MAX_TEXT_SCALE_DELTA;
-        ViewHelper.setPivotX(headerTitle, 0);
-        ViewHelper.setPivotY(headerTitle, headerTitle.getHeight());
-        ViewHelper.setScaleX(headerTitle, scale);
-        ViewHelper.setScaleY(headerTitle, scale);
+        headerTitle.setPivotX(0);
+        headerTitle.setPivotY(headerTitle.getHeight());
+        headerTitle.setScaleX(scale);
+        headerTitle.setScaleY(scale);
 
         // fade in/out the subtitle text view
         float fadingScrollY = scrollY - flexibleSpaceShowFABOffset;
         float fadingRange = flexibleRange - flexibleSpaceShowFABOffset;
         float fadingOffset = ScrollUtils.getFloat(fadingScrollY, 0, fadingRange);
         float fadingFraction = materialInterpolator.getInterpolation(fadingOffset / fadingRange);
-        ViewHelper.setAlpha(headerSubtitle, fadingFraction);
+        headerSubtitle.setAlpha(fadingFraction);
 
         // translate action button
         int halfHeight = actionButton.getMeasuredHeight() / 2;
         int translationY = flexibleSpaceImageHeight - halfHeight - (int) offset;
+        actionButton.setTranslationY(translationY);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) actionButton.getLayoutParams();
-            //layoutParams.topMargin = translationY;
-            actionButton.requestLayout();
-        } else {
-            ViewHelper.setTranslationY(actionButton, translationY);
-        }
 
         // show or hide the action button
         if(offset > flexibleSpaceShowFABOffset) {
@@ -322,8 +314,8 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
 
     private void showFAB(boolean animated) {
         if(!animated) {
-            ViewHelper.setScaleX(actionButton, 1);
-            ViewHelper.setScaleY(actionButton, 1);
+            actionButton.setScaleX(1);
+            actionButton.setScaleY(1);
             actionButton.setVisibility(View.VISIBLE);
             return;
         }
@@ -334,8 +326,8 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
     private void hideFAB(boolean animated) {
         if(!animated) {
             actionButton.setVisibility(View.GONE);
-            ViewHelper.setScaleX(actionButton, 0);
-            ViewHelper.setScaleY(actionButton, 0);
+            actionButton.setScaleX(0);
+            actionButton.setScaleY(0);
             return;
         }
 

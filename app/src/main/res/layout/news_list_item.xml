@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="178dp"
             android:background="@color/material_blue_grey_800"
-            android:contentDescription="@string/des_news_header_image" />
+            android:contentDescription="@string/image_desc_newsHeaderImage" />
 
         <LinearLayout
             android:orientation="vertical"

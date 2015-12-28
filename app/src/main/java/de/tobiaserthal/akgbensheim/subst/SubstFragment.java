@@ -25,14 +25,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.adapter.SubstAdapter;
-import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
-import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionColumns;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionCursor;
-import de.tobiaserthal.akgbensheim.data.provider.substitution.SubstitutionSelection;
-import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.backend.preferences.PreferenceProvider;
+import de.tobiaserthal.akgbensheim.backend.preferences.SubstPreferenceChangeReceiver;
+import de.tobiaserthal.akgbensheim.backend.provider.substitution.SubstitutionColumns;
+import de.tobiaserthal.akgbensheim.backend.provider.substitution.SubstitutionCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.substitution.SubstitutionSelection;
+import de.tobiaserthal.akgbensheim.backend.utils.Log;
+import de.tobiaserthal.akgbensheim.base.adapter.AdapterClickHandler;
+import de.tobiaserthal.akgbensheim.base.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.subst.adapter.SubstAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,7 +67,7 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
 
     private ChangeReceiver changeReceiver;
 
-    static class ChangeReceiver extends PreferenceProvider.PreferenceChangeReceiver {
+    static class ChangeReceiver extends SubstPreferenceChangeReceiver {
         private WeakReference<SubstFragment> reference;
 
         public ChangeReceiver(SubstFragment fragment) {
@@ -131,8 +132,8 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
             viewFlag = getArguments().getInt(ARG_VIEW_FLAG, ALL);
         }
 
-        emptyText = getString(R.string.subst_empty_text);
-        emptyQueryText = getString(R.string.subst_empty_query_text);
+        emptyText = getString(R.string.empty_title_subst);
+        emptyQueryText = getString(R.string.empty_query_subst);
 
         // Create the adapter
         setAdapter(new SubstAdapter(getActivity(), null, viewFlag));
@@ -169,6 +170,8 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
 
         // Create the layout manager
         LayoutManager manager = new LayoutManager(getActivity());
+
+        setEmptyText(emptyText);
         setLayoutManager(manager);
     }
 
@@ -273,7 +276,11 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
             return true;
 
         currentFilter = newFilter;
-        setEmptyText(String.format(emptyQueryText, newFilter));
+        if(newFilter != null) {
+            setEmptyText(String.format(emptyQueryText, newFilter));
+        } else {
+            setEmptyText(emptyText);
+        }
 
         Bundle args = new Bundle();
         args.putString(ARG_QUERY_FLAG, currentFilter);

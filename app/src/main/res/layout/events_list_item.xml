@@ -15,7 +15,6 @@
         android:layout_gravity="center_vertical"
         android:textSize="18sp"
         android:textColor="@color/primaryTextInverse"
-        android:text="24."
         android:gravity="center"
         android:background="@drawable/drawer_list_counter_bg"/>
 
@@ -27,7 +26,6 @@
         android:layout_marginStart="14dp"
         android:layout_gravity="center_vertical"
         android:textSize="16sp"
-        android:textColor="@color/primaryText"
-        android:text="Ferienbeginn"/>
+        android:textColor="@color/primaryText"/>
 
 </LinearLayout>

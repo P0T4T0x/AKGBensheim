@@ -1,8 +1,5 @@
 package de.tobiaserthal.akgbensheim.teacher;
 
-import android.accounts.Account;
-import android.content.ContentResolver;
-import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
@@ -10,8 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,8 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
 
 import com.tonicartos.superslim.LayoutManager;
 
@@ -29,18 +22,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.adapter.TeacherAdapter;
-import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
-import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
-import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherColumns;
-import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherCursor;
-import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherSelection;
-import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
-import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
-import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
-import de.tobiaserthal.akgbensheim.ui.widget.RecyclerViewFastScroll;
+import de.tobiaserthal.akgbensheim.backend.provider.teacher.TeacherColumns;
+import de.tobiaserthal.akgbensheim.backend.provider.teacher.TeacherCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.teacher.TeacherSelection;
+import de.tobiaserthal.akgbensheim.backend.utils.Log;
+import de.tobiaserthal.akgbensheim.base.adapter.AdapterClickHandler;
+import de.tobiaserthal.akgbensheim.base.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.teacher.adapter.TeacherAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,15 +47,6 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
 
     public static final int TEACHER = 0x0;
     public static final int STUDENT_TEACHER = 0x1;
-
-    private final Runnable initLoader = new Runnable() {
-        @Override
-        public void run() {
-            Bundle args = new Bundle();
-            args.putString(ARG_QUERY_FLAG, null);
-            getLoaderManager().initLoader(viewFlag, args, TeacherFragment.this);
-        }
-    };
 
     private int viewFlag;
     private String currentFilter;
@@ -101,8 +80,8 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
             viewFlag = getArguments().getInt(ARG_VIEW_FLAG, TEACHER);
         }
 
-        emptyText = getResources().getString(R.string.teacher_empty_text);
-        emptyQueryText = getResources().getString(R.string.teacher_empty_query_text);
+        emptyText = getResources().getString(R.string.empty_title_teachers);
+        emptyQueryText = getResources().getString(R.string.empty_query_teachers);
 
         // Create the adapter
         setAdapter(new TeacherAdapter(getActivity(), null));
@@ -116,8 +95,6 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_teacher, container, false);
 
-        RecyclerViewFastScroll fastScroll = (RecyclerViewFastScroll) view.findViewById(R.id.fastscroll);
-        fastScroll.setRecyclerView((RecyclerView) view.findViewById(android.R.id.list));
 
         getAdapter().setOnClickListener(new AdapterClickHandler() {
             @Override
@@ -130,15 +107,21 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, TeacherFragment.this);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle  savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         // Create the layout manager
         LayoutManager manager = new LayoutManager(getActivity());
-        setLayoutManager(manager);
 
-        // start loader
-        getHandler().post(initLoader);
+        setEmptyText(emptyText);
+        setLayoutManager(manager);
     }
 
     @Override
@@ -155,7 +138,6 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
 
     @Override
     public void onDestroyView() {
-        getHandler().removeCallbacks(initLoader);
         getAdapter().setOnClickListener(null);
 
         super.onDestroyView();
@@ -231,7 +213,11 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
             return true;
 
         currentFilter = newFilter;
-        setEmptyText(String.format(emptyQueryText, newFilter));
+        if(newFilter != null) {
+            setEmptyText(String.format(emptyQueryText, newFilter));
+        } else {
+            setEmptyText(emptyText);
+        }
 
         Bundle args = new Bundle();
         args.putString(ARG_QUERY_FLAG, currentFilter);

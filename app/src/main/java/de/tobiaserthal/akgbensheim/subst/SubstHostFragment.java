@@ -3,11 +3,11 @@ package de.tobiaserthal.akgbensheim.subst;
 import android.accounts.Account;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SyncInfo;
 import android.content.SyncStatusObserver;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MarginLayoutParamsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,14 +17,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.NetworkManager;
-import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
-import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
-import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
-import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
-import de.tobiaserthal.akgbensheim.ui.tabs.TabbedHostFragment;
+import de.tobiaserthal.akgbensheim.backend.model.ModelUtils;
+import de.tobiaserthal.akgbensheim.backend.provider.DataProvider;
+import de.tobiaserthal.akgbensheim.backend.sync.SyncUtils;
+import de.tobiaserthal.akgbensheim.backend.sync.auth.AuthenticatorService;
+import de.tobiaserthal.akgbensheim.backend.utils.Log;
+import de.tobiaserthal.akgbensheim.backend.utils.NetworkManager;
+import de.tobiaserthal.akgbensheim.base.tabs.TabbedHostFragment;
 
 
 public class SubstHostFragment extends TabbedHostFragment {
@@ -34,17 +33,19 @@ public class SubstHostFragment extends TabbedHostFragment {
     private final SyncStatusObserver syncStatusObserver = new SyncStatusObserver() {
         @Override
         public void onStatusChanged(int which) {
-            Account account = AuthenticatorService.getAccount(SyncUtils.ACCOUNT_TYPE);
-            boolean syncActive = ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
-            boolean syncPending = ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
-
-            final boolean refresh = syncActive || syncPending;
-            Log.d(TAG, "Status change detected. Active: %b, pending: %b", syncActive, syncPending);
-
-            refreshLayout.post(new Runnable() {
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    refreshLayout.setRefreshing(refresh);
+                    Account account = AuthenticatorService.getAccount(SyncUtils.ACCOUNT_TYPE);
+                    boolean syncActive = ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
+                    boolean syncPending = ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
+
+                    boolean refresh = syncActive || syncPending;
+                    Log.d(TAG, "Status change detected. Active: %b, pending: %b, refreshing: %b", syncActive, syncPending, refresh);
+
+                    if (refreshLayout != null) {
+                        refreshLayout.setRefreshing(refresh);
+                    }
                 }
             });
         }
@@ -60,9 +61,9 @@ public class SubstHostFragment extends TabbedHostFragment {
                 SyncUtils.forceRefresh(ModelUtils.SUBSTITUTIONS);
             } else {
                 refreshLayout.setRefreshing(false);
-                Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_SHORT)
+                Snackbar.make(getContentView(), R.string.action_prompt_body_networkUnavailable, Snackbar.LENGTH_SHORT)
                         .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.md_edittext_error))
-                        .setAction(R.string.retry, new View.OnClickListener() {
+                        .setAction(R.string.action_title_retry, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 refreshListener.onRefresh();
@@ -82,9 +83,10 @@ public class SubstHostFragment extends TabbedHostFragment {
                                     Bundle savedInstanceState) {
 
         final Context context = container.getContext();
+        final int tabHeight = getResources().getDimensionPixelOffset(R.dimen.tab_height);
+        final int contentMargin = getResources().getDimensionPixelOffset(R.dimen.activity_vertical_margin);
 
         SwipeRefreshLayout refreshLayout = new SwipeRefreshLayout(context);
-        refreshLayout.setProgressViewOffset(false, getToolbar().getHeight(), getToolbar().getHeight() + 200);
         refreshLayout.setId(android.R.id.secondaryProgress);
 
         ViewPager pager = new ViewPager(container.getContext());
@@ -95,13 +97,15 @@ public class SubstHostFragment extends TabbedHostFragment {
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
 
-        int padding = getResources().getDimensionPixelSize(R.dimen.tab_height);
-        ViewCompat.setPaddingRelative(refreshLayout, 0, padding, 0, 0);
-
-        refreshLayout.setLayoutParams(new FrameLayout.LayoutParams(
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+        );
+
+        params.topMargin = tabHeight;
+        refreshLayout.setLayoutParams(params);
+        refreshLayout.setProgressViewOffset(false, 0, getToolbarHeight() + contentMargin);
+        refreshLayout.setColorSchemeResources(R.color.primary, R.color.accent, R.color.primaryDark);
 
         return refreshLayout;
     }
@@ -135,6 +139,7 @@ public class SubstHostFragment extends TabbedHostFragment {
     @Override
     public void onDestroyView() {
         refreshLayout.setOnRefreshListener(null);
+        refreshLayout = null;
         super.onDestroyView();
     }
 
@@ -142,16 +147,6 @@ public class SubstHostFragment extends TabbedHostFragment {
     public void onPageScrollStateChanged(int state) {
         ensureRefreshLayout();
         refreshLayout.setEnabled(state == ViewPager.SCROLL_STATE_IDLE);
-    }
-
-    @Override
-    public void onToolbarMoved(float translationY) {
-        ensureRefreshLayout();
-
-        refreshLayout.setProgressViewOffset(
-                false,
-                getToolbar().getHeight() + (int) translationY,
-                getToolbar().getHeight() + (int) translationY + 200);
     }
 
     private void ensureRefreshLayout() {

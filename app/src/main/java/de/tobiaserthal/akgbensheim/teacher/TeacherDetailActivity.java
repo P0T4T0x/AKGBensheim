@@ -1,5 +1,6 @@
 package de.tobiaserthal.akgbensheim.teacher;
 
+import android.animation.ArgbEvaluator;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -9,7 +10,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -22,15 +22,13 @@ import android.widget.TextView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.nineoldandroids.animation.ArgbEvaluator;
-import com.nineoldandroids.view.ViewHelper;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
-import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherCursor;
-import de.tobiaserthal.akgbensheim.data.provider.teacher.TeacherSelection;
-import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
-import de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView;
+import de.tobiaserthal.akgbensheim.backend.model.ModelUtils;
+import de.tobiaserthal.akgbensheim.backend.provider.teacher.TeacherCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.teacher.TeacherSelection;
+import de.tobiaserthal.akgbensheim.base.OverlayActivity;
+import de.tobiaserthal.akgbensheim.utils.widget.BackdropImageView;
 
 public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
         implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
@@ -69,11 +67,11 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
     @Override
     public void onStartEnterAnimation() {
         float scale = 1 + MAX_TEXT_SCALE_DELTA;
-        ViewHelper.setPivotX(headerTitle, 0);
-        ViewHelper.setPivotY(headerTitle, headerTitle.getHeight());
-        ViewHelper.setScaleX(headerTitle, scale);
-        ViewHelper.setScaleY(headerTitle, scale);
-        ViewHelper.setAlpha(headerSubtitle, 0);
+        headerTitle.setPivotX(0);
+        headerTitle.setPivotY(headerTitle.getHeight());
+        headerTitle.setScaleX(scale);
+        headerTitle.setScaleY(scale);
+        headerSubtitle.setAlpha(0);
     }
 
     @Override
@@ -98,12 +96,13 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
         headerSubtitle = (TextView) findViewById(R.id.teacher_header_subtitle);
 
         imageView = (BackdropImageView) findViewById(R.id.teacher_header_imageView);
-        imageView.setScrimColor(getResources().getColor(R.color.primary));
-        statusBarColor = getResources().getColor(R.color.primaryDark);
+        imageView.setFactor(0.25f);
+        imageView.setScrimColor(ContextCompat.getColor(this, R.color.primary));
+        statusBarColor = ContextCompat.getColor(this, R.color.primaryDark);
 
-        nameView        = setupRow(R.id.nameRow, R.drawable.ic_information_outline, R.string.teacher_detail_name);
-        shorthandView   = setupRow(R.id.shorthandRow, R.drawable.ic_information_outline, R.string.teacher_detail_shorthand);
-        subjectsView    = setupRow(R.id.subjectsRow, R.drawable.ic_information_outline, R.string.teacher_detail_subjects);
+        nameView        = setupRow(R.id.nameRow, R.drawable.ic_information_outline, R.string.detail_title_teacherName);
+        shorthandView   = setupRow(R.id.shorthandRow, R.drawable.ic_information_outline, R.string.detail_title_teacherShorthand);
+        subjectsView    = setupRow(R.id.subjectsRow, R.drawable.ic_information_outline, R.string.detail_title_teacherSubjects);
 
         mailView    = setupFuncRow(R.id.mailRow, R.drawable.ic_email, this);
         addView     = setupFuncRow(R.id.addRow, R.drawable.ic_account_plus, this);
@@ -178,8 +177,14 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
             return;
         }
 
-        headerTitle.setText(getString(R.string.teacher_detail_name_value, teacher.getFirstName(), teacher.getLastName()));
-        nameView.setText(getString(R.string.teacher_detail_name_value, teacher.getFirstName(), teacher.getLastName()));
+        String name = getString(
+                R.string.detail_teacher_name,
+                teacher.getFirstName(),
+                teacher.getLastName()
+        );
+
+        nameView.setText(name);
+        headerTitle.setText(name);
 
         headerSubtitle.setText(teacher.getSubjects());
         subjectsView.setText(teacher.getSubjects());
@@ -187,7 +192,7 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
         shorthandView.setText(teacher.getShorthand());
 
         mailView.setText(teacher.getEmail());
-        addView.setText(R.string.action_add_to_contacts);
+        addView.setText(R.string.action_title_addToContacts);
     }
 
     @Override
@@ -203,7 +208,7 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
         float fraction = materialInterpolator.getInterpolation(offset / flexibleRange);
 
         // translate the whole header view
-        ViewHelper.setTranslationY(headerView, -offset);
+        headerView.setTranslationY(-offset);
 
         // translate imageView content and scrim darkness
         imageView.setProgress((int) offset, fraction);
@@ -219,22 +224,22 @@ public class TeacherDetailActivity extends OverlayActivity<ObservableScrollView>
 
         // translate the title and the subtitle in x direction
         float titleMargin = fraction * actionBarTitleMargin;
-        ViewHelper.setTranslationX(headerTitle, titleMargin);
-        ViewHelper.setTranslationX(headerSubtitle, titleMargin);
+        headerTitle.setTranslationX(titleMargin);
+        headerSubtitle.setTranslationX(titleMargin);
 
         // scale the header title
         float scale = 1 + (1 - fraction) * MAX_TEXT_SCALE_DELTA;
-        ViewHelper.setPivotX(headerTitle, 0);
-        ViewHelper.setPivotY(headerTitle, headerTitle.getHeight());
-        ViewHelper.setScaleX(headerTitle, scale);
-        ViewHelper.setScaleY(headerTitle, scale);
+        headerTitle.setPivotX(0);
+        headerTitle.setPivotY(headerTitle.getHeight());
+        headerTitle.setScaleX(scale);
+        headerTitle.setScaleY(scale);
 
         // fade in/out the subtitle text view
         float fadingScrollY = scrollY - flexibleSpaceShowFABOffset;
         float fadingRange = flexibleRange - flexibleSpaceShowFABOffset;
         float fadingOffset = ScrollUtils.getFloat(fadingScrollY, 0, fadingRange);
         float fadingFraction = materialInterpolator.getInterpolation(fadingOffset / fadingRange);
-        ViewHelper.setAlpha(headerSubtitle, fadingFraction);
+        headerSubtitle.setAlpha(fadingFraction);
     }
 
     @Override

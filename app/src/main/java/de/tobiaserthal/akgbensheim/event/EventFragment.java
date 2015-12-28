@@ -1,8 +1,5 @@
 package de.tobiaserthal.akgbensheim.event;
 
-import android.accounts.Account;
-import android.content.ContentResolver;
-import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
@@ -10,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -26,19 +22,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.adapter.EventAdapter;
-import de.tobiaserthal.akgbensheim.adapter.TeacherAdapter;
-import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
-import de.tobiaserthal.akgbensheim.data.Log;
-import de.tobiaserthal.akgbensheim.data.provider.DataProvider;
-import de.tobiaserthal.akgbensheim.data.provider.event.EventColumns;
-import de.tobiaserthal.akgbensheim.data.provider.event.EventCursor;
-import de.tobiaserthal.akgbensheim.data.provider.event.EventSelection;
-import de.tobiaserthal.akgbensheim.data.sync.SyncAdapter;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
-import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
-import de.tobiaserthal.akgbensheim.teacher.TeacherDetailActivity;
-import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.backend.provider.event.EventColumns;
+import de.tobiaserthal.akgbensheim.backend.provider.event.EventCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.event.EventSelection;
+import de.tobiaserthal.akgbensheim.backend.utils.Log;
+import de.tobiaserthal.akgbensheim.base.adapter.AdapterClickHandler;
+import de.tobiaserthal.akgbensheim.base.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.event.adapter.EventAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,15 +48,6 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
 
     public static final int COMING = 0x0;
     public static final int OVER = 0x1;
-
-    private final Runnable initLoader = new Runnable() {
-        @Override
-        public void run() {
-            Bundle args = new Bundle();
-            args.putString(ARG_QUERY_FLAG, null);
-            getLoaderManager().initLoader(viewFlag, args, EventFragment.this);
-        }
-    };
 
     private int viewFlag;
     private String currentFilter;
@@ -100,8 +81,8 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
             viewFlag = getArguments().getInt(ARG_VIEW_FLAG, COMING);
         }
 
-        emptyText = getResources().getString(R.string.teacher_empty_text);
-        emptyQueryText = getResources().getString(R.string.teacher_empty_query_text);
+        emptyText = getResources().getString(R.string.empty_title_events);
+        emptyQueryText = getResources().getString(R.string.empty_query_events);
 
         // Create the adapter
         EventAdapter adapter = new EventAdapter(getActivity(), null);
@@ -123,15 +104,21 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, EventFragment.this);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         // Create the layout manager
         LayoutManager manager = new LayoutManager(getActivity());
-        setLayoutManager(manager);
 
-        // start loader
-        getHandler().post(initLoader);
+        setEmptyText(emptyText);
+        setLayoutManager(manager);
     }
 
     @Override
@@ -148,7 +135,6 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
 
     @Override
     public void onDestroyView() {
-        getHandler().removeCallbacks(initLoader);
         getAdapter().setOnClickListener(null);
 
         super.onDestroyView();
@@ -222,7 +208,11 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
             return true;
 
         currentFilter = newFilter;
-        setEmptyText(String.format(emptyQueryText, newFilter));
+        if(newFilter != null) {
+            setEmptyText(String.format(emptyQueryText, newFilter));
+        } else {
+            setEmptyText(emptyText);
+        }
 
         Bundle args = new Bundle();
         args.putString(ARG_QUERY_FLAG, currentFilter);

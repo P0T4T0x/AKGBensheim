@@ -2,20 +2,16 @@ package de.tobiaserthal.akgbensheim.preferences;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
-import de.tobiaserthal.akgbensheim.data.sync.auth.AuthenticatorService;
+import de.tobiaserthal.akgbensheim.base.toolbar.ToolbarActivity;
 import de.tobiaserthal.akgbensheim.preferences.AppPreferenceFragment.NavigationCallback;
-import de.tobiaserthal.akgbensheim.ui.base.ToolbarActivity;
 
 public class SettingsActivity extends ToolbarActivity
         implements NavigationCallback {
@@ -50,13 +46,6 @@ public class SettingsActivity extends ToolbarActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
-        return true;
     }
 
     @Override

@@ -1,103 +1,102 @@
 <resources>
     <string name="app_name">AKGBensheim</string>
-    <string name="title_activity_main" translatable="false">AKGBensheim</string>
-
-    <string name="action_settings">Settings</string>
+    
     <string name="fragment_title_home">Home</string>
-    <string name="fragment_title_subst" translatable="false">@string/model_title_subst</string>
-    <string name="fragment_title_food" translatable="false">@string/model_title_food</string>
-    <string name="fragment_title_homework" translatable="false">@string/model_title_homework</string>
-    <string name="fragment_title_events" translatable="false">@string/model_title_events</string>
-    <string name="fragment_title_news" translatable="false">@string/model_title_news</string>
-    <string name="fragment_title_teachers" translatable="false">@string/model_title_teachers</string>
+    <string name="fragment_title_subst">Substitution</string>
+    <string name="fragment_title_food">Foodplan</string>
+    <string name="fragment_title_homework">Homework</string>
+    <string name="fragment_title_events">Events</string>
+    <string name="fragment_title_news">News</string>
+    <string name="fragment_title_teachers">Teachers</string>
+
+    <string name="activity_title_main">@string/app_name</string>
+    <string name="activity_title_substDetail">Substitution</string>
+    <string name="activity_title_homeworkDetail">Homework</string>
+    <string name="activity_title_newsDetail">News</string>
+    <string name="activity_title_eventsDetail">Event</string>
+    <string name="activity_title_teachersDetail">Teacher</string>
+    <string name="activity_title_contact">Contact</string>
     <string name="activity_title_settings">Settings</string>
     <string name="activity_title_faq">FAQ</string>
-    <string name="des_drawer_header_image">Picture of the school building</string>
-    <string name="des_drawer_list_item_icon">Navigation symbol</string>
 
-    <string name="drawer_open">Open main menu</string>
-    <string name="drawer_close">Close main menu</string>
-    <string name="empty_text_news_bookmarked">No bookmarks set!</string>
-    <string name="subst_detail_icon">descriptive symbol</string>
-    <string name="action_share">Share</string>
-    <string name="action_add_to_calendar">Add to calendar</string>
-    <string name="title_activity_subst_detail">Substitution</string>
-    <string name="subst_empty_text">No substitutions :(</string>
-    <string name="subst_empty_query_text">No results found for: \"%s\"</string>
-    <string name="des_news_header_image">News heading image</string>
-    <string name="title_activity_news_detail">News</string>
-    <string name="action_open_in_browser">Open in browser</string>
-    <string name="action_bookmark">Add to bookmarks</string>
-    <string name="teacher_empty_text">No entries</string>
-    <string name="teacher_empty_query_text">No results found for \"%1$s\"</string>
-    <string name="teacher_detail_name">Name</string>
-    <string name="teacher_detail_shorthand">Shorthand</string>
-    <string name="teacher_detail_subjects">Subjects</string>
-    <string name="action_add_to_contacts">Add to contacts</string>
-    <string name="title_activity_teacher_detail">Teacher</string>
-    <string name="events_empty_text">No events!</string>
-    <string name="subst_list_period">%1$sth period</string>
-    <string name="action_refresh">Refresh</string>
-    <string name="foodplan_share">Foodplan of AKG Bensheim:</string>
-    <string name="foodplan_tab_titles">{0, choice, 0#This week|1#Next week|1&lt;In {0} weeks}</string>
-    <string name="title_activity_faq" translatable="false">FAQActivity</string>
 
-    <string name="homework_empty_text">No homework :)</string>
-    <string name="homework_empty_query_text">No results found for: \"%1$s\"</string>
-    <string name="homework_todo_date_string">\'Todo until \'EEEE, d MMM yyyy</string>
-    <string name="title_activity_homework">Homework</string>
-    <string name="homework_edit_title_hint">Title / lesson</string>
-    <string name="homework_edit_notes_hint">Notes</string>
-    <string name="action_mark_as_done">Mark as done</string>
-    <string name="subst_tab_form">My form</string>
-    <string name="subst_tab_phase">My phase</string>
-    <string name="subst_tab_all">All</string>
-    <string name="homework_tab_todo">Todo</string>
-    <string name="homework_tab_done">Done</string>
-    <string name="event_tab_coming">Coming</string>
-    <string name="event_tab_over">Over</string>
-    <string name="news_tab_all">All news</string>
-    <string name="news_tab_bookmarks">Bookmarks</string>
-    <string name="teacher_tab_teachers">Teachers</string>
-    <string name="teacher_tab_student_teachers">Student teachers</string>
-    <string name="title_activity_event_detail" translatable="false">EventDetailActivity</string>
-    <string name="pref_summary_website">Opens the akg website in your default browser.</string>
-    <string name="pref_title_about">AKG Bensheim</string>
-    <string name="pref_category_support">Support</string>
-    <string name="pref_title_mail_dev">Send mail</string>
-    <string name="pref_summary_mail_dev">Send an email to the developer</string>
-    <string name="pref_title_only_wifi">Only wifi</string>
-    <string name="pref_summary_only_wifi">Only sync data when connected to wireless network.</string>
-    <string name="pref_category_sync_events">Events</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="insert_subject">New subject</string>
-    <string name="insert_subject_content">Insert the shorthand for a new subject for the filter.</string>
-    <string name="insert_subject_hint">Insert shorthand here…</string>
-    <string name="dev_email" translatable="false">android@akgbensheim.de</string>
-    <string name="dev_email_subject">Support / Feedback</string>
-    <string name="color_chooser">Choose a color:</string>
-    <string name="home_empty_text">Nothing for today!</string>
-    <string name="home_summary_subst">%1$s. period: %2$s in room %3$s</string>
-    <string name="title_activity_contact">AKG Bensheim</string>
-    <string name="email" translatable="false">info@akg-bensheim.de</string>
-    <string name="phone" translatable="false">+49625184320</string>
-    <string name="fax" translatable="false">+496251843250</string>
-    <string name="notify_network_unavailable">Could not connect! Check your network settings and retry.</string>
-    <string name="retry">Retry</string>
-    <string name="notify_foodplan_failed">Could not fetch the foodplan from server!</string>
-    <string name="home_list_subtitle_generic">{0, choice, 0#No item to show|1#1 Item to show|1&lt;{0} items to show}</string>
-    <string name="pref_prompt_clear_cache">Clearing the cache can save you some space, but can also cause missbehaviour.</string>
-    <string name="pref_prompt_clear_data">Clear the data diretory to get some free space. Keep in mind that you might have to download data like the foodplan again.</string>
-    <string name="pref_title_subst_sync_item_title">Synchronize %1$s</string>
-    <string name="pref_title_subst_sync_item_frequency">Frequency: %1$s</string>
-    <string name="pref_prompt_sync_frequency">Choose a frequency:</string>
-    <string name="news_empty_text">No news!</string>
-    <string name="foodplan_empty_text">Foodplan not available!</string>
-    <string name="teacher_detail_name_value">%1$s %2$s</string>
+    <string name="image_desc_drawerHeaderImage">A picture of the school building.</string>
+    <string name="image_desc_drawerItemIcon">A navigation item symbol.</string>
+    <string name="image_desc_substDetailIcon">A symbol for a teacher\'s description.</string>
+    <string name="image_desc_newsHeaderImage">The article\'s heading image</string>
 
-    <string name="action_delete">Delete</string>
-    <string name="action_delete_homework_title">Delete \"%1$s\"</string>
-    <string name="action_delete_homework_content">You can\'t recover it afterwards!</string>
+    <string name="action_desc_drawerOpen">Open the main menu</string>
+    <string name="action_desc_drawerClose">Close the main menu</string>
 
+    <string name="action_title_share">Share</string>
+    <string name="action_title_addToCalendar">Add to calendar</string>
+    <string name="action_title_openInBrowser">Open in browser</string>
+    <string name="action_title_addToBookmarks">Add to bookmarks</string>
+    <string name="action_title_addToContacts">Add to contacts</string>
+    <string name="action_title_markAsDone">Mark as \'done\'</string>
+    <string name="action_title_refresh">Refresh</string>
+    <string name="action_title_retry">Retry</string>
+    <string name="action_title_delete">Delete</string>
+
+    <string name="action_prompt_title_clearCache">Clear cache</string>
+    <string name="action_prompt_title_deleteData">Delete data</string>
+    <string name="action_prompt_title_colorChooser">Choose a color:</string>
+    <string name="action_prompt_title_deleteHomework">Delete \"%1$s\"</string>
+    <string name="action_prompt_title_settingsSelectFrequency">Choose a frequency:</string>
+    <string name="action_prompt_title_settingsAddSubjectFilter">New subject</string>
+
+    <string name="action_prompt_body_settingsAddSubjectFilter">Insert the shorthand for a new subject for the filter.</string>
+    <string name="action_prompt_body_clearCache">Clearing the cache can save you some space, but can also cause missbehaviour.</string>
+    <string name="action_prompt_body_deleteHomework">You can\'t recover it afterwards!</string>
+    <string name="action_prompt_body_deleteData">Clear the data diretory to get some free space. Keep in mind that you might have to download data like the foodplan again.</string>
+    <string name="action_prompt_body_networkUnavailable">Could not refresh data. Please check your network settings and retry.</string>
+    <string name="action_prompt_body_foodplanUnavailable">Could not get any foodplan from the server. Please try again later.</string>
+
+    <string name="action_prompt_hint_settingsAddSubjectFilter">Insert the shorthand here…</string>
+
+    <string name="tab_title_substForm">Yours</string>
+    <string name="tab_title_substPhase">Your phase</string>
+    <string name="tab_title_substAll">All</string>
+    <string name="tab_title_foodGeneric">{0, choice, 0#This week|1#Next week|1&lt;In {0} weeks}</string>
+    <string name="tab_title_homeworkTodo">Todo</string>
+    <string name="tab_title_homeworkDone">Done</string>
+    <string name="tab_title_eventsComing">Coming</string>
+    <string name="tab_title_eventsOver">Over</string>
+    <string name="tab_title_newsAll">All articles</string>
+    <string name="tab_title_newsBookmarks">Bookmarks</string>
+    <string name="tab_title_teachersTeacher">Teachers</string>
+    <string name="tab_title_teachersStudentTeacher">Student teachers</string>
+
+    <string name="empty_title_home">Nothing for today!</string>
+    <string name="empty_title_subst">No substitutions :(</string>
+    <string name="empty_title_food">Foodplan not available!</string>
+    <string name="empty_title_homeworkTodo">No homework! Yey :)</string>
+    <string name="empty_title_homeworkDone">Ain\'t no shit done :(</string>
+    <string name="empty_title_events">No events listed!</string>
+    <string name="empty_title_news">No news articles!</string>
+    <string name="empty_title_newsBookmarked">You don\'t have any bookmarks yet!</string>
+    <string name="empty_title_teachers">No entries.</string>
+
+    <string name="empty_query_subst">No substitutions found for your query \"%1$s\"</string>
+    <string name="empty_query_homework">No homework found matching \"%1$s\"</string>
+    <string name="empty_query_events">No events listed for your query \"%1$s\"</string>
+    <string name="empty_query_news">No news article found matching \"%1$s\"</string>
+    <string name="empty_query_newsBookmarked">You don\'t have any bookmarks matching \"%1$s\"</string>
+    <string name="empty_query_teachers">No one found for your query \"%1$s\"</string>
+
+    <string name="detail_title_teacherName">Name</string>
+    <string name="detail_title_teacherShorthand">Shorthand</string>
+    <string name="detail_title_teacherSubjects">Subjects</string>
+    <string name="detail_subtitle_homeItem">{0, choice, 0#No item to show|1#1 Item to show|1&lt;{0} items to show}</string>
+
+    <string name="detail_body_contactEmail">info@akg-bensheim.de</string>
+    <string name="detail_body_contactPhone">+49625184320</string>
+    <string name="detail_body_contactFax">+496251843250</string>
+
+    <string name="detail_body_emailDevSubject">Feedback / Support</string>
+    <string name="detail_body_emailDevAddress">mailto:android@akgbensheim.de</string>
+
+    <string name="detail_hint_homeworkTitle">Title / lesson</string>
+    <string name="detail_hint_homeworkNotes">Notes</string>
 
 </resources>

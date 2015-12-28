@@ -1,0 +1,157 @@
+<resources>
+    <!-- module / app titles -->
+    <string name="app_name">AKGBensheim</string>
+    <string name="address">Wilhelmstraße 62, 64625 Bensheim, Hesse, Germany</string>
+
+
+    <!-- account / sync titles -->
+    <string name="account_name">AKGBensheim</string>
+    <string name="sync_all_data">All data</string>
+
+
+    <!-- Preference keys -->
+    <string name="pref_category_subst">Substitutions</string>
+    <string name="pref_key_subst_phase">pref_key_substPhase</string>
+    <string name="pref_key_subst_form">pref_key_substForm</string>
+    <string name="pref_key_subst_filter">pref_key_substFilter</string>
+    <string name="pref_key_subst_filterSettings">pref_key_substFilterSettings</string>
+    <string name="pref_key_subst_colorSettings">pref_key_substColorSettings</string>
+    <string name="pref_key_subst_color_subst">pref_key_substColorSubst</string>
+    <string name="pref_key_subst_color_change">pref_key_substColorChange</string>
+    <string name="pref_key_subst_color_reserv">pref_key_substColorReserv</string>
+    <string name="pref_key_subst_color_cancel">pref_key_substColorCancel</string>
+    <string name="pref_key_subst_color_special">pref_key_substColorSpecial</string>
+    <string name="pref_key_subst_color_roomSubst">pref_key_substColorRoomSubst</string>
+    <string name="pref_key_subst_color_shift">pref_key_substColorShift</string>
+    <string name="pref_key_subst_color_other">pref_key_substColorOther</string>
+
+    <string name="pref_category_sync">Sync options</string>
+    <string name="pref_key_sync_backgroundEnabled">pref_key_syncBackgroundEnabled</string>
+    <string name="pref_key_sync_advancedSettings">pref_keySyncAdvancedSettings</string>
+
+    <string name="pref_category_data">Data</string>
+    <string name="pref_key_data_onlyWifi">pref_key_dataOnlyWifi</string>
+    <string name="pref_key_data_clearCache">pref_key_dataClearCache</string>
+    <string name="pref_key_data_clearData">pref_key_dataClearData</string>
+
+    <string name="pref_category_about">About</string>
+    <string name="pref_key_about_website">pref_key_aboutWebsite</string>
+    <string name="pref_key_about_licence">pref_key_aboutLicence</string>
+    <string name="pref_key_about_version">pref_key_aboutVersion</string>
+
+    <string name="pref_category_support">Support</string>
+    <string name="pref_key_support_mailDev">pref_key_supportMailDev</string>
+
+
+    <!-- Preference titles -->
+    <string name="pref_title_subst_phase">Your phase</string>
+    <string name="pref_title_subst_form">Your form</string>
+    <string name="pref_title_subst_filterSettings">Subject filter</string>
+    <string name="pref_title_subst_colorSettings">Color settings</string>
+    <string name="pref_title_subst_color_subst">Substitution</string>
+    <string name="pref_title_subst_color_trans">Change</string>
+    <string name="pref_title_subst_color_change">Change</string>
+    <string name="pref_title_subst_color_reserv">Reservation</string>
+    <string name="pref_title_subst_color_cancel">Cancel</string>
+    <string name="pref_title_subst_color_special">Special</string>
+    <string name="pref_title_subst_color_roomSubst">Room substitution</string>
+    <string name="pref_title_subst_color_shift">Shift</string>
+    <string name="pref_title_subst_color_other">Other</string>
+
+    <string name="pref_title_sync_backgroundEnabled">Enable automatic synchronization</string>
+    <string name="pref_title_sync_advancedSettings">Advanced settings</string>
+    <string name="pref_title_sync_item_title">Synchronize %1$s</string>
+    <string name="pref_title_sync_item_frequency">Frequency: %1$s</string>
+
+    <string name="pref_title_data_onlyWifi">Only wifi</string>
+    <string name="pref_title_data_clearCache">Clear cache</string>
+    <string name="pref_title_data_clearData">Clear data</string>
+
+    <string name="pref_title_about_website">Website</string>
+    <string name="pref_title_about_licence">Licence</string>
+    <string name="pref_title_about_version">@string/app_name</string>
+
+    <string name="pref_title_support_mailDev">Mail me!</string>
+
+
+    <!-- Preference summaries -->
+    <string name="pref_summary_sync_backgroundEnabledOn">Automatic background synchronization turned on.</string>
+    <string name="pref_summary_sync_backgroundEnabledOff">Data is not automatically updated in background.</string>
+    <string name="pref_summary_data_onlyWifi">Only sync data when connected over wifi.</string>
+    <string name="pref_summary_about_website">Open the AKG Website in your default browser.</string>
+    <string name="pref_summary_about_version">Version %1$s</string>
+    <string name="pref_summary_support_mailDev">Send a mail to the developer.</string>
+
+
+    <!-- Preference values: substitution -->
+    <string name="pref_subst_form_option_a">Form a</string>
+    <string name="pref_subst_form_option_s">Form s</string>
+    <string name="pref_subst_form_option_e">Form e</string>
+    <string name="pref_subst_form_option_d">Form d</string>
+    <string name="pref_subst_form_option_c">Form c</string>
+    <string name="pref_subst_form_option_b">Form b</string>
+
+    <string name="pref_subst_phase_option_5">Phase 5</string>
+    <string name="pref_subst_phase_option_6">Phase 6</string>
+    <string name="pref_subst_phase_option_7">Phase 7</string>
+    <string name="pref_subst_phase_option_8">Phase 8</string>
+    <string name="pref_subst_phase_option_9">Phase 9</string>
+    <string name="pref_subst_phase_option_10">Phase 10</string>
+    <string name="pref_subst_phase_option_11">Phase 11</string>
+    <string name="pref_subst_phase_option_12">Phase 12</string>
+    <string name="pref_subst_phase_option_13">Phase 13</string>
+
+
+    <!-- Preference values: sync -->
+    <string name="pref_subst_frequency_15m">Every 15 min.</string>
+    <string name="pref_subst_frequency_30m">Every 30 min.</string>
+    <string name="pref_subst_frequency_60m">Hourly</string>
+    <string name="pref_subst_frequency_12h">Twice a day</string>
+    <string name="pref_subst_frequency_24h">Daily</string>
+
+    <string name="pref_subst_frequency_02d">Every 2nd day</string>
+    <string name="pref_subst_frequency_07d">Weekly</string>
+    <string name="pref_subst_frequency_02w">Every 2nd week</string>
+    <string name="pref_subst_frequency_04w">Monthly</string>
+
+
+    <!-- title model labels -->
+    <string name="model_title_subst">Substitutions</string>
+    <string name="model_title_food">Foodplan</string>
+    <string name="model_title_homework">Homework</string>
+    <string name="model_title_events">Events</string>
+    <string name="model_title_news">News</string>
+    <string name="model_title_teachers">Teachers</string>
+
+    <string name="homework_dummy_title">New homework</string>
+    <string name="homework_dummy_notes">Add your notes here</string>
+
+
+    <!-- detail model labels -->
+    <string name="detail_subst_form">Form %1$s</string>
+    <string name="detail_subst_date">EEEE, MMMM d\', %1$sth peroid\'</string>
+    <string name="detail_subst_room">%1$s instead of %2$s</string>
+    <string name="detail_subst_lesson">%1$s instead of %2$s</string>
+    <string name="detail_subst_period">%1$s. period</string>
+    <string name="detail_subst_summary">%1$s. period: %2$s in room %3$s</string>
+    <string name="detail_subst_no_annotation">No annotations</string>
+
+    <string name="detail_homework_summary_todoDate">\'Todo until \'EEEE, d MMM yyyy</string>
+
+    <string name="detail_teacher_name">%1$s %2$s</string>
+    <string name="detail_teacher_company">AKG Bensheim</string>
+    <string name="detail_teacher_shorthand">Shorthand: %1$s</string>
+    <string name="detail_teacher_subjects">Teacher for: %1$s</string>
+
+
+    <!-- share model labels -->
+    <string name="share_subst_text">, %1$s. period: %2$s in room %3$s instead of %4$s</string>
+    <string name="share_subst_calendar">%1$s. period: %2$s in room %3$s instead of %4$s</string>
+    <string name="share_news_text">%1$s (Read on: %2$s)</string>
+    <string name="share_events_text">%1$s: %2$s, %3$s</string>
+
+    <string name="share_action_chooser">Share with:</string>
+    <string name="share_action_chooser_email">Send email with:</string>
+
+    <string name="pref_summary_licence">Shows legal information and licence agreements.</string>
+</resources>

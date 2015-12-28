@@ -1,0 +1,20 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        resConfigs "en", "de"
+        resConfigs "nodpi"
+
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+}
+
+dependencies {
+    compile files('src/main/libs/page-curl.jar')
+    compile files('src/main/libs/plugpdfcore.jar')
+}

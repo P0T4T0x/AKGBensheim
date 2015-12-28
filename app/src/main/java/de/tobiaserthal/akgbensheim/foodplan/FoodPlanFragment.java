@@ -1,18 +1,23 @@
 package de.tobiaserthal.akgbensheim.foodplan;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +25,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.epapyrus.plugpdf.core.viewer.BasePlugPDFDisplay;
@@ -33,12 +37,13 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.NetworkManager;
-import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
-import de.tobiaserthal.akgbensheim.data.provider.FoodPlanLoader;
-import de.tobiaserthal.akgbensheim.data.rest.model.foodplan.FoodPlanKeys;
-import de.tobiaserthal.akgbensheim.data.sync.FoodPlanService;
-import de.tobiaserthal.akgbensheim.ui.base.ToolbarFragment;
+import de.tobiaserthal.akgbensheim.backend.model.ModelUtils;
+import de.tobiaserthal.akgbensheim.backend.provider.FoodPlanLoader;
+import de.tobiaserthal.akgbensheim.backend.rest.model.foodplan.FoodPlanKeys;
+import de.tobiaserthal.akgbensheim.backend.sync.FoodPlanService;
+import de.tobiaserthal.akgbensheim.backend.utils.Log;
+import de.tobiaserthal.akgbensheim.backend.utils.NetworkManager;
+import de.tobiaserthal.akgbensheim.base.toolbar.ToolbarFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,11 +53,14 @@ import de.tobiaserthal.akgbensheim.ui.base.ToolbarFragment;
 public class FoodPlanFragment extends ToolbarFragment
         implements LoaderManager.LoaderCallbacks<byte[]>, TabLayout.OnTabSelectedListener, ReaderListener {
 
+    private static final int REQUEST_PERMISSION_EXTERNAL_STORAGE_CODE = 0;
+    private static final String TAG = "FoodPlanFragment";
     private boolean syncing;
     private int backgroundColor;
 
     private View emptyView;
     private ReaderView readerView;
+    private boolean hasPermission = false;
 
     private static final int HIDE_DURATION = 2000;
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -68,9 +76,9 @@ public class FoodPlanFragment extends ToolbarFragment
 
                 case FoodPlanService.CODE_FAILURE:
                     getLoaderManager().getLoader(0).reset();
-                    Snackbar.make(getContentView(), R.string.notify_foodplan_failed, Snackbar.LENGTH_LONG)
+                    Snackbar.make(getContentView(), R.string.action_prompt_body_foodplanUnavailable, Snackbar.LENGTH_LONG)
                             .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.md_edittext_error))
-                            .setAction(R.string.retry, new View.OnClickListener() {
+                            .setAction(R.string.action_title_retry, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     refresh();
@@ -105,7 +113,34 @@ public class FoodPlanFragment extends ToolbarFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(0, null, FoodPlanFragment.this);
+        if(hasPermission) {
+            getLoaderManager().initLoader(0, null, FoodPlanFragment.this);
+        } else {
+            requestPermissions(
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_EXTERNAL_STORAGE_CODE
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_EXTERNAL_STORAGE_CODE:
+                if(grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    hasPermission = true;
+                    getLoaderManager().initLoader(0, null, FoodPlanFragment.this);
+                }
+
+                Log.d(TAG, "Received result: %d of permission request.", grantResults[0]);
+                break;
+
+            default:
+                Log.w(TAG, "Received result of unauthorized permission request with code: %d", requestCode);
+                break;
+        }
     }
 
     @Override
@@ -114,6 +149,8 @@ public class FoodPlanFragment extends ToolbarFragment
         setHasOptionsMenu(true);
 
         backgroundColor = ContextCompat.getColor(getActivity(), R.color.background_light);
+        hasPermission = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
@@ -251,7 +288,7 @@ public class FoodPlanFragment extends ToolbarFragment
 
     private void refresh() {
         boolean accessEnabled = NetworkManager.getInstance().isAccessAllowed();
-        if(accessEnabled) {
+        if(accessEnabled && hasPermission) {
             displayStatus(true);
 
             Intent intent = new Intent(getActivity(), FoodPlanService.class);
@@ -263,14 +300,21 @@ public class FoodPlanFragment extends ToolbarFragment
 
             getActivity().startService(intent);
         } else {
-            Snackbar.make(getContentView(), R.string.notify_network_unavailable, Snackbar.LENGTH_LONG)
-                    .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.md_edittext_error))
-                    .setAction(R.string.retry, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            refresh();
-                        }
-                    }).show();
+            if(hasPermission) {
+                Snackbar.make(getContentView(), R.string.action_prompt_body_networkUnavailable, Snackbar.LENGTH_LONG)
+                        .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.md_edittext_error))
+                        .setAction(R.string.action_title_retry, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                refresh();
+                            }
+                        }).show();
+            } else {
+                requestPermissions(
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_PERMISSION_EXTERNAL_STORAGE_CODE
+                );
+            }
         }
     }
 
@@ -298,7 +342,7 @@ public class FoodPlanFragment extends ToolbarFragment
             getTabLayout().removeAllTabs();
             for(int i = 0; i < readerView.getPageCount(); i++) {
                 String title = MessageFormat.format(
-                        getString(R.string.foodplan_tab_titles), i);
+                        getString(R.string.tab_title_foodGeneric), i);
 
                 TabLayout.Tab tab = getTabLayout().newTab().setText(title);
                 getTabLayout().addTab(tab);
@@ -390,8 +434,7 @@ public class FoodPlanFragment extends ToolbarFragment
     }
 
     @Override
-    public void onChangeDisplayMode(BasePlugPDFDisplay.PageDisplayMode pageDisplayMode) {
-
+    public void onChangeDisplayMode(BasePlugPDFDisplay.PageDisplayMode pageDisplayMode, int i) {
     }
 
     @Override

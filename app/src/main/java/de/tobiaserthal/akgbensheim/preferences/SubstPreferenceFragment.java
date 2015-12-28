@@ -1,7 +1,7 @@
 package de.tobiaserthal.akgbensheim.preferences;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MarginLayoutParamsCompat;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
@@ -20,17 +20,12 @@ import android.widget.FrameLayout;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.adapter.SubstPreferenceAdapter;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceKey;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.ui.RecyclerFragment;
-import de.tobiaserthal.akgbensheim.ui.widget.DividerItemDecoration;
+import de.tobiaserthal.akgbensheim.backend.preferences.PreferenceProvider;
+import de.tobiaserthal.akgbensheim.base.RecyclerFragment;
+import de.tobiaserthal.akgbensheim.preferences.adapter.SubstPreferenceAdapter;
+import de.tobiaserthal.akgbensheim.utils.widget.DividerItemDecoration;
 
 public class SubstPreferenceFragment extends RecyclerFragment<SubstPreferenceAdapter> {
 
@@ -119,10 +114,10 @@ public class SubstPreferenceFragment extends RecyclerFragment<SubstPreferenceAda
 
     @Override
     public void onScrolled(int dX, int dY) {
-        float currentTranslationY = ViewHelper.getTranslationY(actionButton);
+        float currentTranslationY = actionButton.getTranslationY();
 
         float translationY = ScrollUtils.getFloat(currentTranslationY + dY, 0, maxTranslationY);
-        ViewHelper.setTranslationY(actionButton, translationY);
+        actionButton.setTranslationY(translationY);
     }
 
     @Override
@@ -138,8 +133,9 @@ public class SubstPreferenceFragment extends RecyclerFragment<SubstPreferenceAda
     }
 
     private void showFab() {
-        ViewPropertyAnimator.animate(actionButton).cancel();
-        ViewPropertyAnimator.animate(actionButton)
+        actionButton.animate()
+                .cancel();
+        actionButton.animate()
                 .translationY(0)
                 .setInterpolator(IN_INTERPOLATOR)
                 .setDuration(ANIM_DURATION)
@@ -147,8 +143,9 @@ public class SubstPreferenceFragment extends RecyclerFragment<SubstPreferenceAda
     }
 
     private void hideFab() {
-        ViewPropertyAnimator.animate(actionButton).cancel();
-        ViewPropertyAnimator.animate(actionButton)
+        actionButton.animate()
+                .cancel();
+        actionButton.animate()
                 .translationY(maxTranslationY)
                 .setInterpolator(OUT_INTERPOLATOR)
                 .setDuration(ANIM_DURATION)
@@ -163,12 +160,13 @@ public class SubstPreferenceFragment extends RecyclerFragment<SubstPreferenceAda
 
     private void insertItem() {
         new MaterialDialog.Builder(getActivity())
-                .title(R.string.insert_subject)
-                .content(R.string.insert_subject_content)
+                .title(R.string.action_prompt_title_settingsAddSubjectFilter)
+                .content(R.string.action_prompt_body_settingsAddSubjectFilter)
                 .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(R.string.insert_subject_hint, 0, false, new MaterialDialog.InputCallback() {
+                .input(R.string.action_prompt_hint_settingsAddSubjectFilter, 0, false,
+                        new MaterialDialog.InputCallback() {
                     @Override
-                    public void onInput(MaterialDialog materialDialog, CharSequence charSequence) {
+                    public void onInput(@NonNull MaterialDialog materialDialog, CharSequence charSequence) {
                         getAdapter().addItem(charSequence.toString());
                     }
                 }).show();

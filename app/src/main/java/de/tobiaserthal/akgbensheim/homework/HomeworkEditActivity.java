@@ -29,12 +29,12 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.SimpleAsyncQueryHandler;
-import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkContentValues;
-import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkCursor;
-import de.tobiaserthal.akgbensheim.data.provider.homework.HomeworkSelection;
-import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
-import de.tobiaserthal.akgbensheim.ui.widget.DatePickerFragment;
+import de.tobiaserthal.akgbensheim.backend.provider.SimpleAsyncQueryHandler;
+import de.tobiaserthal.akgbensheim.backend.provider.homework.HomeworkContentValues;
+import de.tobiaserthal.akgbensheim.backend.provider.homework.HomeworkCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.homework.HomeworkSelection;
+import de.tobiaserthal.akgbensheim.base.OverlayActivity;
+import de.tobiaserthal.akgbensheim.utils.widget.DatePickerFragment;
 
 public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -175,9 +175,9 @@ public class HomeworkEditActivity extends OverlayActivity<ObservableScrollView>
 
     public void deleteHomework() {
         new MaterialDialog.Builder(this)
-                .title(getString(R.string.action_delete_homework_title, homework.getTitle()))
-                .content(R.string.action_delete_homework_content)
-                .negativeText(R.string.action_delete)
+                .title(getString(R.string.action_prompt_title_deleteHomework, homework.getTitle()))
+                .content(R.string.action_prompt_body_deleteHomework)
+                .negativeText(R.string.action_title_delete)
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {

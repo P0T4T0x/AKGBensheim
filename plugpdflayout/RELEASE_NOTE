@@ -1,0 +1,606 @@
+2.5.124 Planned Update, December 4, 2015
+Bug Fix
+Annotation: Fixed bug that randomly disappearing annotation  when saving to PDF.
+Fixed possible crash on Android 6.0.
+
+
+2.5.123 Planned Update, December 2, 2015
+What's new
+Project config Eclipse -> Android Studio
+API : Added getDialog() in the AnnotNote class.
+
+Bug Fix
+Annotation  Fixed a crash bug when many annotations are added.
+Function : Fixed a crash bug when swipe page with Android M.
+
+
+2.5.119 Planned Update, October 27, 2015
+What's new
+API: Added a getPos method in AnnotNote.
+
+Bug Fix
+API: Fixed a bug that cover property doesn’t work when BilateralPageDisplay is on.
+API: Fixed a bug that program die when field doesn’t have a annotPatent.
+Event Listener : Fixed a bug that onPageLoadFinish event is called twice at one page.
+API: Fixed a bug that getPDFData returns wrong data when is called more than twice.
+
+
+2.5.117 Planned Update, October 16, 2015
+What's new
+API : Added 'getRect()' method in the BaseField class.
+API : Improved 'onChangeDisplayMode()' method in the ReaderListener class to input last PageDisplayMode with selected pageIndex.
+API : Added 'insert(Ink,Note,Link,Square,Circle)Annot' method in the PDFDocument to can be set the ObjectID.
+API : Replace boolean to double about transparency of the drawPage in the PDFDocument class.
+API : Added 'getFieldListAsJSONArray()' in the PDFDocument class.
+Property : Added 'enableNightMode' property that display to color reversal.
+Property : Added 'enableConfirmErase' property.
+
+Bug Fix
+Display : Fixed can be set the display before open document.
+
+
+2.5.116 Planned Update, October 12, 2015
+What's new
+API : Added 'setMaxAnnotCount(int)' method in the PDFDocument class.
+API : Added 'getPDFData()' method in the PDFDocument class.
+
+
+2.5.115 Planned Update, October 5, 2015
+What's new
+API : Added 'drawPage(int, Bitmap, int, int, int, int, int, int, boolean)' method in the PDFDocument class.
+
+Bug Fix
+Widget : Fixed bug that keep the highlight even lost focus.
+
+
+2.5.114 Planned Update, September 30, 2015
+Bug Fix
+Xamarin Build : Fixed a bug that plugpdfcore.jar file isn’t built at a Xamarin.
+API : Fixed a bug that FieldEvenet Listener always do the default action.
+
+What's new
+API : Added a FieldEvenetListener.
+Displaymode : Added a Bilateral Cover Display mode.
+API : Added a SaveAsPng method. (If you used this method, you can get a transparent background pdf image.)
+Project’s encoding Type : change the project encoding type to UTF-8
+API : Added a getContents method in AnnotNote.
+API : Added a getARGB method in AnnotTextMarkUp.
+
+2.5.112 Planned Update, September 2, 2015
+
+Bug Fix
+Function : Fixed a bug that BILATERAL REALISTIC Mode doesn’t work well.
+
+2.5.111 Planned Update, August 28, 2015
+
+What's new
+API : Added a event listener that is called when note is created.
+API : Added a event listener named touchBegin, touchMove, touchEnd.
+Class : Added a class named AnnotToolEvenetListener.
+Property : Added a Property that can control a time of delay that search progress is  
+           popuped.
+
+Bug Fix
+Function : Fixed a bug that program is dead when there isn’t a recent page map’s key.
+Function : Fixed a bug that addscribbleContentOver location is wrong.
+Function : Fixed a bug that outlineItem isn’t saved.
+Function : Fixed a bug that Realistic isn’t working well.
+
+2.5.109 Planned Update, July 31, 2015
+
+Bug Fix
+Function : Fixed a bug that setRecentPage doesn’t work well.
+Function : Fixed a bug that drawing a ink doesn’t work well.
+
+
+2.5.107 Planned Update, July 23, 2015
+What's new
+Function : Fixed a function that in EditMode, page scroll isn’t working.
+Bug Fix
+Function : Fixed a bug that program is dead when uses a null password.
+Function : Fixed a bug that when using a Holo theme, button size isn’t proper.
+
+2.5.105 Planned Update, July 15, 2015
+What's new
+API : Improved page swipe speed.
+
+
+2.5.103 Planned Update, July 8, 2015
+What's new
+API : Improved log and exception when failed to open.
+
+Bug Fix
+Function : Fixed a bug that when long press a annotation, popup shows in strange location.
+Widget : Improved to be keep the image of CustomCheckBoxPainter when flatten.
+
+
+2.5.100 Planned Update, July 1, 2015
+What's new
+API	 : Added a InsertVideo method.
+Bug Fix
+Function : Fixed a bug that highlight disappear after search a word.
+Function : Fixed a bug that insertTextWatermark has a blank between words.
+
+2.5.98 Planned Update, June 18, 2015
+What's new
+API : Added 'getPageRatio()' method in the ReaderView class.
+API : Added 'insertImageWatermark(int, RectF, Bitmap, double, double)' method in the ReaderView class.
+API : Added 'insertTextWatermark(int, PointF, String, int double, double)' method in the ReaderView class.
+API : Added 'getPageView(int)' method in the BasePlugPDFDisplay class.
+API : Added 'insertImageToWidget(int, Bitmap)' method in the PageView class.
+
+Bug Fix
+Display : Fixed bug that do not display by immediately when inserting watermark and image to widget.
+Function : Fixed coordinate of watermark to based on left top.
+Listener : Improved 'onPageLoadFinish' of the ReaderViewListener to call only once.
+Function : Improved to close popup when rotating device.
+API : Fixed bug that print error log when calling 'insertImageToWidget' always.
+Function : Fixed bug that cannot swipe when occasionally opening document.
+Widget : Fixed bug that cannot save special character in the TextField.
+Function : Improved calculation coordinate of image watermark when inserting.
+
+
+2.5.97 Planned Update, June 12, 2015
+What's new
+SampleProject : sort PDF List by name.
+
+Bug Fix
+Function : Fixed issue throws Security exception when calling 'saveAsFile'.
+Function : Fixed coordinate of watermark to based on left top.
+
+
+2.5.96 Planned Update, June 3, 2015
+What's new
+API : Edited comment of sample project.
+
+Bug Fix
+Function : Fix bug 'insertTextWatermark' method.
+
+
+2.5.95 Planned Update, May 28, 2015
+What's new
+API : Added 'getParentObjID' method in the OutlineItem class.
+
+
+2.5.94 Planned Update, May 28, 2015
+What's new
+API : Added 'getObjectID' method in the OutlineItem class.
+Function : Added UpdateChecker feature.
+
+Bug Fix
+Outline : Fixed 'getDeps' method issue always returns 0.
+
+
+2.5.93 Planned Update, May 26, 2015
+What's new
+API : Changed parameters of 'onScroll' method in the ReaderListener. (Added 'int distanceX, int distanceY'.)
+
+Bug Fix
+Function : Fixed issue that screen rotation when touching rotate lock button in the tablet.
+Annotation : Fixed issue that do not move even tap Link Annotation in certain PDF.
+
+
+2.5.91 Planned Update, May 22, 2015
+What's new
+API : Added method 'convertToScreenAreaFrom' in the ReaderView class.
+
+Bug Fix 
+API : Fixed crash issue when calling transplant in the 64bit OS.
+
+
+2.5.90 Planned Update, May 19, 2015
+Bug Fix 
+API : Fixed issue when opening pdf by using 'openData' on the 64bit device.
+
+
+2.5.89 Planned Update, May 18, 2015
+Bug Fix 
+Display : Fixed issue about focus of zoom when pinching last page in the BilateralDisplay.
+Widget : Fixed issue about is not synchronized value when title of widgets is same.
+
+
+2.5.88 Planned Update, May 15, 2015
+What's new
+Annotation : Added method 'setSelectedItemPaint' in the AnnotToolEraser class.
+
+Bug Fix 
+Annotation : Fixed issue 'delete' popup always display on center.
+Function : Fixed issue crash when calling 'clear' method in the ReaderView while swipe page.
+
+
+2.5.86 Planned Update, May 13, 2015
+Bug Fix
+Outline : Fixed issue that item is deleted item when exists child.
+Display : Fixed issue that can not draw ink annotation on right page when showing Bilateral.
+API : Fixed bug about 'LicenseAppIDMismatch' in x64 ABI.
+
+
+2.5.82 Planned Update, April 24, 2015
+Bug Fix
+API : Fixed a bug that Checked button isn’t seen other PDF viewer. 
+
+
+2.5.81 Planned Update, April 20, 2015
+What’s new
+API : Removed a Update Check
+
+
+2.5.78 Planned Update, April 6, 2015
+Bug Fix
+Widget : Fixed bug that couldn't see a special character written in TexField.
+
+
+2.5.76 Planned Update, April 3, 2015
+What's new
+API : Support x64 ABI.
+
+Bug Fix
+Outline : Fixed bug about dummy value.
+
+
+2.5.75 Planned Update, April 2, 2015
+What's new
+API : Added 'setMinimumZoomLevel' method in the PropretyManager class.
+API : Added 'setPageGap' method in the PropertyManager class.
+API : Added 'setScrollPosX', 'setScrollPosY' method in the BasePlugPDFDisplay class.
+
+Bug Fix
+API : Removed 'printHeap' method in the PageView.
+Display : Improved the screen flickering issues on BilateralDisplay.
+Function : Fixed bug about UpdateChecker.
+
+2.5.73 Planned Update, March 27, 2015
+What's new
+API : Added 'enableHiddenTopBar', 'enableHiddenBottomBar' method in the SimpleReaderControlView class.
+API : Added 'setPageGap' method in the PropertyManager class.
+API : Added 'setScrollPosX', 'setScrollPosY' method in the BasePlugPDFDisplay class.
+
+
+2.5.72 Planned Update, March 24, 2015
+What's new
+API : Implemented 'enableAnnotFeature' in the PDFDocument class.
+API : Added 'setPlugPDFDisplay' in the ReaderView class.
+
+Bug Fix
+Annotation : Fixed bug unicode problem in note annotation.
+Function : Fixed bug application crash when searching whiout ReaderListener.
+
+
+2.5.71 Planned update, March 20, 2015
+What's new
+API : Changed to get the left view when calling 'getPageView' in the BilateralDisplay mode.
+API : Added new method 'insertImageWatermark' and 'insertTextWatermark' in the PageView class.
+API : 'deployAssetFontResource' do not use by default in the PlugPDFLauncgerApplication in the sample project.
+API : Added 'onLongPress' method in the ReaderListener.
+API : Added parameter 'pageIdx' and 'editType' in the method of PageViewListener.
+Performance : Improved to slow scroll, zoom in the PDFDocument that has many Acroform Field.
+Widget : Implemented to readOnly property of BaseField.
+Widget : Implemented to passowrd property of TextField.
+Widget : Implemented to defaultValue property of TextField.
+
+Bug Fix
+SampleProject : Fixed bug for displaying lock icon in the PDF without password.
+Annotation : Fixed bug to didn't show preview when dragging AnnotToolSquare.
+Display : Improve for scroll uncomfortable issue in the RealisticDiplay mode.
+Display : Fixed bug that could not zoom when minimum zoom is big.
+
+
+2.5.66 Planned update, March 10, 2015
+What's new
+API : Has renamed 'insertImageToPage' as 'insertImageWatermark'.
+API : Has renamed 'insertTextToPage' as 'insertTextWatermark'.
+
+Bug Fix
+Display : Fixed issue for change scale when swiping fast in the BilateralDisplay.
+Encrypt : Fixed issue that cannot be opened PDF do not have USER PASSWORD.
+
+
+2.5.65 Planned update, March 9, 2015
+Bug Fix
+Display : Fixed issue for change scale when swiping fast.
+Display : Shown same padding regardless of the device in the BilateralDisplayMode.
+
+
+2.5.64 Planned update, March 6, 2015
+What's new
+API : Add insertTextToPage method in the PDFDocument.
+API : Remove accent marks functionality added
+
+
+2.5.62 Planned update, March 5, 2015
+Bug Fix
+Display : Fix to draw adjust patch always.
+
+
+2.5.61 Planned update, March 3, 2015
+Bug Fix
+Display : issue for if change background color, it back to default when touching side in the RealisticDisplay mode.
+
+
+2.5.60 Planned update, March 2, 2015
+Bug Fix
+Dispaly : Support to page change by touching center In the RealisticDisplay.
+Display : If the layer is hidden, do not show the layer.
+Display : Fixed issue for application crash when going to the last page in the BilateralRealisticDisplay.
+
+
+2.5.59 Planned update, February 27, 2015
+Bug Fix 
+Display : Fixed issue for bluar page when swipe the page in the RealisticDisplay mode.
+Display : Fixed blink issue when calling 'goToPage()' in the RealisticDisplay mode.
+Display : Fixed issue for application crash when call 'FitType' by StackOverflow in the BilateralRealisticDisplay mode.
+Display : Fixed issue for not focus on document when double tap in the RealisticDisplay mode.
+
+
+2.5.58 Planned update, February 25, 2015
+Bug Fix 
+Encrypt : Fix bug about AES 128 encryption
+
+
+2.5.55 Planned update, February 23, 2015
+What's new
+API : Added set, get metadata(Author, ModData, Producer, etc...) method  in the PDFDocument class.
+API : Added property 'UsePageLoadThread' in the PropertyManager class.
+
+Bug Fix
+Function : Fixed OnLongClickListener not registered issue after opening the document.
+
+
+2.5.54 Planned update, Febirary 17, 2015
+Bug Fix
+Display : Fix bug show blur when BilateralDisplay mode.
+Encrypt : Fix bug about open encrypted document by RC4 40bit.
+
+2.5.53 Planned update, Febirary 16, 2015
+What's new
+Function : implements 'isKeepMinimumZoomLevel' of the PropertyManager in the BilateralDisplay.
+
+Bug Fix
+Display : Fix miscalculation problem about FitType.MINIMUM when rotate device.
+
+
+2.5.52 Planned update, Febirary 13, 2015
+What's new
+Library : Excluded library commons-logging-1.1.1.jar.
+Library : Excluded library microlog4android-1.0.0.jar.
+Library : Excluded library simple-xml-2.6.7.jar.
+
+Bug Fix
+Library : Fix ClassNotFoundException issue of LogCatAppender
+Function : Fix issue about calculate of extract patch.
+
+
+2.5.49 Planned update, Febirary 12, 2015
+What's new
+SampleProject : Added lock icon on the Encrypt pdf in the PDFListActivity.
+API : Added 'wasEdited' method in the PDFDocument class.
+
+Bug Fix
+Function : Fix to not save when has not edited.
+
+
+2.5.48 Planend update, Febirary 10, 2015
+What's new
+SampleProject : Added sample Activity.
+
+Bug Fix : Fix bug about draw AP when AES128 encrypted.
+
+
+2.5.47 Planned update, Febirary 9, 2015
+Bug Fix
+Display : Fix Bug about up-down swipe when BilateralHorizontal Mode.
+Display : Fix Bug about left-right swipe when BilateralVertical Mode.
+Function : Check whether the invalid of Rect when extractPatch.
+
+
+2.5.44 Planned update, Febirary 6, 2015
+Bug Fix
+API : Fix about 'createEmptyDocument' not find error.
+Display : Fix problem 4 page be saw when BilateralHorizontalDisplay.
+
+
+2.5.43 Planned update, Febriray 5, 2015
+What's new
+Function : added hold text feature in the AnnotToolSelect class.
+API : added 'createEmptyDocument' method in the PDFDocument class.
+
+Bug Fix
+Display : Fix bug about device rotate when BiletralPage mode.
+
+
+2.5.42 Planned update, Febriary 3, 2015
+What's new
+API : added 'extractPatch' method in the ReaderView class
+API : added 'calcCoordinateOfDocumentOnScreen' method in the ReaderView class
+
+
+2.5.40 Planned update, Febriary 2, 2015
+What's new
+API : added 'extractText' method in the ReaderView class
+
+Bug Fix
+Function : Fix issue about write temp file.
+
+
+2.5.37 Planned update, January 30, 2015
+What's new
+Widget : TextField apply font.
+
+Bug Fix
+Annotation : FIx bug about coordinates of the annotation is incorrect
+Function : Fix update Checker trouble.
+
+
+2.5.36 Planned update, January 28, 2015
+Bug Fix
+Encryption : Fix about Mojibake issue when encrypt and save PDF.
+Function : Fix bug about PDF was damaged when saving same filePath via 'saveAs' method.
+Function : Fix bug about appearance load error.
+
+2.5.35 Planned update, January 23, 2015
+What's new
+Annotaion : added Sound Annotation.
+Encryption : Added Open PDF document with 256-bit AES encryption.
+
+
+2.5.33 Planned Update, January 21, 2015
+What's New
+Property : added property about keeping minimum zoom level.
+
+Bug Fix
+Function : Fix bug about OutOfMemory during openUrl with high-capacity file.
+Dispaly : Fix bug about DoubleTapZoomLevel to ignore MaximumZoomLevel.
+
+2.5.32 Planned Update, January 20, 2015
+What's New
+Display : Auto Fit feature when the page is converted.
+
+Bug Fix
+Function : Fix bug of the OutOfMemory when swiping is accumulated to the left.
+
+
+2.5.31 Planned Update, January 19, 2015
+What's New
+API : added 'getNative' method in the BaseField.
+API : added 'onAnnotationEdited' method in the PageViewListener.
+Display : implements 'setFitType' in the BilateralDisplay.
+Annotation : implements auto font size of TextField.
+
+Bug Fix
+Display : Fix bug can't touch annotation when gesture type is View.
+Function : Fix bug missing data of text markup annotation when exportAnnotFromXFDF.
+Function : Fix NullPointException when call getPageIdx in SinglePageDisplay.
+Annotation : Fix to align top when is MultiLine.
+Annotation : Fix to allow pinch zoom on the BaseField.
+
+
+2.5.29 Planned Update, January 16, 2015
+Bug Fix
+Display : Fix can not rendered bug when rotate device.
+
+
+2.5.27 Planned Update, January 14, 2015
+Bug Fix
+Display : Fix bug blurred render when device is rotated.
+Display : Improved rendering of images with soft masks.
+
+
+2.5.25 Planeed Update, January 13, 2015
+What's New
+Viewer : Show dialog when open fail. (password dialog, URL Error dialog)
+
+Bug Fix
+Widget : Fix bug couldn't be loaded properties of AcroformField.
+Display : Fix bug about refreshLayout.
+
+
+2.5.22 Planned Update, January 9, 2015
+What's New
+API : Add dependency 'libGoogleAnalytics.jar'.
+
+Bug Fix
+Annotation : Fix missing out few widget annotation issue when various annotation was mixed.
+Display : Fix issue is crashed because of the OutOfMemoryException when swiping faster.
+Function :  Fix that occurred issue by conflicting with 'clear' method and 'openFile' method each other.
+
+
+2.5.20 Planned Update, January 7, 2015
+Bug Fix
+Permission : Fix that crash because of permissions issue.
+
+
+2.5.18 Planned Update, January 6, 2015
+What's New
+API : Implemented 'refreshLayout' method in the RealisticDisplay.
+API : Implemented 'refreshLayout' method in the SinglePageDisplay.
+API : Added 'exportAnnotToXFDF' method in the ReaderView.
+API : Added 'importAnnotFromXFDF' method in the ReaderView.
+Outline : Reform Outline UI.
+
+Bug Fix
+Display : Fix the bug that couldn't screen scroll on the RealisticDisplay.
+Display : Maintains the zoom level after the orientation changes.
+Font : Default font changed to use "DroidSansFallback.ttf".
+
+
+2.5.17 Planned Update, December 24, 2014
+What's New
+Viewer: Added open PDF viewer with a web URL.
+API: Added 'saveAsFileWithEncrypt' method in the ReaderView class for encrypting and saving PDF document.
+
+Bug Fix
+API: Fixed 'copyAssets' methoid bug in the PlugPDFUtility class.
+API: Fixed 'onGoToPage' method bug in RealisticDisplay class.
+
+
+2.5.16 Planned Update, December 16, 2014
+What's New
+Display : RealisticDisplay Added. (Page flip animation Added.)
+OutLine : Added Outline edit feature.
+API : Added 'updateOutline' methoid in the ReaderView class for edit Outline list in PDFDocument.
+Added Updated Checker.
+
+Bug Fix
+Function : Fix for deployAssetFontResoucre always throwing the exception bug.
+
+
+2.5.13 Planned Update, December 5, 2014
+Bug Fix
+Display: Fix for the memory leak.
+
+
+2.5.12 Planned Update, November 29, 2014
+What's New
+Display : Enabled display of the thumbnail page and its page number according to the position of the slider in the seek bar.
+API : Added 'readDigestToken:' method in the PlugPDFDocument class for reading token data in the PDF file.
+Annotation : Enabled display of line annotations.
+Annotation : Enabled display of rectangle annotations.
+Annotation : Enabled display of stamp annotations.
+Annotation : Enabled display of circle annotations.
+Annotation : Enabled display of free text annotations.
+Annotation : Enabled display of file attachment annotations and attached file contents.
+Annotation : Enabled display of polygon annotations.
+Annotation : Enabled display of polyline annotations.
+
+Bug Fix
+Display: Fix for the thumbnail mode crash bug.
+Display: Fix for the SeekBar moving crash bug.
+OutLine: Fix for the Outline limit bug.
+OutLine: Fix for the non-working link bug.
+Display: Fix for the memory leak.
+Annotation: Fix for the radio button field save value bug.
+
+
+2.5.3
+Improved rendering performance.
+Added API of pdf file merge.
+Added API set a title with controller bar
+Added API of set a image bitmap to button field.
+
+
+2.5.2
+Add file save function & remove auto-save feature
+Improved file save performance. 
+
+
+2.5.1
+Fixed thumbnail mode touch bug.
+Fixed view mode annotation bug.
+Fixed memory leak of page rendering.
+Added API of form field(Button, Checkbox, RadioButton, TextField).
+Improved memory management.
+Changed to fill the screen when rendering.
+
+
+2.5.0
+Add processing features when Link annotation tap ups.
+Add enable/disable annotation feature of specified type.
+Fixed out of memory when create bitmap
+Support mips architecture
+
+
+2.4.0
+Add com.epapyrus.plugpdf.core.PlugPDF.getVersionName() method.
+Add Link annotation support.
+Enable customization for annotations registering custom annotation classes.
+Allow custom event handling for annotation events such as tap ups and long presses.

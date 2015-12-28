@@ -78,12 +78,12 @@
         android:background="@android:color/white"
         android:elevation="4dp">
 
-        <de.tobiaserthal.akgbensheim.ui.widget.BackdropImageView
+        <de.tobiaserthal.akgbensheim.utils.widget.BackdropImageView
             android:id="@+id/teacher_header_imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_account_white"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_account_white_256dp"
             android:background="@color/primary"/>
 
         <TextView
@@ -96,7 +96,7 @@
             android:gravity="center_vertical"
 
             android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
-            android:text="@string/title_activity_news_detail"/>
+            android:text="@string/activity_title_teachersDetail"/>
 
         <TextView
             android:id="@+id/teacher_header_subtitle"

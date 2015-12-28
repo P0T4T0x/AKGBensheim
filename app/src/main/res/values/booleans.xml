@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="flow_tabs">false</bool>
+    <bool name="flow_tabs_toolbar">false</bool>
 </resources>

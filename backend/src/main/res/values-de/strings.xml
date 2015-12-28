@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- module / app titles -->
+    <string name="app_name">AKGBensheim</string>
+    <string name="address">Wilhelmstraße 62, 64625 Bensheim</string>
+
+
+    <!-- account / sync titles -->
+    <string name="account_name">AKGBensheim</string>
+    <string name="sync_all_data">Alle Daten synchronisieren</string>
+
+
+    <!-- Preference keys -->
+    <string name="pref_category_subst">Vertretungsplan</string>
+    <string name="pref_category_sync">Aktualisierung</string>
+    <string name="pref_category_data">Daten</string>
+    <string name="pref_category_about">Über</string>
+    <string name="pref_category_support">Support</string>
+
+
+    <!-- Preference titles -->
+    <string name="pref_title_subst_phase">Deine Stufe</string>
+    <string name="pref_title_subst_form">Deine Klasse</string>
+    <string name="pref_title_subst_filterSettings">Dein Kursfilter</string>
+    <string name="pref_title_subst_colorSettings">Farbmarkierungen</string>
+    <string name="pref_title_subst_color_subst">Vertretung</string>
+    <string name="pref_title_subst_color_trans">Wechsel</string>
+    <string name="pref_title_subst_color_change">Wechsel</string>
+    <string name="pref_title_subst_color_reserv">Vormerkung</string>
+    <string name="pref_title_subst_color_cancel">Entfall</string>
+    <string name="pref_title_subst_color_special">Sondereinsatz</string>
+    <string name="pref_title_subst_color_roomSubst">Raumvertretung</string>
+    <string name="pref_title_subst_color_shift">Verlegung</string>
+    <string name="pref_title_subst_color_other">Anderes</string>
+
+    <string name="pref_title_sync_backgroundEnabled">Automatische Aktualisierung</string>
+    <string name="pref_title_sync_advancedSettings">Erweiterte Einstellungen…</string>
+
+    <string name="pref_title_data_onlyWifi">Nur WLAN</string>
+    <string name="pref_title_data_clearCache">Cache leeren</string>
+    <string name="pref_title_data_clearData">Daten löschen</string>
+
+    <string name="pref_title_about_website">Webseite</string>
+    <string name="pref_title_about_licence">Lizenzen</string>
+    <string name="pref_title_about_version">@string/app_name</string>
+
+    <string name="pref_title_support_mailDev">Schick mir eine Mail!</string>
+    <string name="pref_title_sync_item_title">%1$s aktualisieren</string>
+    <string name="pref_title_sync_item_frequency">Intervall: %1$s</string>
+
+
+    <!-- Preference summaries -->
+    <string name="pref_summary_sync_backgroundEnabledOn">Automatische Hintergrundaktualisierung aktiviert.</string>
+    <string name="pref_summary_sync_backgroundEnabledOff">Automatische Hintergrundaktualisierung deaktiviert.</string>
+    <string name="pref_summary_licence">Rechtliche Hinweise und Lizenzen anzeigen.</string>
+    <string name="pref_summary_about_version">Version %1$s</string>
+
+
+    <!-- Preference values: substitution -->
+    <string name="pref_subst_form_option_a">Klasse A</string>
+    <string name="pref_subst_form_option_b">Klasse B</string>
+    <string name="pref_subst_form_option_c">Klasse C</string>
+    <string name="pref_subst_form_option_d">Klasse D</string>
+    <string name="pref_subst_form_option_e">Klasse E</string>
+    <string name="pref_subst_form_option_s">Klasse S</string>
+
+    <string name="pref_subst_phase_option_5">Stufe 5</string>
+    <string name="pref_subst_phase_option_6">Stufe 6</string>
+    <string name="pref_subst_phase_option_7">Stufe 7</string>
+    <string name="pref_subst_phase_option_8">Stufe 8</string>
+    <string name="pref_subst_phase_option_9">Stufe 9</string>
+    <string name="pref_subst_phase_option_10">Stufe 10</string>
+    <string name="pref_subst_phase_option_11">Stufe 11</string>
+    <string name="pref_subst_phase_option_12">Stufe 12</string>
+    <string name="pref_subst_phase_option_13">Stufe 13</string>
+
+
+    <!-- Preference values: sync -->
+    <string name="pref_subst_frequency_15m">Alle 15 Minuten</string>
+    <string name="pref_subst_frequency_30m">Alle 30 Minuten</string>
+    <string name="pref_subst_frequency_60m">Stündlich</string>
+    <string name="pref_subst_frequency_12h">Alle 12 Stunden</string>
+    <string name="pref_subst_frequency_24h">Täglich</string>
+
+    <string name="pref_subst_frequency_02d">Alle 2 Tage</string>
+    <string name="pref_subst_frequency_07d">Wöchentlich</string>
+    <string name="pref_subst_frequency_02w">Alle 2 Wochen</string>
+    <string name="pref_subst_frequency_04w">Monatlich</string>
+
+
+    <!-- title model labels -->
+    <string name="model_title_subst">Vertretungsplan</string>
+    <string name="model_title_food">Speiseplan</string>
+    <string name="model_title_homework">Hausaufgaben</string>
+    <string name="model_title_events">Terminliste</string>
+    <string name="model_title_news">Artikel</string>
+    <string name="model_title_teachers">Lehrerliste</string>
+
+    <string name="homework_dummy_title">Neue Hausaufgabe</string>
+    <string name="homework_dummy_notes">Deine Notizen hier…</string>
+
+
+    <!-- detail model labels -->
+    <string name="detail_subst_form">Klasse %1$s</string>
+    <string name="detail_subst_date">EEEE, d. MMMM\', %1$s. Stunde\'</string>
+    <string name="detail_subst_room">In %1$s statt in %2$s</string>
+    <string name="detail_subst_lesson">%1$s anstelle von %2$s</string>
+    <string name="detail_subst_no_annotation">Keine Anmerkungen</string>
+
+    <string name="detail_homework_summary_todoDate">\'Zu erledigen bis zum \'EEEE\', dem \'d MMMM yyyy</string>
+
+    <string name="detail_teacher_company">AKG Bensheim</string>
+    <string name="detail_teacher_shorthand">Kürzel: %1$s</string>
+    <string name="detail_teacher_subjects">Lehrer für: %1$s</string>
+    <string name="detail_teacher_name">%1$s %2$s</string>
+    <string name="detail_subst_summary">%1$s. Stunde: %2$s in %3$s</string>
+    <string name="detail_subst_period">%1$s. Stunde</string>
+
+
+    <!-- share model labels -->
+    <string name="share_subst_text">, %1$s. Stunde: %2$s in Raum %3$s anstelle von %4$s</string>
+    <string name="share_subst_calendar">%1$s. Stunde: %2$s in Raum %3$s anstelle von %4$s</string>
+    <string name="share_news_text">%1$s (Weiterlesen: %2$s)</string>
+    <string name="share_events_text">%1$s: %2$s, %3$s</string>
+
+    <string name="share_action_chooser">Teilen mit:</string>
+    <string name="share_action_chooser_email">Email senden mit:</string>
+    <string name="pref_summary_about_website">Öffnet die AKG Webseite in deinem Standartbrowser.</string>
+    <string name="pref_summary_data_onlyWifi">Aktualisiert Daten nur dann, wenn du über WLAN mit dem Internet verbunden bist.</string>
+    <string name="pref_summary_support_mailDev">Schicke dem Entwickler eine Email mit Fehlerberichten oder Verbesserungsvorschlägen. Vielleicht willst du aber auch einfach mal Hallo sagen :)</string>
+    <string name="share_generic_text">Sieh dir das mal an: %1$s!</string>
+    <string name="share_link_subject">Link teilen</string>
+
+
+</resources>

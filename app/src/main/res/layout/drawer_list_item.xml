@@ -8,7 +8,7 @@
     android:clickable="true"
     android:background="@drawable/drawer_list_item_ripple" >
 
-    <de.tobiaserthal.akgbensheim.ui.widget.TintableImageView
+    <de.tobiaserthal.akgbensheim.utils.widget.TintableImageView
         android:id="@+id/drawer_list_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:layout_centerVertical="true"
         android:scaleType="centerInside"
         android:src="@drawable/ic_drawer_home"
-        android:contentDescription="@string/des_drawer_list_item_icon"
+        android:contentDescription="@string/image_desc_drawerItemIcon"
         app:tint="@color/drawer_icon_color_selector" />
 
     <TextView

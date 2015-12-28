@@ -6,10 +6,4 @@
     <declare-styleable name="TintableImageView">
         <attr name="tint" format="reference|color" />
     </declare-styleable>
-
-    <declare-styleable name="FastRecyclerView">
-        <attr name="fastScrollEnabled" format="boolean"/>
-        <attr name="fastScrollStyle" format="reference"/>
-        <attr name="fastScrollAlwaysVisible" format="boolean" />
-    </declare-styleable>
 </resources>

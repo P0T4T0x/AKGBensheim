@@ -21,16 +21,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.adapter.NewsAdapter;
-import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
-import de.tobiaserthal.akgbensheim.data.Log;
-
-import de.tobiaserthal.akgbensheim.data.provider.news.NewsColumns;
-import de.tobiaserthal.akgbensheim.data.provider.news.NewsCursor;
-import de.tobiaserthal.akgbensheim.data.provider.news.NewsSelection;
-import de.tobiaserthal.akgbensheim.data.rest.model.news.NewsKeys;
-import de.tobiaserthal.akgbensheim.data.sync.SyncUtils;
-import de.tobiaserthal.akgbensheim.ui.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.backend.provider.news.NewsColumns;
+import de.tobiaserthal.akgbensheim.backend.provider.news.NewsCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.news.NewsSelection;
+import de.tobiaserthal.akgbensheim.backend.rest.model.news.NewsKeys;
+import de.tobiaserthal.akgbensheim.backend.sync.SyncUtils;
+import de.tobiaserthal.akgbensheim.backend.utils.Log;
+import de.tobiaserthal.akgbensheim.base.adapter.AdapterClickHandler;
+import de.tobiaserthal.akgbensheim.base.tabs.TabbedListFragment;
+import de.tobiaserthal.akgbensheim.news.adapter.NewsAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,15 +49,6 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
 
     public static final int ALL = 0x0;
     public static final int BOOKMARKED = 0x1;
-
-    private final Runnable initLoader = new Runnable() {
-        @Override
-        public void run() {
-            Bundle args = new Bundle();
-            args.putString(ARG_QUERY_FLAG, null);
-            getLoaderManager().initLoader(viewFlag, args, NewsFragment.this);
-        }
-    };
 
     private int page = 1;
     private int viewFlag;
@@ -93,11 +83,27 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
             viewFlag = getArguments().getInt(ARG_VIEW_FLAG, ALL);
         }
 
-        emptyText = getResources().getString(R.string.news_empty_text);
-        emptyQueryText = getResources().getString(R.string.subst_empty_query_text);
+        switch (viewFlag) {
+            case ALL:
+                emptyText = getResources().getString(R.string.empty_title_news);
+                emptyQueryText = getResources().getString(R.string.empty_query_news);
+                break;
+
+            case BOOKMARKED:
+                emptyText = getResources().getString(R.string.empty_title_newsBookmarked);
+                emptyQueryText = getResources().getString(R.string.empty_query_newsBookmarked);
+                break;
+        }
 
         // Create the adapter
         setAdapter(new NewsAdapter(getActivity(), null));
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, NewsFragment.this);
     }
 
     @Override
@@ -123,13 +129,12 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
 
         // Create the layout manager
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(
-                getResources().getInteger(R.integer.news_list_columns),
+                getResources().getInteger(R.integer.column_count_news),
                 StaggeredGridLayoutManager.VERTICAL
         );
-        setLayoutManager(manager);
 
-        // start loader
-        getHandler().post(initLoader);
+        setEmptyText(emptyText);
+        setLayoutManager(manager);
     }
 
     @Override
@@ -146,7 +151,6 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
 
     @Override
     public void onDestroyView() {
-        getHandler().removeCallbacks(initLoader);
         getAdapter().setOnClickListener(null);
 
         super.onDestroyView();
@@ -242,7 +246,12 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
             return true;
 
         currentFilter = newFilter;
-        setEmptyText(String.format(emptyQueryText, newFilter));
+
+        if(newFilter != null) {
+            setEmptyText(String.format(emptyQueryText, newFilter));
+        } else {
+            setEmptyText(emptyText);
+        }
 
         Bundle args = new Bundle();
         args.putString(ARG_QUERY_FLAG, currentFilter);

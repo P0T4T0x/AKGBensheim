@@ -16,14 +16,12 @@
         android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Di"/>
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
         android:id="@android:id/text2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="07.10."/>
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
 </LinearLayout>

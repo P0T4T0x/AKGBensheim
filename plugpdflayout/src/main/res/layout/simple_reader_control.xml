@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.epapyrus.plugpdf.SimpleReaderControlView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ViewFlipper
+        android:id="@+id/flipper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" >
+
+        <RelativeLayout
+            style="@style/TopBar"
+            android:gravity="center_vertical" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/rc_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="5dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLength="8"
+                    android:singleLine="true"
+                    android:textColor="@color/text"
+                    android:textSize="28dp" >
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" >
+
+                <Button
+                    android:id="@+id/rc_rotate"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/st_btn_rotate" />
+
+                <Button
+                    android:id="@+id/rc_page_display_mode"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/st_btn_view_mode_horizontal" />
+
+                <Button
+                    android:id="@+id/rc_brightness"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/st_btn_brightness" />
+
+                <Button
+                    android:id="@+id/rc_outline"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/st_btn_bookmark" />
+
+                <Button
+                    android:id="@+id/rc_search"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/st_btn_search" />
+
+                <Button
+                    android:id="@+id/rc_edit"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/st_btn_edit" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/TopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/rc_search_cancel"
+                android:minHeight="1dp" 
+    			android:minWidth="1dp" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/st_btn_back" />
+
+            <EditText
+                android:id="@+id/rc_search_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:layout_toLeftOf="@+id/rc_search_back"
+                android:layout_toRightOf="@+id/rc_search_cancel"
+                android:hint="@string/text_search"
+                android:inputType="text"
+                android:singleLine="true" />
+
+            <Button
+                android:id="@+id/rc_search_back"
+                android:minHeight="1dp" 
+    			android:minWidth="1dp" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dip"
+                android:layout_toLeftOf="@+id/rc_search_forward"
+                android:background="@drawable/st_btn_find_prev" />
+
+            <Button
+                android:id="@+id/rc_search_forward"
+                android:minHeight="1dp" 
+    			android:minWidth="1dp" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dip"
+                android:background="@drawable/st_btn_find_next" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/TopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/rc_edit_cancel"
+                android:minHeight="1dp" 
+    			android:minWidth="1dp" 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/st_btn_back" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/topbar_height"
+                android:gravity="right|center_vertical" >
+
+                <Button
+                    android:id="@+id/rc_edit_note"
+                    style="@android:style/ButtonBar"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                	android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dip"
+                    android:background="@drawable/st_btn_edit_note" />
+                
+                <Button
+                    android:id="@+id/rc_edit_tm_highlight"
+                    style="@android:style/ButtonBar"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                	android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dip"
+                    android:background="@drawable/st_btn_edit_highlight" />
+                
+                <Button
+                    android:id="@+id/rc_edit_tm_underline"
+                    style="@android:style/ButtonBar"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                	android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dip"
+                    android:background="@drawable/st_btn_edit_underline" />
+                
+                <Button
+                    android:id="@+id/rc_edit_tm_strikeout"
+                    style="@android:style/ButtonBar"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                	android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dip"
+                    android:background="@drawable/st_btn_edit_cancelline" />
+
+                <Button
+                    android:id="@+id/rc_edit_ink"
+                    style="@android:style/ButtonBar"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                	android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dip"
+                    android:background="@drawable/st_btn_edit_ink" />
+
+                <Button
+                    android:id="@+id/rc_edit_eraser"
+                    style="@android:style/ButtonBar"
+                    android:minHeight="1dp" 
+    				android:minWidth="1dp" 
+                	android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dip"
+                    android:background="@drawable/st_btn_edit_eraser" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ViewFlipper>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+
+        <SeekBar
+            android:id="@+id/rc_page_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="0dp"
+            android:background="@drawable/slider" />
+
+        <TextView
+            android:id="@+id/rc_page_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/rc_page_slider"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/page_num"
+            android:textSize="12sp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <ImageView
+            android:id="@+id/rc_page_thumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/rc_page_number"
+            android:layout_centerHorizontal="true"
+            android:padding="1dp"
+            android:background="#000000"
+            android:contentDescription="@string/bottom_menu_thumbnail"
+            android:src="@android:drawable/alert_light_frame" />
+        
+    </RelativeLayout>
+
+</com.epapyrus.plugpdf.SimpleReaderControlView>

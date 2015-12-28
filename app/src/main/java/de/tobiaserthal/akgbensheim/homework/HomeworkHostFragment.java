@@ -1,5 +1,7 @@
 package de.tobiaserthal.akgbensheim.homework;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MarginLayoutParamsCompat;
@@ -12,14 +14,9 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
-
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
-import de.tobiaserthal.akgbensheim.ui.tabs.TabbedHostFragment;
+import de.tobiaserthal.akgbensheim.backend.model.ModelUtils;
+import de.tobiaserthal.akgbensheim.base.tabs.TabbedHostFragment;
 
 public class HomeworkHostFragment extends TabbedHostFragment {
 
@@ -78,15 +75,15 @@ public class HomeworkHostFragment extends TabbedHostFragment {
     }
 
     private void showFab(boolean animated) {
-        ViewPropertyAnimator.animate(actionButton).cancel();
+        actionButton.animate().cancel();
 
         if(!animated) {
-            ViewHelper.setTranslationY(actionButton, 0);
+            actionButton.setTranslationY(0);
             actionButton.setVisibility(View.VISIBLE);
             return;
         }
 
-        ViewPropertyAnimator.animate(actionButton)
+        actionButton.animate()
                 .translationY(0)
                 .setInterpolator(IN_INTERPOLATOR)
                 .setDuration(ANIM_DURATION)
@@ -100,15 +97,15 @@ public class HomeworkHostFragment extends TabbedHostFragment {
     }
 
     private void hideFab(boolean animated) {
-        ViewPropertyAnimator.animate(actionButton).cancel();
+        actionButton.animate().cancel();
 
         if(!animated) {
-            ViewHelper.setTranslationY(actionButton, getContentView().getHeight() - actionButton.getTop());
+            actionButton.setTranslationY(getContentView().getHeight() - actionButton.getTop());
             actionButton.setVisibility(View.GONE);
             return;
         }
 
-        ViewPropertyAnimator.animate(actionButton)
+        actionButton.animate()
                 .translationY(getContentView().getHeight() - actionButton.getTop())
                 .setInterpolator(OUT_INTERPOLATOR)
                 .setDuration(ANIM_DURATION)

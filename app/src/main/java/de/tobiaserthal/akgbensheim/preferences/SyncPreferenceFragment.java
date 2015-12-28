@@ -11,12 +11,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.ArrayList;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.adapter.SyncPreferenceAdapter;
-import de.tobiaserthal.akgbensheim.adapter.tools.AdapterClickHandler;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider;
-import de.tobiaserthal.akgbensheim.data.preferences.PreferenceProvider.PeriodicSyncPreference;
-import de.tobiaserthal.akgbensheim.ui.RecyclerFragment;
-import de.tobiaserthal.akgbensheim.ui.widget.DividerItemDecoration;
+import de.tobiaserthal.akgbensheim.backend.preferences.PreferenceProvider;
+import de.tobiaserthal.akgbensheim.base.RecyclerFragment;
+import de.tobiaserthal.akgbensheim.base.adapter.AdapterClickHandler;
+import de.tobiaserthal.akgbensheim.preferences.adapter.SyncPreferenceAdapter;
+import de.tobiaserthal.akgbensheim.utils.widget.DividerItemDecoration;
 
 public class SyncPreferenceFragment extends RecyclerFragment<SyncPreferenceAdapter> {
     @Override
@@ -24,7 +23,7 @@ public class SyncPreferenceFragment extends RecyclerFragment<SyncPreferenceAdapt
         super.onCreate(savedInstanceState);
 
         // Create the adapter
-        ArrayList<PeriodicSyncPreference> dummies = PreferenceProvider.getInstance().getAllSyncs();
+        ArrayList<PreferenceProvider.PeriodicSyncPreference> dummies = PreferenceProvider.getInstance().getAllSyncs();
         setAdapter(new SyncPreferenceAdapter(getContext(), dummies));
     }
 
@@ -43,9 +42,9 @@ public class SyncPreferenceFragment extends RecyclerFragment<SyncPreferenceAdapt
         getAdapter().setClickHandler(new AdapterClickHandler() {
             @Override
             public void onClick(View view, final int position, long id) {
-                final PeriodicSyncPreference dummy = getAdapter().getItem(position);
+                final PreferenceProvider.PeriodicSyncPreference dummy = getAdapter().getItem(position);
                 new MaterialDialog.Builder(getContext())
-                        .title(R.string.pref_prompt_sync_frequency)
+                        .title(R.string.action_prompt_title_settingsSelectFrequency)
                         .positiveText(android.R.string.ok)
                         .negativeText(android.R.string.cancel)
                         .items(PreferenceProvider.getInstance().getFrequencySummaries())

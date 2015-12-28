@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.tobiaserthal.akgbensheim.SubstDetailActivity">
 
-    <item android:id="@+id/action_share" android:title="@string/action_share"
+    <item android:id="@+id/action_share" android:title="@string/action_title_share"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_add_to_calendar" android:title="@string/action_add_to_calendar"
+    <item android:id="@+id/action_add_to_calendar" android:title="@string/action_title_addToCalendar"
         android:orderInCategory="101" app:showAsAction="never" />
 </menu>

@@ -31,16 +31,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/primaryText"
-            android:text="Name"/>
+            android:textColor="@color/primaryText"/>
 
         <TextView
             android:id="@android:id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="@color/secondaryText"
-            android:text="Dirk Scheffler" />
+            android:textColor="@color/secondaryText"/>
     </LinearLayout>
 
 </LinearLayout>

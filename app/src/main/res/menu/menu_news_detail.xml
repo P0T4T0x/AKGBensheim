@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_open_in_browser"
-        android:title="@string/action_open_in_browser"
+        android:title="@string/action_title_openInBrowser"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_bookmark"
-        android:title="@string/action_bookmark"
+        android:title="@string/action_title_addToBookmarks"
         android:icon="@drawable/ic_action_bookmark"
         android:checkable="true"
         app:showAsAction="ifRoom"/>

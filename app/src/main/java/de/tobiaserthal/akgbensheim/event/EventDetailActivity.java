@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -15,22 +16,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
-import com.nineoldandroids.view.ViewHelper;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import de.tobiaserthal.akgbensheim.R;
-import de.tobiaserthal.akgbensheim.data.model.ModelUtils;
-import de.tobiaserthal.akgbensheim.data.provider.event.EventCursor;
-import de.tobiaserthal.akgbensheim.data.provider.event.EventSelection;
-import de.tobiaserthal.akgbensheim.ui.OverlayActivity;
+import de.tobiaserthal.akgbensheim.backend.model.ModelUtils;
+import de.tobiaserthal.akgbensheim.backend.provider.event.EventCursor;
+import de.tobiaserthal.akgbensheim.backend.provider.event.EventSelection;
+import de.tobiaserthal.akgbensheim.base.OverlayActivity;
 
 public class EventDetailActivity extends OverlayActivity<ObservableScrollView> implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -59,13 +57,13 @@ public class EventDetailActivity extends OverlayActivity<ObservableScrollView> i
 
     @Override
     public void onStartEnterAnimation() {
-        ViewHelper.setTranslationY(headerTextView, -headerTitleVerticalMargin);
+        headerTextView.setTranslationY(-headerTitleVerticalMargin);
 
         float scale = 1 + MAX_TEXT_SCALE_DELTA;
-        ViewHelper.setPivotX(headerTextView, 0);
-        ViewHelper.setPivotY(headerTextView, headerTextView.getHeight());
-        ViewHelper.setScaleX(headerTextView, scale);
-        ViewHelper.setScaleY(headerTextView, scale);
+        headerTextView.setPivotX(0);
+        headerTextView.setPivotY(headerTextView.getHeight());
+        headerTextView.setScaleX(scale);
+        headerTextView.setScaleY(scale);
 
         getScrollable().scrollVerticallyTo(0);
     }
@@ -94,7 +92,7 @@ public class EventDetailActivity extends OverlayActivity<ObservableScrollView> i
         headerTitleVerticalMargin = getResources().getDimensionPixelSize(R.dimen.events_header_title_margin);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.primaryDark));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.primaryDark));
         }
 
         txtTitle = setupRow(R.id.titleRow, R.drawable.ic_information_outline);
@@ -190,16 +188,16 @@ public class EventDetailActivity extends OverlayActivity<ObservableScrollView> i
         float fraction = interpolator.getInterpolation(offset / flexibleRange);
 
         // translate the header view
-        ViewHelper.setTranslationY(headerView, -offset);
+        headerView.setTranslationY(-offset);
 
         // translate the title
-        ViewHelper.setTranslationY(headerTextView, (fraction - 1) * headerTitleVerticalMargin);
+        headerTextView.setTranslationY((fraction - 1) * headerTitleVerticalMargin);
 
         // scale the header title
         float scale = 1 + (1 - fraction) * MAX_TEXT_SCALE_DELTA;
-        ViewHelper.setPivotX(headerTextView, 0);
-        ViewHelper.setPivotY(headerTextView, headerTextView.getHeight());
-        ViewHelper.setScaleX(headerTextView, scale);
-        ViewHelper.setScaleY(headerTextView, scale);
+        headerTextView.setPivotX(0);
+        headerTextView.setPivotY(headerTextView.getHeight());
+        headerTextView.setScaleX(scale);
+        headerTextView.setScaleY(scale);
     }
 }

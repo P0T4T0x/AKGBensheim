@@ -31,7 +31,6 @@
             android:textSize="@dimen/abc_text_size_medium_material"
             android:textColor="@color/primaryTextInverse"
             android:gravity="center"
-            android:text="06s"
             android:visibility="visible" />
 
         <View
@@ -52,8 +51,7 @@
 
             android:textSize="@dimen/abc_text_size_medium_material"
             android:textColor="@color/primaryTextInverse"
-            android:gravity="center"
-            android:text="Ph" />
+            android:gravity="center" />
 
         <TableLayout
             android:layout_width="match_parent"
@@ -73,8 +71,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmallInverse"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:gravity="center"
-                    android:text="10 - 11. Stunde"/>
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/txtType"
@@ -83,8 +80,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmallInverse"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:gravity="center"
-                    android:text="Vertretung"/>
+                    android:gravity="center"/>
             </TableRow>
 
             <TableRow
@@ -99,8 +95,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmallInverse"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:gravity="center"
-                    android:text="R134"/>
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/txtLessonSubst"
@@ -109,8 +104,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmallInverse"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:gravity="center"
-                    android:text="Mu"/>
+                    android:gravity="center"/>
             </TableRow>
 
         </TableLayout>
