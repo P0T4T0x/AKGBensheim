@@ -13,6 +13,11 @@ android {
 
         resConfigs "en", "de"
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
     buildTypes {
         debug {
             debuggable true
