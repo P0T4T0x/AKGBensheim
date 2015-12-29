@@ -9,7 +9,7 @@ language: android
 jdk:  oraclejdk7
 
 # disable sudo
-sudo: false
+sudo: required
 
 # cache management
 before_cache:
