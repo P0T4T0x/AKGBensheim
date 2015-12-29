@@ -11,36 +11,36 @@
 
     <!-- Preference keys -->
     <string name="pref_category_subst">Substitutions</string>
-    <string name="pref_key_subst_phase">pref_key_substPhase</string>
-    <string name="pref_key_subst_form">pref_key_substForm</string>
-    <string name="pref_key_subst_filter">pref_key_substFilter</string>
-    <string name="pref_key_subst_filterSettings">pref_key_substFilterSettings</string>
-    <string name="pref_key_subst_colorSettings">pref_key_substColorSettings</string>
-    <string name="pref_key_subst_color_subst">pref_key_substColorSubst</string>
-    <string name="pref_key_subst_color_change">pref_key_substColorChange</string>
-    <string name="pref_key_subst_color_reserv">pref_key_substColorReserv</string>
-    <string name="pref_key_subst_color_cancel">pref_key_substColorCancel</string>
-    <string name="pref_key_subst_color_special">pref_key_substColorSpecial</string>
-    <string name="pref_key_subst_color_roomSubst">pref_key_substColorRoomSubst</string>
-    <string name="pref_key_subst_color_shift">pref_key_substColorShift</string>
-    <string name="pref_key_subst_color_other">pref_key_substColorOther</string>
+    <string name="pref_key_subst_phase" translatable="false">pref_key_substPhase</string>
+    <string name="pref_key_subst_form" translatable="false">pref_key_substForm</string>
+    <string name="pref_key_subst_filter" translatable="false">pref_key_substFilter</string>
+    <string name="pref_key_subst_filterSettings" translatable="false">pref_key_substFilterSettings</string>
+    <string name="pref_key_subst_colorSettings" translatable="false">pref_key_substColorSettings</string>
+    <string name="pref_key_subst_color_subst" translatable="false">pref_key_substColorSubst</string>
+    <string name="pref_key_subst_color_change" translatable="false">pref_key_substColorChange</string>
+    <string name="pref_key_subst_color_reserv" translatable="false">pref_key_substColorReserv</string>
+    <string name="pref_key_subst_color_cancel" translatable="false">pref_key_substColorCancel</string>
+    <string name="pref_key_subst_color_special" translatable="false">pref_key_substColorSpecial</string>
+    <string name="pref_key_subst_color_roomSubst" translatable="false">pref_key_substColorRoomSubst</string>
+    <string name="pref_key_subst_color_shift" translatable="false">pref_key_substColorShift</string>
+    <string name="pref_key_subst_color_other" translatable="false">pref_key_substColorOther</string>
 
     <string name="pref_category_sync">Sync options</string>
-    <string name="pref_key_sync_backgroundEnabled">pref_key_syncBackgroundEnabled</string>
-    <string name="pref_key_sync_advancedSettings">pref_keySyncAdvancedSettings</string>
+    <string name="pref_key_sync_backgroundEnabled" translatable="false">pref_key_syncBackgroundEnabled</string>
+    <string name="pref_key_sync_advancedSettings" translatable="false">pref_keySyncAdvancedSettings</string>
 
     <string name="pref_category_data">Data</string>
-    <string name="pref_key_data_onlyWifi">pref_key_dataOnlyWifi</string>
-    <string name="pref_key_data_clearCache">pref_key_dataClearCache</string>
-    <string name="pref_key_data_clearData">pref_key_dataClearData</string>
+    <string name="pref_key_data_onlyWifi" translatable="false">pref_key_dataOnlyWifi</string>
+    <string name="pref_key_data_clearCache" translatable="false">pref_key_dataClearCache</string>
+    <string name="pref_key_data_clearData" translatable="false">pref_key_dataClearData</string>
 
     <string name="pref_category_about">About</string>
-    <string name="pref_key_about_website">pref_key_aboutWebsite</string>
-    <string name="pref_key_about_licence">pref_key_aboutLicence</string>
-    <string name="pref_key_about_version">pref_key_aboutVersion</string>
+    <string name="pref_key_about_website" translatable="false">pref_key_aboutWebsite</string>
+    <string name="pref_key_about_licence" translatable="false">pref_key_aboutLicence</string>
+    <string name="pref_key_about_version" translatable="false">pref_key_aboutVersion</string>
 
     <string name="pref_category_support">Support</string>
-    <string name="pref_key_support_mailDev">pref_key_supportMailDev</string>
+    <string name="pref_key_support_mailDev" translatable="false">pref_key_supportMailDev</string>
 
 
     <!-- Preference titles -->

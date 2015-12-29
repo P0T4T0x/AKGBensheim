@@ -5,10 +5,11 @@ import android.net.Uri;
 import android.support.v4.content.FileProvider;
 
 import java.io.File;
+import java.util.Locale;
 
 public class FoodPlanKeys {
     public static final String DOMAIN = "http://www.akg-bensheim.de/files/%02dWoche.pdf";
-    public static String getDomain(int week) {return String.format(DOMAIN, week);}
+    public static String getDomain(int week) {return String.format(Locale.getDefault(), DOMAIN, week);}
 
     public static String getDefaultCacheDir(Context context) {
         return context.getExternalCacheDir()

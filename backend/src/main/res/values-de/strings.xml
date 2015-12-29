@@ -13,7 +13,7 @@
     <!-- Preference keys -->
     <string name="pref_category_subst">Vertretungsplan</string>
     <string name="pref_category_sync">Aktualisierung</string>
-    <string name="pref_category_data">Daten</string>
+    <string name="pref_category_data">Datenverbrauch</string>
     <string name="pref_category_about">Über</string>
     <string name="pref_category_support">Support</string>
 
@@ -128,8 +128,5 @@
     <string name="pref_summary_about_website">Öffnet die AKG Webseite in deinem Standartbrowser.</string>
     <string name="pref_summary_data_onlyWifi">Aktualisiert Daten nur dann, wenn du über WLAN mit dem Internet verbunden bist.</string>
     <string name="pref_summary_support_mailDev">Schicke dem Entwickler eine Email mit Fehlerberichten oder Verbesserungsvorschlägen. Vielleicht willst du aber auch einfach mal Hallo sagen :)</string>
-    <string name="share_generic_text">Sieh dir das mal an: %1$s!</string>
-    <string name="share_link_subject">Link teilen</string>
-
 
 </resources>
