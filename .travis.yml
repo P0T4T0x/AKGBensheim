@@ -14,8 +14,8 @@ sudo: false
 # cache management
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-c
-ache:
+
+cache:
   directories:
     - node_modules
     - $HOME/.gradle/caches/
