@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 ext {
-    splitAPKs = true;
+    splitAPKs = false;
     versionCodesAbi = ['armeabi':1, 'armeabi-v7a':2, 'arm64-v8a':3, 'mips':4, 'x86':5, 'x86_64':6];
     versionCodesDensity = [all:0, mdpi:1, hdpi:2, xhdpi:3, xxhdpi:4, xxxhdpi:5];
 }
