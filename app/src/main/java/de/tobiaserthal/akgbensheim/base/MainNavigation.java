@@ -22,6 +22,8 @@ public interface MainNavigation {
     int ACTIVITY_SETTINGS = 9;
     int ACTIVITY_FAQ = 10;
 
+    int ACTIVITY_UNKNOWN = -1;
+
     @IntDef({
             FRAGMENT_HOME,
             FRAGMENT_NEWS,
@@ -32,7 +34,8 @@ public interface MainNavigation {
             FRAGMENT_SUBSTITUTION,
             ACTIVITY_CONTACT,
             ACTIVITY_SETTINGS,
-            ACTIVITY_FAQ
+            ACTIVITY_FAQ,
+            ACTIVITY_UNKNOWN
     })
     @Retention(RetentionPolicy.SOURCE)
     @interface NavigationItem {}

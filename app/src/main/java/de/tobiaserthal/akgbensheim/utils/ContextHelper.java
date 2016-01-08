@@ -12,6 +12,8 @@ import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
 
 
+import java.util.Set;
+
 import de.tobiaserthal.akgbensheim.R;
 
 /**
@@ -99,5 +101,13 @@ public class ContextHelper {
                 .build();
 
         intent.launchUrl(activity, Uri.parse(url));
+    }
+
+    public static boolean isUrlRespondIntent(Intent intent) {
+        return intent.getData() !=null
+                && intent.getAction() != null
+                && intent.getCategories() != null
+                && intent.getAction().equals(Intent.ACTION_VIEW)
+                && intent.getCategories().contains(Intent.CATEGORY_BROWSABLE);
     }
 }
