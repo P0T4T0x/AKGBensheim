@@ -170,25 +170,32 @@ public abstract class CursorAdapter<CS extends AbstractCursor, VH extends BaseVi
     public void moveCursorOrThrow(int position)
             throws IndexOutOfBoundsException, IllegalStateException {
 
-        if(position >= getItemCount() || position < -1)
+        if(position >= getItemCount() || position < -1) {
             throw new IndexOutOfBoundsException("Position: " + position
                     + " is invalid for this data set!");
+        }
 
-        if(!mDataValid)
+        if(!mDataValid) {
             throw new IllegalStateException("Attempt to move cursor over invalid data set!");
+        }
 
-        if(!mCursor.moveToPosition(position))
-            throw new IllegalStateException("Couldn't move cursor to position: " + position + "!");
+        if(!mCursor.moveToPosition(position)) {
+            throw new IllegalStateException("Couldn't move cursor from position: "
+                    + mCursor.getPosition() + " to position: " + position + "!");
+        }
     }
 
     public boolean moveCursor(int position) {
-        try {
-            moveCursorOrThrow(position);
-            return true;
-        } catch (Exception e) {
-            Log.w(TAG, e, "Couldn't move cursor!");
+        if(position >= getItemCount() || position < -1) {
+            Log.w(TAG, "Position: %d is invalid for this data set!");
             return false;
         }
+
+        if(!mDataValid) {
+            Log.d(TAG, "Attempt to move cursor over invalid data set!");
+        }
+
+        return mCursor.moveToPosition(position);
     }
 
     /**
