@@ -51,6 +51,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.heading = heading;
         this.description = description;
         this.backgroundResource = backgroundResource;
+
+        setHasStableIds(true);
     }
 
     /**
@@ -137,7 +139,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      * Set the item's selected state at the specific index to true
      * @param index The index of the item in the array committed to this adapter
      */
-    public void selectPosition(int index) {
+    public void selectIndex(int index) {
         int oldPos = getFirstSelectedPosition();
         int newPos = itemIndexToAdapterIndex(index, 1);
 
@@ -148,7 +150,25 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         select(newPos);
 
         if(callbacks != null) {
-            callbacks.onNavigationItemSelected(index, newPos, newPos == oldPos);
+            callbacks.onNavigationItemSelected(newPos, (int) getItemId(newPos), newPos == oldPos);
+        }
+    }
+
+    /**
+     * Set the item's selected state at the specific adapter position to true
+     * @param newPos The absolute adapter position of the item to select
+     */
+    public void selectPosition(int newPos) {
+        int oldPos = getFirstSelectedPosition();
+
+        if(oldPos > -1) {
+            deselect(oldPos);
+        }
+
+        select(newPos);
+
+        if(callbacks != null) {
+            callbacks.onNavigationItemSelected(newPos, (int) getItemId(newPos), newPos == oldPos);
         }
     }
 
@@ -158,29 +178,25 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
      */
     public int getFirstSelectedPosition() {
         int index = selectionMap.indexOfValue(true);
-        if(index < 0)
+        if(index < 0) {
             return index;
+        }
 
         return selectionMap.keyAt(index);
     }
 
     public void selectId(int id) {
-        int newPos = -1;
-
-        for(int i = 1; i < navigationDrawerItems.size() + 1; i++) {
-            if(getItem(i).isCheckable()
-                    && getItem(i).getId() == id) {
-                newPos = i;
-                break;
+        if(id == headerId) {
+            if(callbacks != null) {
+                callbacks.onNavigationItemSelected(0, headerId, false);
             }
-        }
 
-        if(newPos < 1) {
             return;
         }
 
-        int index = adapterIndexToItemIndex(newPos);
         int oldPos = getFirstSelectedPosition();
+        int newPos = itemIdToAdapterIndex(id, 1);
+
         if(oldPos > -1) {
             deselect(oldPos);
         }
@@ -188,7 +204,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         select(newPos);
 
         if(callbacks != null) {
-            callbacks.onNavigationItemSelected(index, newPos, newPos == oldPos);
+            callbacks.onNavigationItemSelected(newPos, id, newPos == oldPos);
         }
     }
 
@@ -248,13 +264,35 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public int itemIndexToAdapterIndex(int index, int def) {
         int counter = 0;
         for(int i = 1; i < getItemCount(); i ++) {
-            if(getItem(i).isSection())
+            if(getItem(i).isSection()) {
                 continue;
+            }
 
-            if(counter >= index)
+            if(counter >= index) {
                 return i;
+            }
 
             counter ++;
+        }
+
+        return def;
+    }
+
+    /**
+     * Gets the absolute adapter position of the first item with the given id
+     * @param id The id to look for on each item in the adapter
+     * @param def The default value to return
+     * @return The absolute item index of the item or {@code def} if not found.
+     */
+    public int itemIdToAdapterIndex(int id, int def) {
+        for(int i = 1; i < getItemCount(); i ++) {
+            if(getItem(i).isSection()) {
+                continue;
+            }
+
+            if(getItemId(i) == id) {
+                return i;
+            }
         }
 
         return def;
@@ -336,10 +374,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return navigationDrawerItems.get(index - 1);
     }
 
-    public Item getItemWithIndex(int index) {
-        return navigationDrawerItems.get(index);
-    }
-
     public boolean isCheckable(int index) {
         return getItem(index).isCheckable();
     }
@@ -392,7 +426,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Log.i(TAG, "Header item in recycler view clicked!");
 
             if(callbacks != null) {
-                callbacks.onNavigationItemSelected(-1, 0, false);
+                callbacks.onNavigationItemSelected(0, headerId, false);
             }
         }
     }
@@ -419,9 +453,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public void onClick(View v) {
             int oldPos = getFirstSelectedPosition();
             int newPos = getAdapterPosition();
-            int index = adapterIndexToItemIndex(newPos);
 
-            Log.i(TAG, "Navigation item in recycler view clicked at position: %d with index: %d", newPos, index);
+            Log.i(TAG, "Navigation item in recycler view clicked at position: %d with id: %d", newPos, (int) getItemId());
             boolean special = !isCheckable(newPos);
             if(!special) {
                 deselect(oldPos);
@@ -429,7 +462,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             if(callbacks != null) {
-                callbacks.onNavigationItemSelected(index, newPos, oldPos == newPos);
+                callbacks.onNavigationItemSelected(newPos, (int) getItemId(), oldPos == newPos);
             }
         }
     }

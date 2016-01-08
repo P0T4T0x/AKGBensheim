@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,6 +26,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -54,8 +55,19 @@ import de.tobiaserthal.akgbensheim.subst.SubstHostFragment;
 import de.tobiaserthal.akgbensheim.teacher.TeacherFragment;
 import de.tobiaserthal.akgbensheim.teacher.TeacherHostFragment;
 import de.tobiaserthal.akgbensheim.utils.ContextHelper;
+import de.tobiaserthal.akgbensheim.utils.NavigationHelper;
 
-import static de.tobiaserthal.akgbensheim.base.MainNavigation.*;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.ACTIVITY_CONTACT;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.ACTIVITY_FAQ;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.ACTIVITY_SETTINGS;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.FRAGMENT_EVENT;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.FRAGMENT_FOODPLAN;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.FRAGMENT_HOME;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.FRAGMENT_HOMEWORK;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.FRAGMENT_NEWS;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.FRAGMENT_SUBSTITUTION;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.FRAGMENT_TEACHER;
+import static de.tobiaserthal.akgbensheim.base.MainNavigation.NavigationItem;
 
 
 /**
@@ -68,7 +80,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     /**
      * Remember the position of the selected item.
      */
-    private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
+    private static final String STATE_SELECTED_ID = "selected_navigation_drawer_position";
 
     /**
      * Per the design guidelines, you should show the drawer on launch until the user manually
@@ -95,7 +107,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     private DrawerLayout drawerLayout;
     private View containerView;
 
-    private int currentSelectedPosition = 0;
+    private int currentSelectedId = 0;
     private boolean fromSavedInstanceState;
     private boolean userLearnedDrawer;
 
@@ -146,8 +158,11 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
         userLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
-            currentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             fromSavedInstanceState = true;
+            currentSelectedId = savedInstanceState.getInt(STATE_SELECTED_ID, FRAGMENT_HOME);
+        } else {
+            fromSavedInstanceState = false;
+            currentSelectedId = NavigationHelper.getFragmentItemFromIntent(getActivity().getIntent());
         }
 
         String[] navMenuItemTitles = getResources().getStringArray(R.array.nav_drawer_items);
@@ -179,7 +194,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
         navMenuItemIcons.recycle();
 
         drawerAdapter.setOnItemClickListener(this);
-        drawerAdapter.selectPosition(currentSelectedPosition);
+        drawerAdapter.selectId(currentSelectedId);
 
         preferenceChangeReceiver = new ChangeReceiver(this);
         IntentFilter filter = new IntentFilter(PreferenceProvider.ACTION_SUBST);
@@ -200,6 +215,22 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         return recyclerView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // ugly as hell, but works as expected :/
+        ScrollUtils.addOnGlobalLayoutListener(view, new Runnable() {
+            @Override
+            public void run() {
+                if (getActivity() != null) {
+                    startActivity(NavigationHelper.getActivityItemFromIntent(
+                            getActivity().getIntent()));
+                }
+            }
+        });
     }
 
     @Override
@@ -351,7 +382,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_POSITION, currentSelectedPosition);
+        outState.putInt(STATE_SELECTED_ID, currentSelectedId);
     }
 
     @Override
@@ -362,57 +393,62 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     }
 
     @Override
-    public void onNavigationItemSelected(int index, int position, boolean reselect) {
-        Log.d(TAG, "Navigation item of index: %d, position: %d selected; isReselect: %b.", index, position, reselect);
+    public void onNavigationItemSelected(int position, int id, boolean reselect) {
+        Log.d(TAG, "Navigation item of position: %d, id: %d selected; isReselect: %b.", position, id, reselect);
 
-        currentSelectedPosition = index;
+        currentSelectedId = id;
         if(drawerLayout != null) {
             closeDrawer(200);
         }
 
         if(getActivity() != null) {
-            int id = (int) drawerAdapter.getItemId(position);
-            switch (id) {
-                case ACTIVITY_CONTACT:
-                    ContactActivity.startDetail(getActivity());
-                    break;
+            if(NavigationHelper.isActivityId(id)) {
+                startActivity(id);
+                return;
+            }
 
-                case ACTIVITY_SETTINGS:
-                    Intent settings = new Intent(getActivity(), SettingsActivity.class);
-                    startActivity(settings);
-                    break;
+            if(NavigationHelper.isFragmentId(id)) {
+                if (fragmentManager != null) {
+                    String title = drawerAdapter.getItem(position).getTitle();
+                    Fragment fragment = fragmentManager.findFragmentByTag(String.valueOf(id));
 
-                case ACTIVITY_FAQ:
-                    ContextHelper.startBrowserIntent(
-                            getActivity(),
-                            "http://www.akgbensheim.de/android/faq"
-                    );
-                    break;
-
-                default:
-                    if(fragmentManager != null) {
-                        String title = drawerAdapter.getItem(position).getTitle();
-                        Fragment fragment = fragmentManager.findFragmentByTag(String.valueOf(id));
-
-                        if(fragment == null) {
-                            fragment = createFragment(id);
-                        }
-
-                        if(fragment != null) {
-                            fragmentManager.beginTransaction()
-                                    .replace(android.R.id.widget_frame, fragment, String.valueOf(id))
-                                    .commit();
-
-                            getActivity().setTitle(title);
-                        }
+                    if (fragment == null) {
+                        fragment = createFragment(id);
                     }
 
-                    break;
+                    if (fragment != null) {
+                        fragmentManager.beginTransaction()
+                                .replace(android.R.id.widget_frame, fragment, String.valueOf(id))
+                                .commit();
+
+                        getActivity().setTitle(title);
+                    }
+                }
             }
         }
     }
 
-    private Fragment createFragment(int itemId) {
+    private void startActivity(@NavigationItem int itemId) {
+        switch (itemId) {
+            case ACTIVITY_CONTACT:
+                ContactActivity.startDetail(getActivity());
+                break;
+
+            case ACTIVITY_SETTINGS:
+                Intent settings = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(settings);
+                break;
+
+            case ACTIVITY_FAQ:
+                ContextHelper.startBrowserIntent(
+                        getActivity(),
+                        "http://www.akgbensheim.de/android/faq"
+                );
+                break;
+        }
+    }
+
+    private Fragment createFragment(@NavigationItem int itemId) {
         switch (itemId) {
             case FRAGMENT_HOME: {
                 return HomeFragment.newInstance();
