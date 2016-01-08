@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AKGBensheim</string>
+    <string name="app_name">AKG Bensheim</string>
 
     <string name="fragment_title_home">Startseite</string>
     <string name="fragment_title_subst">Vertretungsplan</string>

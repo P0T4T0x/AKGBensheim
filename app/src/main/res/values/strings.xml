@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AKGBensheim</string>
+    <string name="app_name">AKG Bensheim</string>
     
     <string name="fragment_title_home">Home</string>
     <string name="fragment_title_subst">Substitution</string>

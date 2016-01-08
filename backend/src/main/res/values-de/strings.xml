@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- module / app titles -->
-    <string name="app_name">AKGBensheim</string>
+    <string name="app_name">AKG Bensheim</string>
     <string name="address">Wilhelmstraße 62, 64625 Bensheim</string>
 
 
