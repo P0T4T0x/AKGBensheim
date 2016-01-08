@@ -18,6 +18,20 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" android:host="www.akg-bensheim.de" android:pathPrefix="/termine"/>
+                <data android:scheme="http" android:host="www.akg-bensheim.de" android:pathPrefix="/kontakt"/>
+                <data android:scheme="http" android:host="www.akg-bensheim.de" android:pathPrefix="/aktuelles"/>
+                <data android:scheme="http" android:host="www.akg-bensheim.de" android:pathPrefix="/home/mensa-cafeteria"/>
+                <data android:scheme="http" android:host="www.akg-bensheim.de" android:pathPrefix="/home/wer-ist-wer/lehrer"/>
+                <data android:scheme="http" android:host="www.akg-bensheim.de" android:pathPrefix="/akgweb2011/content/Vertretung"/>
+                <data android:scheme="http" android:host="www.akg-bensheim.de" android:pathPrefix="/unterricht-co/vertretungsplan"/>
+
+            </intent-filter>
         </activity>
 
         <activity
