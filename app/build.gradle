@@ -21,7 +21,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + System.getenv('plugpdf_api_key') + "\"")
+            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + System.getenv('PLUGPDF_API_KEY') + "\"")
         }
         release {
             debuggable false
@@ -29,15 +29,15 @@ android {
             zipAlignEnabled true
             shrinkResources true
             proguardFiles '../optimization-rules.pro', 'proguard-rules.pro'
-            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + System.getenv('plugpdf_api_key') + "\"")
+            buildConfigField("String", "PLUGPDF_API_KEY", "\"" + System.getenv('PLUGPDF_API_KEY') + "\"")
         }
     }
 
     splits {
         abi {
-            universalApk true
             enable project.splitAPKs
             exclude "arm64-v8a", "mips", "mips64"
+            universalApk true
         }
 
         density {
