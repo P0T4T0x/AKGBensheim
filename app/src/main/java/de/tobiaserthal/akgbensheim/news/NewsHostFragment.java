@@ -30,13 +30,17 @@ public class NewsHostFragment extends TabbedHostFragment {
 
     private final SyncStatusObserver syncStatusObserver = new SyncStatusObserver() {
         @Override
-        public void onStatusChanged(int which) {
+        public void onStatusChanged(final int which) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Account account = AuthenticatorService.getAccount(SyncUtils.ACCOUNT_TYPE);
-                    boolean syncActive = ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
-                    boolean syncPending = ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
+                    boolean syncActive = ((which & ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE)
+                            == ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE)
+                            && ContentResolver.isSyncActive(account, DataProvider.AUTHORITY);
+                    boolean syncPending = ((which & ContentResolver.SYNC_OBSERVER_TYPE_PENDING)
+                            == ContentResolver.SYNC_OBSERVER_TYPE_PENDING)
+                            && ContentResolver.isSyncPending(account, DataProvider.AUTHORITY);
 
                     boolean refresh = syncActive || syncPending;
                     Log.d(TAG, "Status change detected. Active: %b, pending: %b, refreshing: %b", syncActive, syncPending, refresh);
