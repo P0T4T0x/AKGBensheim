@@ -8,8 +8,8 @@ import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.drawer.DrawerFragment;
 import de.tobiaserthal.akgbensheim.base.toolbar.ToolbarActivity;
 
-
 public class MainActivity extends ToolbarActivity implements MainNavigation {
+    private static final String TAG = "MainActivity";
     private DrawerFragment navigationDrawer;
 
     @Override
@@ -34,10 +34,11 @@ public class MainActivity extends ToolbarActivity implements MainNavigation {
 
     @Override
     public void onBackPressed() {
-        if (navigationDrawer.isDrawerOpen())
+        if (navigationDrawer.isDrawerOpen()) {
             navigationDrawer.closeDrawer();
-        else
+        } else {
             super.onBackPressed();
+        }
     }
 
     @Override

@@ -216,23 +216,27 @@ public abstract class ToolbarFragment extends Fragment {
 
     @SuppressWarnings("ResourceType")
     private void ensureHeader() {
-        if(headerView != null)
+        if(headerView != null) {
             return;
+        }
 
-        if (getView() != null)
+        if (getView() != null) {
             headerView = getView().findViewById(INTERNAL_HEADER_VIEW_ID);
-        else
+        } else {
             throw new IllegalStateException("getHeaderView called without a header being created!");
+        }
     }
 
     private void ensureContent() {
-        if(contentView != null)
+        if(contentView != null) {
             return;
+        }
 
-        if(getView() != null)
+        if(getView() != null) {
             contentView = getView().findViewById(INTERNAL_CONTENT_VIEW_ID);
-        else
-            throw new IllegalStateException("getHeaderView called without a header being created!");
+        } else {
+            throw new IllegalStateException("getContentView called without a content being created!");
+        }
     }
 
     public float getToolbarTranslation() {
