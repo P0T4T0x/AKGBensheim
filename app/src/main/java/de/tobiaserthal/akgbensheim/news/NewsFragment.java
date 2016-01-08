@@ -34,6 +34,8 @@ import de.tobiaserthal.akgbensheim.news.adapter.NewsAdapter;
 /**
  * A simple {@link Fragment} subclass.
  */
+
+// TODO: test page storing in instance save bundle
 public class NewsFragment extends TabbedListFragment<NewsAdapter>
         implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
@@ -103,7 +105,13 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, NewsFragment.this);
+        Bundle bundle = new Bundle();
+        if(savedInstanceState != null) {
+            int limit = savedInstanceState.getInt(ARG_LIMIT_FLAG, NewsKeys.ITEMS_PER_PAGE);
+            bundle.putInt(ARG_LIMIT_FLAG, limit);
+        }
+
+        getLoaderManager().initLoader(viewFlag, bundle, NewsFragment.this);
     }
 
     @Override
@@ -150,9 +158,14 @@ public class NewsFragment extends TabbedListFragment<NewsAdapter>
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(ARG_LIMIT_FLAG, page * NewsKeys.ITEMS_PER_PAGE);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onDestroyView() {
         getAdapter().setOnClickListener(null);
-
         super.onDestroyView();
     }
 
