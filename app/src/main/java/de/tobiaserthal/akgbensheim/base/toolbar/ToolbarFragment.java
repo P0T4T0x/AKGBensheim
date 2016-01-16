@@ -26,7 +26,7 @@ import de.tobiaserthal.akgbensheim.utils.ContextHelper;
  * A simple fragment wrapper that helps you to create fragments with the ability to manage the
  * parent activity's toolbar by adding a header view or animating it.
  */
-// FIXME: header sometimes not animating in position / background color for header pre lollipop
+// FIXME: header sometimes not animating in position
 public abstract class ToolbarFragment extends Fragment {
     private static final int INTERNAL_CONTENT_VIEW_ID = 0x000000;
     private static final int INTERNAL_HEADER_VIEW_ID = 0x000001;

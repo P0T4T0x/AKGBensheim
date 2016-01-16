@@ -8,7 +8,6 @@ import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
 import de.tobiaserthal.akgbensheim.base.RecyclerFragment;
 
-// FIXME: recalculate scroll position on adapter size changes
 public abstract class TabbedListFragment<A extends RecyclerView.Adapter>
         extends RecyclerFragment<A> implements TabbedFragment {
 
