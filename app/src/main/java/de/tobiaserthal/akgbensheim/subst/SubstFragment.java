@@ -3,6 +3,7 @@ package de.tobiaserthal.akgbensheim.subst;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -65,6 +66,7 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     private String form;
     private String[] subjects;
 
+    private Parcelable savedLayoutState;
     private ChangeReceiver changeReceiver;
 
     static class ChangeReceiver extends SubstPreferenceChangeReceiver {
@@ -120,6 +122,8 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
         form = PreferenceProvider.getInstance().getSubstForm();
         subjects = PreferenceProvider.getInstance().getSubstSubjects();
 
+        savedLayoutState = savedInstanceState != null ?
+                savedInstanceState.getParcelable("layoutManager") : null;
         getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, this);
     }
 
@@ -206,6 +210,12 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("layoutManager", getLayoutManager().onSaveInstanceState());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "Creating cursor loader with id: %d and args: %s", id, args.toString());
 
@@ -252,6 +262,18 @@ public class SubstFragment extends TabbedListFragment<SubstAdapter>
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "Loader finished with id: %d and %d items", loader.getId(), data.getCount());
         getAdapter().swapCursor(SubstitutionCursor.wrap(data));
+
+        // another ugly, yet working solution
+        if(savedLayoutState != null) {
+            Log.d(TAG, "Restoring layout manager position");
+            getRecyclerView().post(new Runnable() {
+                @Override
+                public void run() {
+                    getLayoutManager().onRestoreInstanceState(savedLayoutState);
+                    savedLayoutState = null;
+                }
+            });
+        }
     }
 
     @Override

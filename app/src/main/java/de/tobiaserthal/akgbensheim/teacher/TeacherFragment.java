@@ -2,6 +2,7 @@ package de.tobiaserthal.akgbensheim.teacher;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -54,6 +55,9 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
     private String emptyText;
     private String emptyQueryText;
 
+    // this is just a fix for an issue in the library used. Remove as soon as possible.
+    private Parcelable savedLayoutState;
+
     /**
      * Creates a new bundle you can pass to a instance of this fragment during
      * creation that allow the fragment to respond to the specified arguments.
@@ -95,7 +99,6 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_teacher, container, false);
 
-
         getAdapter().setOnClickListener(new AdapterClickHandler() {
             @Override
             public void onClick(View view, int position, long id) {
@@ -110,6 +113,8 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        savedLayoutState = savedInstanceState != null ?
+                savedInstanceState.getParcelable("layoutManager") : null;
         getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, TeacherFragment.this);
     }
 
@@ -147,6 +152,12 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
     public void onDestroy() {
         getLoaderManager().destroyLoader(viewFlag);
         super.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("layoutManager", getLayoutManager().onSaveInstanceState());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -189,6 +200,18 @@ public class TeacherFragment extends TabbedListFragment<TeacherAdapter>
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "Loader finished with id: %d and %d items", loader.getId(), data.getCount());
         getAdapter().swapCursor(TeacherCursor.wrap(data));
+
+        // another ugly, yet working solution
+        if(savedLayoutState != null) {
+            Log.d(TAG, "Restoring layout manager position");
+            getRecyclerView().post(new Runnable() {
+                @Override
+                public void run() {
+                    getLayoutManager().onRestoreInstanceState(savedLayoutState);
+                    savedLayoutState = null;
+                }
+            });
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package de.tobiaserthal.akgbensheim.event;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -55,6 +56,8 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
     private String emptyText;
     private String emptyQueryText;
 
+    private Parcelable savedLayoutState;
+
     /**
      * Creates a new bundle you can pass to a instance of this fragment during
      * creation that allow the fragment to respond to the specified arguments.
@@ -107,6 +110,8 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        savedLayoutState = savedInstanceState != null ?
+                savedInstanceState.getParcelable("layoutManager") : null;
         getLoaderManager().initLoader(viewFlag, Bundle.EMPTY, EventFragment.this);
     }
 
@@ -147,6 +152,12 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("layoutManager", getLayoutManager().onSaveInstanceState());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "Creating cursor loader with id: %d and args: %s", id, args.toString());
 
@@ -184,6 +195,18 @@ public class EventFragment extends TabbedListFragment<EventAdapter>
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, "Loader finished with id: %d and %d items", loader.getId(), data.getCount());
         getAdapter().swapCursor(EventCursor.wrap(data));
+
+        // another ugly, yet working solution
+        if(savedLayoutState != null) {
+            Log.d(TAG, "Restoring layout manager position");
+            getRecyclerView().post(new Runnable() {
+                @Override
+                public void run() {
+                    getLayoutManager().onRestoreInstanceState(savedLayoutState);
+                    savedLayoutState = null;
+                }
+            });
+        }
     }
 
     @Override

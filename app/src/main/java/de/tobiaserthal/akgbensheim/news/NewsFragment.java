@@ -35,7 +35,6 @@ import de.tobiaserthal.akgbensheim.news.adapter.NewsAdapter;
  * A simple {@link Fragment} subclass.
  */
 
-// TODO: test page storing in instance save bundle
 public class NewsFragment extends TabbedListFragment<NewsAdapter>
         implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 

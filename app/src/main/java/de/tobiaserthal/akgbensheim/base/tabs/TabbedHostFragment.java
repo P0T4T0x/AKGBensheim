@@ -29,8 +29,8 @@ import java.util.ArrayList;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.backend.utils.Log;
-import de.tobiaserthal.akgbensheim.utils.PageChangeAdapter;
 import de.tobiaserthal.akgbensheim.base.toolbar.ToolbarFragment;
+import de.tobiaserthal.akgbensheim.utils.PageChangeAdapter;
 
 public class TabbedHostFragment extends ToolbarFragment {
     public static final String TAG = "TabbedHostFragment";
@@ -204,8 +204,10 @@ public class TabbedHostFragment extends ToolbarFragment {
         ArrayList<String> titles = getArguments().getStringArrayList("pageTitles");
         ArrayList<Bundle> args = getArguments().getParcelableArrayList("pageArgs");
 
-        pageTitles.addAll(titles);
-        pageArgs.addAll(args);
+        if(titles != null && args != null) {
+            pageTitles.addAll(titles);
+            pageArgs.addAll(args);
+        }
 
         tabHeight = getResources().getDimensionPixelSize(R.dimen.tab_height);
         if(pageTitles.isEmpty() || pageArgs.isEmpty()) {
@@ -217,7 +219,10 @@ public class TabbedHostFragment extends ToolbarFragment {
             @Override
             protected Fragment createItem(int position) {
                 return Fragment.instantiate(
-                        getActivity(), clazz, pageArgs.get(position));
+                        getActivity(),
+                        clazz,
+                        position < pageArgs.size() ? pageArgs.get(position) : null
+                );
             }
 
             @Override
@@ -440,12 +445,7 @@ public class TabbedHostFragment extends ToolbarFragment {
             tabLayout = (TabLayout) raw;
         }
 
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(getViewPager());
-            }
-        });
+        tabLayout.setupWithViewPager(getViewPager());
     }
 
     public void showPager(boolean animated) {
