@@ -80,4 +80,14 @@ public interface NewsModel extends BaseModel {
      * Whether this news post was bookmarked by the user.
      */
     boolean getBookmarked();
+
+    /**
+     * Whether the given article has a valid image url.
+     */
+    boolean hasImage();
+
+    /**
+     * Whether the article's image has a description text to be displayed.
+     */
+    boolean hasImageDes();
 }

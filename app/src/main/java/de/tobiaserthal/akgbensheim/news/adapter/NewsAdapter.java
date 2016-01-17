@@ -1,10 +1,13 @@
 package de.tobiaserthal.akgbensheim.news.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -70,14 +73,12 @@ public class NewsAdapter extends CursorAdapter<NewsCursor, NewsAdapter.NewsViewH
             txtHeading.setText(cursor.getTitle());
             txtSnippet.setText(cursor.getSnippet());
 
-            String url = cursor.getImageUrl();
-            if(!TextUtils.isEmpty(url)) {
+            if(cursor.hasImage()) {
                 imageView.setVisibility(View.VISIBLE);
 
                 Picasso.with(getContext())
-                        .load(url)
-                        .fit().centerCrop()
-                        .into(imageView);
+                        .load(cursor.getImageUrl())
+                        .fit().centerCrop().into(imageView);
             } else {
                 imageView.setVisibility(View.GONE);
             }

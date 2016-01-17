@@ -172,7 +172,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
                 ACTIVITY_CONTACT,
                 getResources().getString(R.string.app_name),
                 getResources().getString(R.string.address),
-                ContextCompat.getDrawable(getActivity(), R.drawable.akg)
+                ContextCompat.getDrawable(getActivity(), R.drawable.drawer_bg)
         );
 
         drawerAdapter.addItem(FRAGMENT_HOME, navMenuItemTitles[0], navMenuItemIcons.getResourceId(0, -1));

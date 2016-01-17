@@ -18,4 +18,5 @@
     <color name="selected_gray">#2c000000</color>
     <color name="background_light">#eeeeee</color>
     <color name="windowBackground">#EEEEEE</color>
+    <color name="image_background">#ff37474f</color>
 </resources>

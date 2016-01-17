@@ -2,12 +2,15 @@ package de.tobiaserthal.akgbensheim.backend.rest.model.news;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Patterns;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import static android.util.Patterns.WEB_URL;
 import de.tobiaserthal.akgbensheim.backend.model.news.NewsModel;
 import de.tobiaserthal.akgbensheim.backend.rest.model.base.BaseResponse;
 
@@ -74,6 +77,17 @@ public class NewsResponse extends BaseResponse<NewsResponse.Entry> {
         @Override
         public boolean getBookmarked() {
             return false;
+        }
+
+        @Override
+        public boolean hasImage() {
+            return imageUrl != null
+                    && WEB_URL.matcher(imageUrl).matches();
+        }
+
+        @Override
+        public boolean hasImageDes() {
+            return !TextUtils.isEmpty(imageDesc);
         }
 
         @Override

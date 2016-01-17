@@ -23,7 +23,7 @@
             android:id="@+id/news_list_item_image"
             android:layout_width="match_parent"
             android:layout_height="178dp"
-            android:background="@color/material_blue_grey_800"
+            android:background="@color/image_background"
             android:contentDescription="@string/image_desc_newsHeaderImage" />
 
         <LinearLayout

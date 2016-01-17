@@ -26,9 +26,12 @@ package de.tobiaserthal.akgbensheim.backend.provider.news;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import de.tobiaserthal.akgbensheim.backend.model.news.NewsModel;
 import de.tobiaserthal.akgbensheim.backend.provider.base.AbstractCursor;
+
+import static android.util.Patterns.WEB_URL;
 
 /**
  * Cursor wrapper for the {@code news} table.
@@ -123,10 +126,30 @@ public class NewsCursor extends AbstractCursor implements NewsModel {
     /**
      * Whether this news post was bookmarked by the user.
      */
+    @Override
     public boolean getBookmarked() {
         Boolean res = getBooleanOrNull(NewsColumns.BOOKMARKED);
         if (res == null)
             throw new NullPointerException("The value of 'bookmarked' in the database was null, which is not allowed according to the model definition");
         return res;
+    }
+
+    /**
+     * Whether the given article has a valid image url.
+     */
+    @Override
+    public boolean hasImage() {
+        String imageUrl = getImageUrl();
+        return imageUrl != null
+                && WEB_URL.matcher(imageUrl).matches();
+    }
+
+    /**
+     * Whether the article's image has a description text to be displayed.
+     */
+    @Override
+    public boolean hasImageDes() {
+        String imageDesc = getImageDesc();
+        return !TextUtils.isEmpty(imageDesc);
     }
 }

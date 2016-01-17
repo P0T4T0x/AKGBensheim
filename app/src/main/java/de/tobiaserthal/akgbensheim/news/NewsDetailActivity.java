@@ -26,7 +26,9 @@ import android.widget.TextView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import de.tobiaserthal.akgbensheim.R;
 import de.tobiaserthal.akgbensheim.backend.model.ModelUtils;
@@ -228,18 +230,21 @@ public class NewsDetailActivity extends OverlayActivity<ObservableScrollView>
         headerSubtitle.setText(news.getTitle());
         imageDescView.setText(news.getImageDesc());
         articleView.setText(news.getArticle());
+        imageDescView.setVisibility(news.hasImageDes() ? View.GONE : View.VISIBLE);
 
+        RequestCreator request;
+        if(news.hasImage()) {
+            request = Picasso.with(this)
+                    .load(news.getImageUrl()).error(R.drawable.ic_newspaper_grey_256dp);
+        } else {
+            request = Picasso.with(this)
+                    .load(R.drawable.ic_newspaper_grey_256dp)
+                    .noFade();
+        }
 
-        Picasso.with(this)
-                .load(news.getImageUrl())
-                .error(R.drawable.akg)
-                .fit().centerCrop()
+        request.fit()
+                .centerCrop()
                 .into(imageView);
-
-        imageDescView.setVisibility(
-                TextUtils.isEmpty(news.getImageDesc()) ?
-                        View.GONE : View.VISIBLE
-        );
     }
 
     @Override
