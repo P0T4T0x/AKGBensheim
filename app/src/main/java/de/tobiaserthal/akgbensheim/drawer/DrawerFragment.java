@@ -396,7 +396,6 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
     public void onNavigationItemSelected(int position, int id, boolean reselect) {
         Log.d(TAG, "Navigation item of position: %d, id: %d selected; isReselect: %b.", position, id, reselect);
 
-        currentSelectedId = id;
         if(drawerLayout != null) {
             closeDrawer(200);
         }
@@ -408,6 +407,7 @@ public class DrawerFragment extends Fragment implements DrawerCallbacks, LoaderM
             }
 
             if(NavigationHelper.isFragmentId(id)) {
+                currentSelectedId = id;
                 if (fragmentManager != null) {
                     String title = drawerAdapter.getItem(position).getTitle();
                     Fragment fragment = fragmentManager.findFragmentByTag(String.valueOf(id));
