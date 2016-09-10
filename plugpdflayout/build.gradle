@@ -15,6 +15,6 @@ android {
 }
 
 dependencies {
-    compile files('src/main/libs/page-curl.jar')
     compile files('src/main/libs/plugpdfcore.jar')
+	compile files('src/main/libs/page-curl-effect.jar')
 }
